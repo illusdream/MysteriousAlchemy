@@ -94,9 +94,9 @@ namespace MysteriousAlchemy.Projectiles
             frametime++;
             //в╥вы
             #region
-            if (MainUtil.GetNPCCanTrack(Projectile.Center, TrackRadium) != null)
+            if (DrawUtil.GetNPCCanTrack(Projectile.Center, TrackRadium) != null)
             {
-                Vector2 TargetPos = MainUtil.GetNPCCanTrack(Projectile.Center, TrackRadium).Center;
+                Vector2 TargetPos = DrawUtil.GetNPCCanTrack(Projectile.Center, TrackRadium).Center;
                 Projectile.velocity = ((1 - TrackRealScale) * Projectile.velocity + (TargetPos - Projectile.Center).SafeNormalize(Vector2.Zero) * TrackRealScale).SafeNormalize(Vector2.Zero) * TrackRealVelocity;
             }
 
@@ -149,7 +149,7 @@ namespace MysteriousAlchemy.Projectiles
             Texture2D Mainshape = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_1");
             Texture2D MainMask = AssetUtils.GetMask("Mask2");
             Texture2D MainColor = AssetUtils.GetColorBar("Frost");
-            MainUtil.DrawProjectileTrail(oldPosi, Mainshape, MainMask, MainColor, 25, ((float)Main.time / 600f) % 1f);
+            DrawUtil.DrawProjectileTrail(oldPosi, Mainshape, MainMask, MainColor, 25, ((float)Main.time / 600f) % 1f);
             base.PostDraw(lightColor);
         }
 

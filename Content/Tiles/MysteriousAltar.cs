@@ -152,10 +152,6 @@ namespace MysteriousAlchemy.Tiles
         }
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (entity != null)
-            {
-                Main.NewText("TEPosition" + (entity.Position.ToVector2() * 16 - Main.screenPosition));
-            }
             base.PostDraw(i, j, spriteBatch);
         }
 
@@ -234,24 +230,24 @@ namespace MysteriousAlchemy.Tiles
             Texture2D CircleTex = AssetUtils.GetTexture2D(AssetUtils.Texture + "Projectile_490");
 
             Vector2 TileDrawRevise = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 20f, OuterCircleLength / CircleTex.Size().Length(), (float)MathHelper.TwoPi * Timer / 120f, -MathHelper.PiOver4 - (float)MathHelper.TwoPi * Timer / 120f, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 20f, OuterCircleLength / CircleTex.Size().Length(), (float)MathHelper.TwoPi * Timer / 120f, -MathHelper.PiOver4 - (float)MathHelper.TwoPi * Timer / 120f, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
             });
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), -(float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), -(float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
             });
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
             });
-            MainUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, OuterCircleLength / CircleTex.Size().Length(), (float)MathHelper.TwoPi * Timer / 120f, MathHelper.PiOver4 + (float)MathHelper.TwoPi * Timer / 120f, 0.07f, 30);
-            MainUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, OuterCircleLength / 0.7f / CircleTex.Size().Length(), -(float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, 0.07f, 50);
-            MainUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, 0.07f, 20);
+            DrawUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, OuterCircleLength / CircleTex.Size().Length(), (float)MathHelper.TwoPi * Timer / 120f, MathHelper.PiOver4 + (float)MathHelper.TwoPi * Timer / 120f, 0.07f, 30);
+            DrawUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, OuterCircleLength / 0.7f / CircleTex.Size().Length(), -(float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, 0.07f, 50);
+            DrawUtil.DrawMagicLighting(spriteBatch, (float)Main.time, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, 0.07f, 20);
 
             FinalStageCircleHV[0] = new Vector2((float)MathHelper.TwoPi * Timer / 120f, -MathHelper.PiOver4 - (float)MathHelper.TwoPi * Timer / 120f);
             FinalStageCircleHV[1] = new Vector2(-(float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3);
@@ -276,17 +272,17 @@ namespace MysteriousAlchemy.Tiles
             Vector2 Circel_3_ReadlyHV = new Vector2(0, MathHelper.PiOver2);
             if (Timer < StartTime)
             {
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 25f, OuterCircleLength / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 25f, OuterCircleLength / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
                 });
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
                 });
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint * SpownInter - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length() * SpownInter, -MathHelper.PiOver4, MathHelper.PiOver2, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
@@ -298,17 +294,17 @@ namespace MysteriousAlchemy.Tiles
                 Vector2 Circel_1_NoReadlyHV = Vector2.Lerp(SpownHV, Circel_1_ReadlyHV, BeginInter);
                 Vector2 Circel_2_NoReadlyHV = Vector2.Lerp(SpownHV, Circel_2_ReadlyHV, BeginInter);
                 Vector2 Circel_3_NoReadlyHV = Vector2.Lerp(SpownHV, Circel_3_ReadlyHV, BeginInter);
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 25f, OuterCircleLength / CircleTex.Size().Length(), Circel_1_NoReadlyHV.X, Circel_1_NoReadlyHV.Y, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 25f, OuterCircleLength / CircleTex.Size().Length(), Circel_1_NoReadlyHV.X, Circel_1_NoReadlyHV.Y, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
                 });
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), Circel_2_NoReadlyHV.X, Circel_2_NoReadlyHV.Y, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), Circel_2_NoReadlyHV.X, Circel_2_NoReadlyHV.Y, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
                 });
-                MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), Circel_3_NoReadlyHV.X, Circel_3_NoReadlyHV.Y, () =>
+                DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + StartPoint - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), Circel_3_NoReadlyHV.X, Circel_3_NoReadlyHV.Y, () =>
                 {
                     MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                     MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1);
@@ -342,17 +338,17 @@ namespace MysteriousAlchemy.Tiles
             Texture2D CircleTex = AssetUtils.GetTexture2D(AssetUtils.Texture + "Projectile_490");
 
             Vector2 TileDrawRevise = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 20f, OuterCircleLength / CircleTex.Size().Length(), FinalStageCircleHV[0].X + (float)MathHelper.TwoPi * Timer / 120f, FinalStageCircleHV[0].Y - (float)MathHelper.TwoPi * Timer / 120f, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 20f, OuterCircleLength / CircleTex.Size().Length(), FinalStageCircleHV[0].X + (float)MathHelper.TwoPi * Timer / 120f, FinalStageCircleHV[0].Y - (float)MathHelper.TwoPi * Timer / 120f, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1 - FinalInter);
             });
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), FinalStageCircleHV[1].X - (float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 15f, OuterCircleLength / 0.7f / CircleTex.Size().Length(), FinalStageCircleHV[1].X - (float)MathHelper.TwoPi * Timer / 200f, MathHelper.PiOver2 / 3, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1 - FinalInter);
             });
-            MainUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, () =>
+            DrawUtil.DrawTile(spriteBatch, CircleTex, TileUtils.GetCenterMultitile(i, j) + TileDrawRevise + offest - Main.screenPosition, MysteriousAlchemy.AltarTransform, Timer / 30f, InnerCircleLength / CircleTex.Size().Length(), 0, MathHelper.PiOver2, () =>
             {
                 MysteriousAlchemy.AltarTransform.Parameters["timer"].SetValue((float)Main.time / 60f);
                 MysteriousAlchemy.AltarTransform.Parameters["alpha"].SetValue(1 - FinalInter);
@@ -468,8 +464,8 @@ namespace MysteriousAlchemy.Tiles
             Texture2D CircleTex = AssetUtils.GetTexture2D(AssetUtils.Texture + "Projectile_490");
             for (int k = 0; k < number; k++)
             {
-                Vector2 ToCenter = MainUtil.GetDrawMartixParameter(CircleTex, Vector2.Zero, MathHelper.TwoPi * k / (float)number, InnerCircleLength * 0.8f / CircleTex.Size().Length(), 0, MathHelper.PiOver2).SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * -1;
-                Dust.NewDustPerfect(MainUtil.GetDrawMartixParameter(CircleTex, TileUtils.GetCenterMultitile(i, j) + new Vector2(0, -150), MathHelper.TwoPi * k / (float)number, InnerCircleLength * 0.8f / CircleTex.Size().Length(), 0, MathHelper.PiOver2), ModContent.DustType<AltarMagicVortex>(), ToCenter);
+                Vector2 ToCenter = DrawUtil.GetDrawMartixParameter(CircleTex, Vector2.Zero, MathHelper.TwoPi * k / (float)number, InnerCircleLength * 0.8f / CircleTex.Size().Length(), 0, MathHelper.PiOver2).SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * -1;
+                Dust.NewDustPerfect(DrawUtil.GetDrawMartixParameter(CircleTex, TileUtils.GetCenterMultitile(i, j) + new Vector2(0, -150), MathHelper.TwoPi * k / (float)number, InnerCircleLength * 0.8f / CircleTex.Size().Length(), 0, MathHelper.PiOver2), ModContent.DustType<AltarMagicVortex>(), ToCenter);
             }
         }
 
