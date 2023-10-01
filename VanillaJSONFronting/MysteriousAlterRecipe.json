@@ -1,0 +1,73 @@
+[
+  {
+    "OuterIngredient": [
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 757,
+        "Stack": 1
+      }
+    ],
+    "MiddleIngredient": [
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      }
+    ],
+    "Product": {
+      "ItemIDMode": 0,
+      "ItemID": 4956,
+      "Stack": 1
+    }
+  }
+]

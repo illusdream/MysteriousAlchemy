@@ -1,0 +1,107 @@
+Items: {
+	ShiningRhizome: {
+		DisplayName: Shining Rhizome
+		Tooltip: ""
+	}
+
+	ElementalEssence: {
+		DisplayName: Elemental Essence
+		Tooltip: ""
+	}
+
+	Flask: {
+		DisplayName: Flask
+		Tooltip: ""
+	}
+
+	HelianthusPetal: {
+		DisplayName: Helianthus Petal
+		Tooltip: ""
+	}
+
+	MagicEssence: {
+		DisplayName: Magic Essence
+		Tooltip: ""
+	}
+
+	MoonlightWick: {
+		DisplayName: Moonlight Wick
+		Tooltip: ""
+	}
+
+	PrisonFirePetals: {
+		DisplayName: Prison Fire Petals
+		Tooltip: ""
+	}
+
+	RottenBranches: {
+		DisplayName: Rotten Branches
+		Tooltip: ""
+	}
+
+	ShiveringRhizome: {
+		DisplayName: Shivering Rhizome
+		Tooltip: ""
+	}
+
+	WaterleafEssence: {
+		DisplayName: Waterleaf Essence
+		Tooltip: ""
+	}
+
+	Extractor: {
+		DisplayName: Extractor
+		Tooltip: ""
+	}
+
+	MysteriousAltar: {
+		DisplayName: Mysterious Altar
+		Tooltip: ""
+	}
+
+	CavityCrystal: {
+		DisplayName: Cavity Crystal
+		Tooltip: ""
+	}
+
+	TransmutationCrystal: {
+		DisplayName: Transmutation Crystal
+		Tooltip: ""
+	}
+
+	FrostEssenceGrimoire: {
+		DisplayName: Frost Essence Grimoire
+		Tooltip: ""
+	}
+
+	EnhanceDeathSickle: {
+		DisplayName: Enhance Death Sickle
+		Tooltip: ""
+	}
+
+	BloodHarvesting: {
+		DisplayName: Blood Harvesting
+		Tooltip: ""
+	}
+}
+
+Projectiles: {
+	FrostEssenceController.DisplayName: Frost Essence Controller
+	FrostEssenceProjectile.DisplayName: Frost Essence Projectile
+	BaseProjectile1.DisplayName: Base Projectile1
+	EnhanceDeathSickleProj.DisplayName: Enhance Death Sickle Proj
+	SyctheProj.DisplayName: Sycthe Proj
+	BloodHarvestingProj.DisplayName: Blood Harvesting Proj
+}
+
+Buffs: {
+	NPCFreezeEffect: {
+		DisplayName: N P C Freeze Effect
+		Description: Mods.MysteriousAlchemy.Buffs.NPCFreezeEffect.Description
+	}
+
+	Buff_Separate: {
+		DisplayName: Buff_ Separate
+		Description: Mods.MysteriousAlchemy.Buffs.Buff_Separate.Description
+	}
+}

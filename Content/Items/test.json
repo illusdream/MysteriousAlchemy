@@ -1,0 +1,14 @@
+[
+  {
+    "Ingredient": {
+      "ItemIDMode": 0,
+      "ItemID": "1",
+      "Stack": 1
+    },
+    "Product": {
+      "ItemIDMode": 1,
+      "ItemID": "12",
+      "Stack": 1
+    }
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Ingredient": {
+      "ItemIDMode": 0,
+      "ItemID": "315",
+      "Stack": 1
+    },
+    "Product": {
+      "ItemIDMode": 1,
+      "ItemID": "ShiningRhizome",
+      "Stack": 2
+    }
+  },
+  {
+    "Ingredient": {
+      "ItemIDMode": 0,
+      "ItemID": "313",
+      "Stack": 1
+    },
+    "Product": {
+      "ItemIDMode": 1,
+      "ItemID": "ShiningRhizome",
+      "Stack": 2
+    }
+  }
+]
