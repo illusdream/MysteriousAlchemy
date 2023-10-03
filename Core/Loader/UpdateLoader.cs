@@ -43,7 +43,7 @@ namespace MysteriousAlchemy.Core.Loader
                 Updates.Sort((n, t) => n.UpdateIndex.CompareTo(t.UpdateIndex));
             }
             var updateMehtod = typeof(Main).GetMethod("DoUpdateInWorld", BindingFlags.Instance | BindingFlags.NonPublic);
-            //初始化UpdateUnits并通过钩子挂载到原版DoUpdate后面（暂时）如果有问题我再搬其他地方去
+            //初始化UpdateUnits并通过钩子挂载到原版DoUpdateInWorld后面（暂时）如果有问题我再搬其他地方去
             foreach (var Iupdate in Updates)
             {
                 Iupdate.Load();

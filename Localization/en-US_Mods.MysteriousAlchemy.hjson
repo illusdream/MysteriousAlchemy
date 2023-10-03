@@ -83,6 +83,11 @@ Items: {
 		DisplayName: Blood Harvesting
 		Tooltip: ""
 	}
+
+	TestItem: {
+		DisplayName: Test Item
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

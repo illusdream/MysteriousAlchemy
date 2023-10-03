@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.GameContent.RGB;
 
 namespace MysteriousAlchemy.Core.Abstract
 {
@@ -14,13 +15,15 @@ namespace MysteriousAlchemy.Core.Abstract
         /// <summary>
         /// 注册所有方法
         /// </summary>
-        public void Initialize()
+        public virtual void Initialize()
         {
 
         }
 
-        public void RegisterState<T>(T state) where T : IState
+        public virtual void RegisterState<T>(T state) where T : IState
         {
+            if (States == null)
+                States = new Dictionary<string, IState>();
             if (States.ContainsKey(typeof(T).ToString()))
                 throw new ArgumentException("已被注册");
             States.Add(typeof(T).ToString(), state);
@@ -37,15 +40,15 @@ namespace MysteriousAlchemy.Core.Abstract
         public void SwitchState<T>() where T : IState
         {
             var name = typeof(T).ToString();
-            CurrectState.ExitState();
+            CurrectState.ExitState(this);
             if (!States.ContainsKey(name)) throw new ArgumentException("该状态并不存在");
-            States[name].EntryState();
+            States[name].EntryState(this);
             SetState<T>();
         }
 
         public void AI()
         {
-            CurrectState?.OnState();
+            CurrectState?.OnState(this);
         }
 
         public StateMachine()

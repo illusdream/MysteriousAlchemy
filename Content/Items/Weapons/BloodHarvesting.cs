@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Projectiles.WeaponProjectile;
 using MysteriousAlchemy.Utils;
 using System;
@@ -92,6 +93,11 @@ namespace MysteriousAlchemy.Items.Weapons
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
             base.AddRecipes();
+        }
+        public override bool OnPickup(Player player)
+        {
+            NarrationSystem.instance.AddNarration(player.Center + new Vector2(0, -60), "你感到你的血液不受控制的向镰刀上汇聚", 255, Core.Perfab.TextSpreadMode.letter, 1, 45, 45);
+            return base.OnPickup(player);
         }
     }
 }

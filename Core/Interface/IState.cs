@@ -12,10 +12,10 @@ namespace MysteriousAlchemy.Core.Interface
     public interface IState
     {
         //进入该状态
-        public void EntryState();
+        public void EntryState(IStateMachine stateMachine);
         //在该状态里该做的事
-        public void OnState();
+        public void OnState(IStateMachine stateMachine);
         //退出该状态
-        public void ExitState();
+        public void ExitState(IStateMachine stateMachine);
     }
 }

@@ -1,13 +1,19 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoMod.Utils;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Utils;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Map;
 using Terraria.ModLoader;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace MysteriousAlchemy.Content.Items.TestItem
 {
@@ -35,11 +41,12 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            TextDiscriptionSystem.instance.AddTextDiscription(Main.MouseWorld, "ËêËê±ä°×ÄãµÄ²âÊÔÎÄ×Öu", 255, Core.Perfab.TextSpreadMode.letter, 10, 120, 120);
+            NarrationSystem.instance.AddNarration(Main.MouseWorld, "ËêËê±ä°×ÄãµÄ²âÊÔÎÄ×Öu", 255, Core.Perfab.TextSpreadMode.letter, 10, 120, 120);
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)
         {
+
             base.UpdateInventory(player);
         }
 

@@ -20,6 +20,11 @@ namespace MysteriousAlchemy.Utils
             return new Vector2(input.X * (float)Math.Sin(angleV) + input.Y * (float)(Math.Sin(angleH) * Math.Cos(angleV)), input.Y * (float)(Math.Cos(angleH)));
         }
 
+        public static Vector2 ToScreenPosition(Vector2 vector2)
+        {
+            return vector2 - Main.screenPosition;
+        }
+
         public static void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Effect effect, float rotation = 0, float scale = 1, float angleH = 0, float angleV = 0, Action effectAction = null)
         {
             if (texture == null)
@@ -215,7 +220,7 @@ namespace MysteriousAlchemy.Utils
 
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
                 var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
-                Texture2D LightingTex = (Texture2D)ModContent.Request<Texture2D>("MysteriousAlchemy/Texture/Extra_194").Value;
+                Texture2D LightingTex = (Texture2D)ModContent.Request<Texture2D>(AssetUtils.Extra + "Extra_194").Value;
                 //// 把变换和所需信息丢给shader
                 Effect AltarTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarTransform").Value;
                 //AltarTransform.Parameters["UTransform"].SetValue(model * Main.Transform * projection);
@@ -391,27 +396,19 @@ namespace MysteriousAlchemy.Utils
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-
-
-
-        public static NPC GetNPCCanTrack(Vector2 position, float radium)
+        public static void DrawPrettyLine(float opacity, SpriteEffects dir, Vector2 drawPos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, float scale, Vector2 fatness)
         {
-            NPC result = null;
-            foreach (var npc in Main.npc)
-            {
-                if (!npc.friendly && npc.active && (npc.Center - position).Length() < radium)
-                {
-                    if (result == null)
-                    {
-                        result = npc;
-                    }
-                    if ((result.Center - position).Length() > (npc.Center - position).Length())
-                    {
-                        result = npc;
-                    }
-                }
-            }
-            return result;
+            Texture2D value = TextureAssets.Extra[98].Value;
+            Color color = shineColor * opacity * 0.5f;
+            color.A = 0;
+            Vector2 origin = value.Size() / 2f;
+            Color color2 = drawColor * 0.5f;
+            float num = Terraria.Utils.GetLerpValue(fadeInStart, fadeInEnd, flareCounter, clamped: true) * Terraria.Utils.GetLerpValue(fadeOutEnd, fadeOutStart, flareCounter, clamped: true);
+            Vector2 vector = new Vector2(fatness.X * 0.5f, scale) * num;
+            color *= num;
+            color2 *= num;
+            Main.EntitySpriteDraw(value, drawPos, null, color, (float)Math.PI / 2f + rotation, origin, vector, dir, 0);
+            Main.EntitySpriteDraw(value, drawPos, null, color2, (float)Math.PI / 2f + rotation, origin, vector * 0.6f, dir, 0);
         }
     }
     struct CustomVertexInfo : IVertexType

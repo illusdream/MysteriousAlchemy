@@ -16,6 +16,5 @@
     <Folder Include="Asset\Texture\Mask\" />
     <Folder Include="Asset\Texture\Extra\" />
     <Folder Include="Content\Items\TileItems\" />
-    <Folder Include="Content\Items\TestItem\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using MysteriousAlchemy.Buffs;
 using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Global.GlobalNPCs;
@@ -16,6 +17,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Humanizer.In;
@@ -239,8 +241,9 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
         }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            float point = 0f; ;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), HandPos, HandPos + WeaponTopPos * 6 / 7f, 10f * StaticWeaponSize * WeaponSizeModify, ref point);
+            float point = 0f;
+            bool collusion = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), HandPos, HandPos + WeaponTopPos * 6 / 7f, 10f * StaticWeaponSize * WeaponSizeModify, ref point);
+            return attackState == AttackState.attack ? collusion : false;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -277,6 +280,8 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                 target.StrikeNPC(SeparateHitInfo);
             }
             extraProperty.AddScytheHitCount(1);
+            PunchCameraModifier cameraModifier = new PunchCameraModifier(Player.Center, CurretAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2 * Clockwise), StaticWeaponSize * WeaponSizeModify, 6, 6, 10, "ScytheHit");
+            Main.instance.CameraModifiers.Add(cameraModifier);
 
         }
         public override bool PreDraw(ref Color lightColor)
@@ -287,6 +292,11 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
         }
         public virtual void DrawAnimation()
         {
+            DrawUtil.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
+                new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation, 3, Vector2.One);
+            DrawUtil.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
+    new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation + MathHelper.PiOver2, 3, new Vector2(0.5f, 1f));
+            Main.spriteBatch.Draw(TextureAssets.Extra[98].Value, Main.MouseWorld - Main.screenPosition, Color.White);
             switch (attackState)
             {
                 case AttackState.prepare:

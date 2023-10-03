@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ namespace MysteriousAlchemy.Core.Interface
         /// <summary>
         /// NonPremultiplied绘制模式
         /// </summary>
-        public void DrawNonPremultiplied();
+        public void DrawNonPremultiplied(SpriteBatch spriteBatch);
     }
 }

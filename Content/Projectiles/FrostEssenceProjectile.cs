@@ -94,9 +94,9 @@ namespace MysteriousAlchemy.Projectiles
             frametime++;
             //в╥вы
             #region
-            if (DrawUtil.GetNPCCanTrack(Projectile.Center, TrackRadium) != null)
+            if (NPCUtils.GetNPCCanTrack(Projectile.Center, TrackRadium) != null)
             {
-                Vector2 TargetPos = DrawUtil.GetNPCCanTrack(Projectile.Center, TrackRadium).Center;
+                Vector2 TargetPos = NPCUtils.GetNPCCanTrack(Projectile.Center, TrackRadium).Center;
                 Projectile.velocity = ((1 - TrackRealScale) * Projectile.velocity + (TargetPos - Projectile.Center).SafeNormalize(Vector2.Zero) * TrackRealScale).SafeNormalize(Vector2.Zero) * TrackRealVelocity;
             }
 
