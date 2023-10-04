@@ -50,7 +50,7 @@ namespace MysteriousAlchemy.Core.Perfab
             if (FianlText != null)
             {
                 DynamicSpriteFont font = (ReLogic.Graphics.DynamicSpriteFont)FontAssets.MouseText.Value;
-                spriteBatch.DrawString(font, FianlText, DrawUtil.ToScreenPosition(Position), Color.White * Alpha, 0, font.MeasureString(FianlText) / 2f, 1, SpriteEffects.None, 0);
+                spriteBatch.DrawString(font, FianlText, DrawUtils.ToScreenPosition(Position), Color.White * Alpha, 0, font.MeasureString(FianlText) / 2f, 1, SpriteEffects.None, 0);
             }
         }
         public void Update()

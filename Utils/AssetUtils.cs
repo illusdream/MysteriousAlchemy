@@ -23,6 +23,7 @@ namespace MysteriousAlchemy.Utils
 
         public const string Items = Asset + "Items/";
         public const string Weapons = Items + "Weapons/";
+        public const string Ether = Items + "Ether/";
 
         public const string Projectiles = Asset + "Projectiles/";
         public const string WeaponProjectile = Projectiles + "WeaponProjectile/";

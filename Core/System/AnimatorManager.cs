@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,14 @@ namespace MysteriousAlchemy.Core.System
 
         public static AnimatorManager Instance;
 
+        public AnimatorManager() : base()
+        {
+
+            Instance = this;
+        }
         public void Load()
         {
             Animators = new List<Animator>();
-            Instance = this;
         }
 
         public void Unload()
@@ -32,58 +37,32 @@ namespace MysteriousAlchemy.Core.System
                 Animators = null;
             }
         }
-        public void NoShaderDraw_AlphaBlend(SpriteBatch spriteBatch)
+        public void DrawBehindPlayer(SpriteBatch spriteBatch)
         {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
+            if (Animators != null)
             {
-                animators.NoShaderDraw_AlphaBlend(spriteBatch);
+                foreach (var animator in Animators)
+                {
+                    if (animator.DrawSortWithPlayer == Enum.DrawSortWithPlayer.Behind)
+                    {
+                        animator.NoShaderDraw(spriteBatch);
+                        animator.ShaderDraw(spriteBatch);
+                    }
+                }
             }
         }
-        public void NoShaderDraw_Additive(SpriteBatch spriteBatch)
+        public void DrawFrontPlayer(SpriteBatch spriteBatch)
         {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
+            if (Animators != null)
             {
-                animators.NoShaderDraw_Additive(spriteBatch);
-            }
-        }
-        public void NoShaderDraw_NonPremultiplied(SpriteBatch spriteBatch)
-        {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
-            {
-                animators.NoShaderDraw_NonPremultiplied(spriteBatch);
-            }
-        }
-        public void ShaderDraw_AlphaBlend(SpriteBatch spriteBatch)
-        {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
-            {
-                animators.ShaderDraw_AlphaBlend(spriteBatch);
-            }
-        }
-        public void ShaderDraw__Additive(SpriteBatch spriteBatch)
-        {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
-            {
-                animators.ShaderDraw__Additive(spriteBatch);
-            }
-        }
-        public void ShaderDraw_NonPremultiplied(SpriteBatch spriteBatch)
-        {
-            if (Animators == null)
-                return;
-            foreach (var animators in Animators)
-            {
-                animators.ShaderDraw_NonPremultiplied(spriteBatch);
+                foreach (var animator in Animators)
+                {
+                    if (animator.DrawSortWithPlayer == Enum.DrawSortWithPlayer.Front)
+                    {
+                        animator.NoShaderDraw(spriteBatch);
+                        animator.ShaderDraw(spriteBatch);
+                    }
+                }
             }
         }
 
@@ -96,6 +75,19 @@ namespace MysteriousAlchemy.Core.System
                     animator.AI();
                 }
             }
+
+        }
+
+        public void AddAnimator(Animator animator)
+        {
+            Animators.Add(animator);
+        }
+        public T Register<T>() where T : Animator, new()
+        {
+            T instance = new T();
+            instance.active = true;
+            Animators.Add(instance);
+            return instance;
         }
     }
 }

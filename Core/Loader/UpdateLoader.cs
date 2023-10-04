@@ -47,9 +47,9 @@ namespace MysteriousAlchemy.Core.Loader
             foreach (var Iupdate in Updates)
             {
                 Iupdate.Load();
-                MonoModHooks.Add(updateMehtod, Update);
-            }
 
+            }
+            MonoModHooks.Add(updateMehtod, Update);
         }
 
 

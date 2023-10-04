@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
+using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Utils;
@@ -41,7 +42,8 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            NarrationSystem.instance.AddNarration(Main.MouseWorld, "ËêËê±ä°×ÄãµÄ²âÊÔÎÄ×Öu", 255, Core.Perfab.TextSpreadMode.letter, 10, 120, 120);
+            AltarAnimator altarAnimator = AnimatorManager.Instance.Register<AltarAnimator>();
+            altarAnimator.Position = Main.MouseWorld;
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

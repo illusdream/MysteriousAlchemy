@@ -209,9 +209,9 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
             WeaponCurretSize = StaticWeaponSize * TextureAssets.Projectile[Projectile.type].Size().Length() * WeaponSizeModify;
             //武器顶点位置
             WeaponTopPos = (CurretAngle).ToRotationVector2() * (WeaponCurretSize / 2f * (1 + HeldPosOffest));
-            WeaponTopPos = DrawUtil.MartixTrans(WeaponTopPos, AngleV, AngleH);
+            WeaponTopPos = DrawUtils.MartixTrans(WeaponTopPos, AngleV, AngleH);
             WeaponCenterFix = (CurretAngle).ToRotationVector2() * (WeaponCurretSize / 2f * HeldPosOffest);
-            WeaponCenterFix = DrawUtil.MartixTrans(WeaponCenterFix, AngleV, AngleH); ;
+            WeaponCenterFix = DrawUtils.MartixTrans(WeaponCenterFix, AngleV, AngleH); ;
             //记录顶点绘制所需的向量
             if (CanGetTrail)
             {
@@ -334,11 +334,11 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
 
             if (Clockwise == 1)
             {
-                DrawUtil.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + WeaponCenterFix, Color.White, null, CurretAngle + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 0);
+                DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + WeaponCenterFix, Color.White, null, CurretAngle + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 0);
             }
             else
             {
-                DrawUtil.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + WeaponCenterFix, Color.White, null, CurretAngle + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 1);
+                DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + WeaponCenterFix, Color.White, null, CurretAngle + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 1);
 
             }
         }
@@ -361,15 +361,15 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                         continue;
                     }
                     Vector2 centerFix = (WeaponRotation[i]).ToRotationVector2() * (WeaponCurretSize / 2f * HeldPosOffest);
-                    centerFix = DrawUtil.MartixTrans(centerFix, AngleV, AngleH);
+                    centerFix = DrawUtils.MartixTrans(centerFix, AngleV, AngleH);
                     //长轴修正
                     if (Clockwise == 1)
                     {
-                        DrawUtil.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 0);
+                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 0);
                     }
                     else
                     {
-                        DrawUtil.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 1);
+                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 1);
                     }
                 }
             }
@@ -456,7 +456,7 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                 ButtomPos[i] = Slash[i] * 0.6f + HandPos;
                 TopPos[i] = Slash[i] * 6 / 7f * LengthFix + HandPos;
             }
-            DrawUtil.DrawTrail(TopPos, ButtomPos, SlashMainShape, SlashMask, SlashMainColor, SlashEnhance);
+            DrawUtils.DrawTrail(TopPos, ButtomPos, SlashMainShape, SlashMask, SlashMainColor, SlashEnhance);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin();

@@ -28,8 +28,15 @@ namespace MysteriousAlchemy.Core.System
         {
 
             var drawMethod = typeof(Main).GetMethod("DrawDust", BindingFlags.Instance | BindingFlags.NonPublic);
+
             MonoModHooks.Add(drawMethod, CustomDraw);
+
+            var DrawAnimatorFrontPlayer = typeof(Main).GetMethod("DrawPlayers_AfterProjectiles", BindingFlags.Instance | BindingFlags.NonPublic);
+            MonoModHooks.Add(DrawAnimatorFrontPlayer, AnimatorDrawOverPlayer);
+            var DrawAnimatorBehindPlayer = typeof(Main).GetMethod("DrawProjectiles", BindingFlags.Instance | BindingFlags.NonPublic);
+            MonoModHooks.Add(DrawAnimatorBehindPlayer, AnimatorDrawBehindPlayer);
         }
+
 
         public void Unload()
         {
@@ -101,6 +108,27 @@ namespace MysteriousAlchemy.Core.System
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             NarrationSystem.instance.DrawAll(spriteBatch);
             spriteBatch.End();
+        }
+
+        public void AnimatorDrawOverPlayer(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+        {
+            orig(self);
+
+            if (Main.gameMenu)
+                return;
+
+            SpriteBatch spriteBatch = Main.spriteBatch;
+            AnimatorManager.Instance.DrawFrontPlayer(spriteBatch);
+        }
+        public void AnimatorDrawBehindPlayer(On_Main.orig_DrawProjectiles orig, Main self)
+        {
+            orig(self);
+
+            if (Main.gameMenu)
+                return;
+
+            SpriteBatch spriteBatch = Main.spriteBatch;
+            AnimatorManager.Instance.DrawBehindPlayer(spriteBatch);
         }
     }
 }

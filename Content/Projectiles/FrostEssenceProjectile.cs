@@ -149,7 +149,7 @@ namespace MysteriousAlchemy.Projectiles
             Texture2D Mainshape = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_1");
             Texture2D MainMask = AssetUtils.GetMask("Mask2");
             Texture2D MainColor = AssetUtils.GetColorBar("Frost");
-            DrawUtil.DrawProjectileTrail(oldPosi, Mainshape, MainMask, MainColor, 25, ((float)Main.time / 600f) % 1f);
+            DrawUtils.DrawProjectileTrail(oldPosi, Mainshape, MainMask, MainColor, 25, ((float)Main.time / 600f) % 1f);
             base.PostDraw(lightColor);
         }
 

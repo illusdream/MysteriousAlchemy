@@ -82,7 +82,7 @@ namespace MysteriousAlchemy.Projectiles
             Vector2 ToMouse = Toward.SafeNormalize(Vector2.Zero);
             Effect CommenPolarVortex = ModContent.Request<Effect>("MysteriousAlchemy/Effects/CommenPolarVortex").Value;
             Texture2D VortexColor = AssetUtils.GetTexture2D(AssetUtils.Extra + "BlueVortex");
-            DrawUtil.DrawEntityInWorld(Main.spriteBatch, CircleTex, Center - Main.screenPosition, Color.White, CommenPolarVortex, 0, scale, -ToMouse.ToRotation(), MathHelper.PiOver4 * ((ToMouse.SafeNormalize(Vector2.One).X) < 0 ? -1 : 1), () =>
+            DrawUtils.DrawEntityInWorld(Main.spriteBatch, CircleTex, Center - Main.screenPosition, Color.White, CommenPolarVortex, 0, scale, -ToMouse.ToRotation(), MathHelper.PiOver4 * ((ToMouse.SafeNormalize(Vector2.One).X) < 0 ? -1 : 1), () =>
             {
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
                 var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0)) * Main.GameViewMatrix.ZoomMatrix;
@@ -102,7 +102,7 @@ namespace MysteriousAlchemy.Projectiles
             for (int i = 0; i < 3; i++)
             {
                 Vector2 DustSpownPosition = Main.rand.NextVector2Circular(Radium, Radium);
-                Vector2 FinalPosition = DrawUtil.MartixTrans(DustSpownPosition, -ToMouse.ToRotation(), MathHelper.PiOver4 * ((ToMouse.SafeNormalize(Vector2.One).X) < 0 ? -1 : 1));
+                Vector2 FinalPosition = DrawUtils.MartixTrans(DustSpownPosition, -ToMouse.ToRotation(), MathHelper.PiOver4 * ((ToMouse.SafeNormalize(Vector2.One).X) < 0 ? -1 : 1));
                 Vector2 FinalVel = FinalPosition.RotatedBy(-MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * 3;
                 Dust.NewDustDirect(FinalPosition + Center, 5, 5, 307, FinalVel.X, FinalVel.Y).noGravity = true;
             }
@@ -112,7 +112,7 @@ namespace MysteriousAlchemy.Projectiles
             Texture2D Mainshape = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_1");
             Texture2D MainMask = AssetUtils.GetMask("Mask2");
             Texture2D MainColor = AssetUtils.GetColorBar("Frost");
-            DrawUtil.DrawProjectileTrail(LaserCenter, Mainshape, MainMask, MainColor, 35, -(float)Main.time / 600f);
+            DrawUtils.DrawProjectileTrail(LaserCenter, Mainshape, MainMask, MainColor, 35, -(float)Main.time / 600f);
         }
         private void SpownLaserDust(Vector2[] LaserCenter, float SpownRate, float VelMin, float VelMax)
         {
