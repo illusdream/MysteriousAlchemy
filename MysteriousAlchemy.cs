@@ -47,7 +47,7 @@ namespace MysteriousAlchemy
         public static Effect Bloom1;
         public override void Load()
         {
-            AltarTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarTransform").Value;
+            AltarTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarTransform", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             BigTentacle = ModContent.Request<Effect>("MysteriousAlchemy/Effects/BigTentacle").Value;
             AltarMagicTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarMagicTransform").Value;
             IngredientStroke = ModContent.Request<Effect>("MysteriousAlchemy/Effects/IngredientStroke").Value;
@@ -105,7 +105,7 @@ namespace MysteriousAlchemy
         }
         public override void PostSetupContent()
         {
-            AltarTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarTransform").Value;
+            AltarTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarTransform", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             AltarMagicTransform = ModContent.Request<Effect>("MysteriousAlchemy/Effects/AltarMagicTransform").Value;
             Default = ModContent.Request<Effect>("MysteriousAlchemy/Effects/Default").Value;
             BigTentacle = ModContent.Request<Effect>("MysteriousAlchemy/Effects/BigTentacle").Value;

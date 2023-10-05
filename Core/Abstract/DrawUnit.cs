@@ -143,7 +143,7 @@ namespace MysteriousAlchemy.Core.Abstract
 
 
                 //对角线一半的长度，用来矫正位置
-                float TextureHalfDiagonalLength = Texture.Size().Length() / 2f;
+                Vector2 TextureHalfDiagonalLength = Texture.Size() / 2f;
                 //
                 float VertexPosAngleFix = -MathHelper.PiOver4 * 3;
 
@@ -160,6 +160,7 @@ namespace MysteriousAlchemy.Core.Abstract
                 Vector2 NonTransVertex_Buttomleft = new Vector2(MathF.Cos(Rotation + VertexPosAngleFix + MathHelper.PiOver2 * 3) * Scale.X, MathF.Sin(Rotation + VertexPosAngleFix + MathHelper.PiOver2 * 3) * Scale.Y) * TextureHalfDiagonalLength;
                 Vector2 vertex_Buttomleft = DrawUtils.MartixTrans(NonTransVertex_Buttomleft, AngleH, AngleV);
 
+
                 List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
                 //逆时针连接各个顶点
                 switch (ModifySpriteEffect)
@@ -170,12 +171,13 @@ namespace MysteriousAlchemy.Core.Abstract
                         //          |      \     |
                         //          |          \ |
                         //      Buttomleft---Buttomright
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(0, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(1, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(0, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(1, 0, 1)));
+
                         break;
                     case ModifySpriteEffect.FlipHorizontally:
                         //      Topright ---- Topleft
@@ -183,12 +185,12 @@ namespace MysteriousAlchemy.Core.Abstract
                         //          |      \     |
                         //          |          \ |
                         //      Buttomright---Buttomleft
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(0, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(1, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(0, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(1, 0, 1)));
                         break;
                     case ModifySpriteEffect.FlipVertically:
                         //      Buttomleft ---- Buttomright
@@ -196,12 +198,12 @@ namespace MysteriousAlchemy.Core.Abstract
                         //          |      \     |
                         //          |          \ |
                         //      Topleft---------Topright
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(0, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(1, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(0, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(1, 0, 1)));
                         break;
                     case ModifySpriteEffect.FlipDiagonally:
                         //      Buttomright ---- Topright
@@ -209,22 +211,27 @@ namespace MysteriousAlchemy.Core.Abstract
                         //          |      \     |
                         //          |          \ |
                         //      Buttomleft---Topleft
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + Pivot, color, new Vector3(0, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + Pivot, color, new Vector3(0, 0, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + Pivot, color, new Vector3(1, 1, 1)));
-                        triangleList.Add(new CustomVertexInfo(vertex_Topright + Pivot, color, new Vector3(1, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(0, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(0, 0, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(1, 1, 1)));
+                        triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(1, 0, 1)));
                         break;
                     default:
                         break;
                 }
 
-                Main.graphics.GraphicsDevice.Textures[0] = Texture;
+
+
+                //绘制
+
                 //使用shader
                 ShaderAciton?.Invoke(this);
-                //绘制
+
+                Main.graphics.GraphicsDevice.Textures[0] = Texture;
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, triangleList.ToArray(), 0, triangleList.Count - 2);
+
             }
         }
 

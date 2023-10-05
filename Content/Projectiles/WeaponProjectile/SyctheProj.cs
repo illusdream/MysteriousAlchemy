@@ -280,23 +280,26 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                 target.StrikeNPC(SeparateHitInfo);
             }
             extraProperty.AddScytheHitCount(1);
-            PunchCameraModifier cameraModifier = new PunchCameraModifier(Player.Center, CurretAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2 * Clockwise), StaticWeaponSize * WeaponSizeModify, 6, 6, 10, "ScytheHit");
-            Main.instance.CameraModifiers.Add(cameraModifier);
+            VisualEffectSystem.AddScreenShake_OnHit(Player.Center, CurretAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2 * Clockwise), StaticWeaponSize * WeaponSizeModify, 6, 6, 10, "ScytheHit");
 
         }
         public override bool PreDraw(ref Color lightColor)
         {
-
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             DrawAnimation();
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
         public virtual void DrawAnimation()
         {
-            DrawUtils.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
-                new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation, 3, Vector2.One);
-            DrawUtils.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
-    new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation + MathHelper.PiOver2, 3, new Vector2(0.5f, 1f));
-            Main.spriteBatch.Draw(TextureAssets.Extra[98].Value, Main.MouseWorld - Main.screenPosition, Color.White);
+            //        DrawUtils.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
+            //            new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation, 3, Vector2.One);
+            //        DrawUtils.DrawPrettyLine(1, SpriteEffects.None, Main.MouseWorld - Main.screenPosition,
+            //new Color(0, 28, 59, 0), Color.White * 0.8f, 1, 0, 0.5f, 0.5f, 0, Projectile.rotation + MathHelper.PiOver2, 3, new Vector2(0.5f, 1f));
+            //        Main.spriteBatch.Draw(TextureAssets.Extra[98].Value, Main.MouseWorld - Main.screenPosition, Color.White);
             switch (attackState)
             {
                 case AttackState.prepare:

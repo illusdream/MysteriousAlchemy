@@ -45,8 +45,12 @@ namespace MysteriousAlchemy.Core.System
                 {
                     if (animator.DrawSortWithPlayer == Enum.DrawSortWithPlayer.Behind)
                     {
-                        animator.NoShaderDraw(spriteBatch);
-                        animator.ShaderDraw(spriteBatch);
+                        animator.NoShaderDraw_Behind(spriteBatch);
+                        animator.ShaderDraw_Behind(spriteBatch);
+                        animator.NoShaderDraw_Middle(spriteBatch);
+                        animator.ShaderDraw_Middle(spriteBatch);
+                        animator.NoShaderDraw_Front(spriteBatch);
+                        animator.ShaderDraw_Front(spriteBatch);
                     }
                 }
             }
@@ -59,8 +63,12 @@ namespace MysteriousAlchemy.Core.System
                 {
                     if (animator.DrawSortWithPlayer == Enum.DrawSortWithPlayer.Front)
                     {
-                        animator.NoShaderDraw(spriteBatch);
-                        animator.ShaderDraw(spriteBatch);
+                        animator.NoShaderDraw_Behind(spriteBatch);
+                        animator.ShaderDraw_Behind(spriteBatch);
+                        animator.NoShaderDraw_Middle(spriteBatch);
+                        animator.ShaderDraw_Middle(spriteBatch);
+                        animator.NoShaderDraw_Front(spriteBatch);
+                        animator.ShaderDraw_Front(spriteBatch);
                     }
                 }
             }

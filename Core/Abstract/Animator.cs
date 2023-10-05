@@ -15,21 +15,22 @@ namespace MysteriousAlchemy.Core.Abstract
 {
     public class Animator : IStateMachine
     {
-        /// <summary>
-        /// 通用计时器
-        /// </summary>
+        // 通用计时器
         public int Timer;
         public IState CurrectState { get; set; }
         public Dictionary<string, IState> States { get; set; }
         //存储所有绘制元素，记得在Initialize内添加他们;
         public List<DrawUnit> drawUnits;
-
         public virtual DrawSortWithPlayer DrawSortWithPlayer { get; }
-
 
         public bool active;
 
         public Vector2 Position;
+
+        public Animator()
+        {
+            Initialize();
+        }
         /// <summary>
         /// 更新，update
         /// </summary>
@@ -46,10 +47,6 @@ namespace MysteriousAlchemy.Core.Abstract
             }
             ClearDeactiveDrawUnit();
         }
-        /// <summary>
-        /// 处理
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         #region //绘制drawunits
         #region //Front绘制
         public virtual void NoShaderDraw_AlphaBlend_Front(SpriteBatch spriteBatch)
@@ -275,49 +272,100 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         #endregion
 
-        public void NoShaderDraw(SpriteBatch spriteBatch)
+        public void NoShaderDraw_Front(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            NoShaderDraw_AlphaBlend_Behind(spriteBatch);
-            NoShaderDraw_AlphaBlend_Middle(spriteBatch);
             NoShaderDraw_AlphaBlend_Front(spriteBatch);
             spriteBatch.End();
 
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            NoShaderDraw_Additive_Behind(spriteBatch);
-            NoShaderDraw_Additive_Middle(spriteBatch);
             NoShaderDraw_Additive_Front(spriteBatch);
             spriteBatch.End();
 
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            NoShaderDraw_NonPremultipliede_Behind(spriteBatch);
-            NoShaderDraw_NonPremultipliede_Middle(spriteBatch);
             NoShaderDraw_NonPremultipliede_Front(spriteBatch);
             spriteBatch.End();
         }
-
-        public void ShaderDraw(SpriteBatch spriteBatch)
+        public void NoShaderDraw_Middle(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            ShaderDraw_AlphaBlende_Behind(spriteBatch);
-            ShaderDraw_AlphaBlende_Middle(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_AlphaBlend_Middle(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_Additive_Middle(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_NonPremultipliede_Middle(spriteBatch);
+            spriteBatch.End();
+        }
+        public void NoShaderDraw_Behind(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_AlphaBlend_Behind(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_Additive_Behind(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            NoShaderDraw_NonPremultipliede_Behind(spriteBatch);
+            spriteBatch.End();
+        }
+        public void ShaderDraw_Front(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             ShaderDraw_AlphaBlende_Front(spriteBatch);
             spriteBatch.End();
 
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            ShaderDraw_Additive_Behind(spriteBatch);
-            ShaderDraw_Additive_Middle(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             ShaderDraw_Additive_Front(spriteBatch);
             spriteBatch.End();
 
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            ShaderDraw_NonPremultipliede_Behind(spriteBatch);
-            ShaderDraw_NonPremultipliede_Middle(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             ShaderDraw_NonPremultipliede_Front(spriteBatch);
+            spriteBatch.End();
+        }
+        public void ShaderDraw_Middle(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_AlphaBlende_Middle(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_Additive_Middle(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_NonPremultipliede_Middle(spriteBatch);
+            spriteBatch.End();
+        }
+        public void ShaderDraw_Behind(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_AlphaBlende_Behind(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_Additive_Behind(spriteBatch);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            ShaderDraw_NonPremultipliede_Behind(spriteBatch);
             spriteBatch.End();
         }
         #endregion
@@ -356,10 +404,7 @@ namespace MysteriousAlchemy.Core.Abstract
         /// <summary>
         /// 不要直接用构造函数add到Manager里！！！！！
         /// </summary>
-        public Animator()
-        {
-            Initialize();
-        }
+
 
         public T RegisterDrawUnit<T>() where T : DrawUnit, new()
         {
@@ -367,6 +412,27 @@ namespace MysteriousAlchemy.Core.Abstract
             instance.SetDefaults();
             instance.active = true;
             drawUnits.Add(instance);
+            return instance;
+        }
+        /// <summary>
+        /// 已内置<see cref="DrawUtils.GetCurrectScale(Texture2D, Vector2)"/>,<see href="scale"/>只需填目标值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pivot"></param>
+        /// <param name="scale"></param>
+        /// <returns></returns>
+        public T RegisterDrawUnit<T>(Vector2 pivot, Vector2 scale) where T : DrawUnit, new()
+        {
+            var instance = RegisterDrawUnit<T>();
+            instance.Pivot = pivot;
+            Vector2 _scale = DrawUtils.GetCurrectScale(instance.Texture, scale);
+            instance.Scale = _scale;
+            return instance;
+        }
+        public T RegisterDrawUnit<T>(Vector2 pivot) where T : DrawUnit, new()
+        {
+            var instance = RegisterDrawUnit<T>();
+            instance.Pivot = pivot;
             return instance;
         }
         public int RegisterDrawUnitOutInt<T>() where T : DrawUnit, new()

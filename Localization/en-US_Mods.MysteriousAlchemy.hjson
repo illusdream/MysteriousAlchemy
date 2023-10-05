@@ -110,3 +110,15 @@ Buffs: {
 		Description: Mods.MysteriousAlchemy.Buffs.Buff_Separate.Description
 	}
 }
+
+Configs: {
+	VisualEffectConfig: {
+		DisplayName: Visual Effect Config
+		Headers.HitEffect: Hit Effect Header
+
+		HitEffect_ScreenShaking: {
+			Label: Hit Effect_ Screen Shaking
+			Tooltip: ""
+		}
+	}
+}

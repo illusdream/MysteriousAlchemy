@@ -25,6 +25,15 @@ namespace MysteriousAlchemy.Utils
             return vector2 - Main.screenPosition;
         }
 
+        public static Vector2 GetCurrectScale(Texture2D texture2D, Vector2 target)
+        {
+            return target / texture2D.Size();
+        }
+        public static Vector2 GetVector2InCircle(float angle, float radium)
+        {
+            return new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radium;
+        }
+
         public static void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Effect effect, float rotation = 0, float scale = 1, float angleH = 0, float angleV = 0, Action effectAction = null)
         {
             if (texture == null)
