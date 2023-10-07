@@ -42,8 +42,7 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            AltarAnimator altarAnimator = AnimatorManager.Instance.Register<AltarAnimator>();
-            altarAnimator.Position = Main.MouseWorld;
+            DebugUtils.NewText(Main.LocalPlayer.inventory[54].type);
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

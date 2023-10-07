@@ -71,13 +71,14 @@ namespace MysteriousAlchemy.Utils
         {
             TileEntity tile = null;
             int index = 0;
-            if (ModContent.GetInstance<MysteriousAlterTileEntity>().Find(i, j) != -1)
+            if (ModContent.GetInstance<OldMysteriousAlterTileEntity>().Find(i, j) != -1)
             {
-                index = ModContent.GetInstance<MysteriousAlterTileEntity>().Find(i, j);
+                index = ModContent.GetInstance<OldMysteriousAlterTileEntity>().Find(i, j);
+                DebugUtils.NewText(index);
             }
             if (index == 0)
                 return null;
-            tile = (MysteriousAlterTileEntity)TileEntity.ByID[index];
+            tile = (OldMysteriousAlterTileEntity)TileEntity.ByID[index];
             return tile;
         }
 

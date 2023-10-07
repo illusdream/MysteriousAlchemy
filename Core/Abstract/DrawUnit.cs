@@ -130,6 +130,7 @@ namespace MysteriousAlchemy.Core.Abstract
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             CheckCanDraw();
+
             //原版绘制
             if (DrawMode == DrawMode.Default)
             {
@@ -248,6 +249,15 @@ namespace MysteriousAlchemy.Core.Abstract
                 return;
             }
 
+        }
+
+        private void ClearAction(ref Action<DrawUnit> action)
+        {
+            Delegate[] allAction = action.GetInvocationList();
+            for (int i = 0; i < allAction.Length; i++)
+            {
+                action -= allAction[i] as Action<DrawUnit>;
+            }
         }
     }
 

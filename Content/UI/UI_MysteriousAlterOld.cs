@@ -25,7 +25,7 @@ namespace MysteriousAlchemy.UI
         private static int OuterSlotLength = 8;
         private static int MiddleSlotLength = 4;
         public static bool Visable = false;
-        public static MysteriousAlterTileEntity MysteriousAlterTileEntity = null;
+        public static OldMysteriousAlterTileEntity MysteriousAlterTileEntity = null;
         VanillaItemSlotWrapper[] OuterSlotGroup = new VanillaItemSlotWrapper[OuterSlotLength];
         VanillaItemSlotWrapper[] MiddleSlotGroup = new VanillaItemSlotWrapper[MiddleSlotLength];
 

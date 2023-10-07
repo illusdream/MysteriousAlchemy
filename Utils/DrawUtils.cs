@@ -33,6 +33,23 @@ namespace MysteriousAlchemy.Utils
         {
             return new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radium;
         }
+        /// <summary>
+        /// 当实体在前部时返回<see langword="true"/>,否则返回<see langword="false"/>
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        public static bool GetEntityContextInCircle(float angle)
+        {
+            float AngleInTwoPI = angle % MathHelper.TwoPi;
+            if (AngleInTwoPI > MathHelper.PiOver2 && AngleInTwoPI < MathHelper.Pi + MathHelper.PiOver2)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         public static void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Effect effect, float rotation = 0, float scale = 1, float angleH = 0, float angleV = 0, Action effectAction = null)
         {

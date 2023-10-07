@@ -34,7 +34,7 @@ namespace MysteriousAlchemy.Items
             CommenRecipe.Register();
 
             Recipe EvolutionRecipe = CreateRecipe();
-            EvolutionRecipe.AddIngredient(ModContent.ItemType<TransmutationCrystal>());
+            EvolutionRecipe.AddIngredient(ModContent.ItemType<ActiveEther>());
             EvolutionRecipe.AddCondition(Condition.ZenithWorld);
             EvolutionRecipe.Register();
             base.AddRecipes();

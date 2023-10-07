@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,17 +119,19 @@ namespace MysteriousAlchemy.Core.System
                 return;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
+
             AnimatorManager.Instance.DrawFrontPlayer(spriteBatch);
         }
         public void AnimatorDrawBehindPlayer(On_Main.orig_DrawProjectiles orig, Main self)
         {
-            orig(self);
 
+            orig(self);
             if (Main.gameMenu)
                 return;
-
             SpriteBatch spriteBatch = Main.spriteBatch;
+
             AnimatorManager.Instance.DrawBehindPlayer(spriteBatch);
+
         }
     }
 }

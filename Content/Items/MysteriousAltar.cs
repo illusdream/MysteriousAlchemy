@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using MysteriousAlchemy.Content.Tiles;
 using MysteriousAlchemy.Utils;
 using Terraria;
 using Terraria.DataStructures;
@@ -22,11 +23,14 @@ namespace MysteriousAlchemy.Items
             Item.rare = ItemRarityID.Blue;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = false;
+            Item.useTime = 10;
+            Item.useAnimation = 10;
             Item.maxStack = 99;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = ModContent.TileType<Tiles.MysteriousAltar>();
+            Item.createTile = ModContent.TileType<MysteriousAltarTile>();
             Item.placeStyle = 0;
         }
+
     }
 }

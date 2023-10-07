@@ -22,7 +22,7 @@ namespace MysteriousAlchemy.UI
 
         public override bool Visable => visable;
 
-        public static MysteriousAlterTileEntity MysteriousAlterTileEntity = null;
+        public static OldMysteriousAlterTileEntity MysteriousAlterTileEntity = null;
         public override void OnInitialize()
         {
             base.OnInitialize();

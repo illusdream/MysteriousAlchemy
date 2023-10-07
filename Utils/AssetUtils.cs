@@ -47,6 +47,10 @@ namespace MysteriousAlchemy.Utils
         {
             return ModContent.Request<Texture2D>(path).Value;
         }
+        public static Texture2D GetTexture2DImmediate(string path)
+        {
+            return ModContent.Request<Texture2D>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+        }
         public static Texture2D GetColorBar(string name)
         {
             return ModContent.Request<Texture2D>(ColorBar + name).Value;

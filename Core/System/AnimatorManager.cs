@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Operations;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Interface;
 using MysteriousAlchemy.Utils;
@@ -76,6 +78,7 @@ namespace MysteriousAlchemy.Core.System
 
         public void Update()
         {
+
             if (Animators != null)
             {
                 foreach (var animator in Animators)
@@ -83,7 +86,6 @@ namespace MysteriousAlchemy.Core.System
                     animator.AI();
                 }
             }
-
         }
 
         public void AddAnimator(Animator animator)
@@ -92,6 +94,10 @@ namespace MysteriousAlchemy.Core.System
         }
         public T Register<T>() where T : Animator, new()
         {
+            if (Animators == null)
+            {
+                Animators = new List<Animator>();
+            }
             T instance = new T();
             instance.active = true;
             Animators.Add(instance);
