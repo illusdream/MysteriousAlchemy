@@ -34,8 +34,11 @@ namespace MysteriousAlchemy.Items
             {
                 MysteriousAltarTileEntity entity;
                 TileUtils.TryGetTileEntityAs<MysteriousAltarTileEntity>(Main.MouseWorld.ToTileCoordinates().X, Main.MouseWorld.ToTileCoordinates().Y, out entity);
-                entity?.altarAnimator?.AddEtherCrystal();
-                Item.stack--;
+                if ((bool)(entity?.altarAnimator?.AddEtherCrystal()))
+                {
+                    Item.stack--;
+                }
+
             }
             return base.CanUseItem(player);
         }

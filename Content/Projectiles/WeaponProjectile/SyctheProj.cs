@@ -103,7 +103,7 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
         public float SwingStartAngle = -MathHelper.PiOver4 * 3.5f;
         public float SwingTargetAngle = MathHelper.Pi * 4f;
         public float SwingPrepareTime = 36f;
-        public float SwingAttackTime = 45f;
+        public float SwingAttackTime = 36f;
         public float SwingUnwingTime = 15f;
 
         public float HarvestAngleV = MathHelper.PiOver4 * 1.3f;
@@ -111,7 +111,7 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
         public float HarvestStartAngle = -MathHelper.PiOver4 * 3.5f;
         public float HarvestTargetAngle = MathHelper.Pi * 2f;
         public float HarvestPrepareTime = 33f;
-        public float HarvestAttackTime = 15f;
+        public float HarvestAttackTime = 12f;
         public float HarvestUnwingTime = 24f;
 
         public float SpinAngleV = 0;
@@ -397,7 +397,7 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                 float r = w * 255;
                 var color = new Color(255, 255, 0);
                 float LengthFix = i < Slash.Length / 2f ? (1 + MathF.Abs(i) / Slash.Length * 0.3f) : (1 + MathF.Abs(Slash.Length - i) / Slash.Length * 0.3f);
-                bars.Add(new CustomVertexInfo(HandPos - Main.screenPosition, color, new Vector3((float)Math.Sqrt(factor), 1, 1)));
+                bars.Add(new CustomVertexInfo(HandPos + Slash[i] * 6 / 7f * LengthFix * ((i) / (float)Slash.Length) - Main.screenPosition, color, new Vector3((float)Math.Sqrt(factor), 1, 1)));
                 bars.Add(new CustomVertexInfo(HandPos + Slash[i] * 6 / 7f * LengthFix - Main.screenPosition, color, new Vector3((float)Math.Sqrt(factor), 0, 1)));
             }
 
@@ -456,7 +456,7 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                 }
                 float LengthFix = i < Slash.Length / 2f ? (1 + MathF.Abs(i) / Slash.Length * 0.3f) : (1 + MathF.Abs(Slash.Length - i) / Slash.Length * 0.3f);
                 //³¤ÖáÐÞÕý
-                ButtomPos[i] = Slash[i] * 0.6f + HandPos;
+                ButtomPos[i] = Slash[i] * 0.6f * ((i) / (float)Slash.Length) + HandPos;
                 TopPos[i] = Slash[i] * 6 / 7f * LengthFix + HandPos;
             }
             DrawUtils.DrawTrail(TopPos, ButtomPos, SlashMainShape, SlashMask, SlashMainColor, SlashEnhance);

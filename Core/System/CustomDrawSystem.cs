@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour;
+using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Interface;
 using MysteriousAlchemy.Utils;
 using System;
@@ -57,7 +58,20 @@ namespace MysteriousAlchemy.Core.System
 
             SpriteBatch spriteBatch = Main.spriteBatch;
 
+            #region 绘制AlphaBlend
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+            //绘制Particle
+            for (int i = 0; i < ParticleSystem.ParticleCount; i++)
+            {
+                Particle particle = ParticleSystem.particles[i];
+                if (particle.active && particle is IDrawAlphaBlend)
+                {
+                    (particle as IDrawAlphaBlend).DrawAlphaBlend(spriteBatch);
+                }
+            }
+            spriteBatch.End();
+            #endregion
             #region 绘制Addtive
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -77,6 +91,16 @@ namespace MysteriousAlchemy.Core.System
                 if (npc.active && npc.ModNPC is IDrawAddtive)
                 {
                     (npc.ModNPC as IDrawAddtive).DrawAddtive(spriteBatch);
+                }
+            }
+
+            //绘制Particle
+            for (int i = 0; i < ParticleSystem.ParticleCount; i++)
+            {
+                Particle particle = ParticleSystem.particles[i];
+                if (particle.active && particle is IDrawAddtive)
+                {
+                    (particle as IDrawAddtive).DrawAddtive(spriteBatch);
                 }
             }
             spriteBatch.End();
@@ -104,13 +128,25 @@ namespace MysteriousAlchemy.Core.System
                     (npc.ModNPC as IDrawNonPremultiplied).DrawNonPremultiplied(spriteBatch);
                 }
             }
+
+            //绘制Particle
+            for (int i = 0; i < ParticleSystem.ParticleCount; i++)
+            {
+                Particle particle = ParticleSystem.particles[i];
+                if (particle.active && particle is IDrawNonPremultiplied)
+                {
+                    (particle as IDrawNonPremultiplied).DrawNonPremultiplied(spriteBatch);
+                }
+            }
             spriteBatch.End();
             #endregion
+
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             NarrationSystem.instance.DrawAll(spriteBatch);
             spriteBatch.End();
         }
-
+        #region //动画机相关绘制
         public void AnimatorDrawOverPlayer(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
         {
             orig(self);
@@ -133,5 +169,6 @@ namespace MysteriousAlchemy.Core.System
             AnimatorManager.Instance.DrawBehindPlayer(spriteBatch);
 
         }
+        #endregion
     }
 }

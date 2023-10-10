@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,6 @@ namespace MysteriousAlchemy.Core.Interface
         /// <summary>
         /// 默认绘制模式
         /// </summary>
-        public void DrawAlphaBlend();
+        public void DrawAlphaBlend(SpriteBatch spriteBatch);
     }
 }

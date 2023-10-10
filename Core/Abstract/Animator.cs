@@ -450,18 +450,23 @@ namespace MysteriousAlchemy.Core.Abstract
         {
             if (drawUnits != null)
             {
-                foreach (var unit in drawUnits)
+                for (int i = 0; i < drawUnits.Count; i++)
                 {
-                    if (!unit.active)
+                    if (!drawUnits[i].active)
                     {
-                        drawUnits.Remove(unit);
+                        drawUnits.Remove(drawUnits[i]);
                     }
                 }
             }
         }
         public void Kill()
         {
+            OnKill();
             AnimatorManager.Instance.Animators.Remove(this);
+        }
+        public virtual void OnKill()
+        {
+
         }
     }
 }

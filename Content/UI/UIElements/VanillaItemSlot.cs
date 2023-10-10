@@ -11,7 +11,7 @@ using Terraria.UI;
 
 namespace MysteriousAlchemy.UI.UIElements
 {
-    internal class VanillaItemSlotWrapper : UIElement
+    public class VanillaItemSlotWrapper : UIElement
     {
         internal Item Item;
         private readonly int _context;

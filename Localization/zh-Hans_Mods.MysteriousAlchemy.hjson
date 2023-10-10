@@ -102,6 +102,7 @@ Projectiles: {
 	// EnhanceDeathSickleProj.DisplayName: Enhance Death Sickle Proj
 	// SyctheProj.DisplayName: Sycthe Proj
 	// BloodHarvestingProj.DisplayName: Blood Harvesting Proj
+	// FrostEssenceSwordProj.DisplayName: Frost Essence Sword Proj
 }
 
 Buffs: {

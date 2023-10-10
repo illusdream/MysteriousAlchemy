@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
 using MysteriousAlchemy.Content.Animators;
+using MysteriousAlchemy.Content.Dusts;
+using MysteriousAlchemy.Content.Particles;
+using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Utils;
@@ -42,7 +45,7 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            DebugUtils.NewText(Main.LocalPlayer.inventory[54].type);
+            Particle.NewParticle<Particles.Fog>(Main.MouseWorld, Vector2.Zero, Color.White, 0.5f);
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

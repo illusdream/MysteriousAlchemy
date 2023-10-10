@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.PlayerDrawLayer;
 using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace MysteriousAlchemy.Utils
 {
@@ -29,10 +30,26 @@ namespace MysteriousAlchemy.Utils
         {
             return target / texture2D.Size();
         }
-        public static Vector2 GetVector2InCircle(float angle, float radium)
+
+        /// <summary>
+        /// 用于使用顶点绘制绘制伪3d图像，获得正确的顶点坐标
+        /// </summary>
+        /// <param name="sourse"></param>
+        /// <param name="sourseTex"></param>
+        /// <returns></returns>
+        public static RectangleF GetCurrectRectangleInVertexPaint(Rectangle sourse, Texture2D sourseTex)
         {
-            return new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radium;
+            Rectangle TexFullRectangle = new Rectangle(0, 0, sourseTex.Width, sourseTex.Height);
+            Vector2 currectTopleft = new Vector2(sourse.X, sourse.Y) / sourseTex.Size();
+            RectangleF currectRectrangleF = new RectangleF(currectTopleft.X, currectTopleft.Y, sourse.Width / (float)sourseTex.Width, sourse.Height / (float)sourseTex.Height);
+            return currectRectrangleF;
+
         }
+        public static bool OnScreen(Vector2 pos)
+        {
+            return pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
+        }
+
         /// <summary>
         /// 当实体在前部时返回<see langword="true"/>,否则返回<see langword="false"/>
         /// </summary>
@@ -137,22 +154,22 @@ namespace MysteriousAlchemy.Utils
             if (Flip == 0)
             {
                 // 按照顺序连接三角形
-                triangleList.Add(new CustomVertexInfo(position + vertex1, Color.White, new Vector3(0, 0, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex4, Color.White, new Vector3(0, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex3, Color.White, new Vector3(1, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex1, Color.White, new Vector3(0, 0, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex3, Color.White, new Vector3(1f, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex2, Color.White, new Vector3(1f, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex1, color, new Vector3(0, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex4, color, new Vector3(0, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex3, color, new Vector3(1, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex1, color, new Vector3(0, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex3, color, new Vector3(1f, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex2, color, new Vector3(1f, 0, 1)));
             }
             else
             {
                 // 按照顺序连接三角形
-                triangleList.Add(new CustomVertexInfo(position + vertex3, Color.White, new Vector3(0, 0, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex4, Color.White, new Vector3(0, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex1, Color.White, new Vector3(1, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex3, Color.White, new Vector3(0, 0, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex1, Color.White, new Vector3(1f, 1f, 1)));
-                triangleList.Add(new CustomVertexInfo(position + vertex2, Color.White, new Vector3(1f, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex3, color, new Vector3(0, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex4, color, new Vector3(0, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex1, color, new Vector3(1, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex3, color, new Vector3(0, 0, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex1, color, new Vector3(1f, 1f, 1)));
+                triangleList.Add(new CustomVertexInfo(position + vertex2, color, new Vector3(1f, 0, 1)));
 
             }
 
@@ -405,21 +422,22 @@ namespace MysteriousAlchemy.Utils
             }
         }
 
-        public static void DrawPrettyStarSparkle(Vector2 position, float rotation, float scale, Color centerColor, Color outColor, float centerOpacity, float outOpacity)
+        public static void DrawPrettyStarSparkle(float opacity, SpriteEffects dir, Vector2 drawPos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
         {
-            Texture2D sparkleTexture = TextureAssets.Extra[98].Value;
-            Color CenterColor = centerColor * centerOpacity;
-            Color OutColor = outColor * outOpacity;
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            Vector2 orgin = sparkleTexture.Size() / 2f;
-            Main.spriteBatch.Draw(sparkleTexture, position, null, OutColor, rotation, orgin, scale, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(sparkleTexture, position, null, OutColor, rotation + MathHelper.PiOver2, orgin, scale, SpriteEffects.None, 0);
-
-            Main.spriteBatch.Draw(sparkleTexture, position, null, CenterColor, rotation, orgin, scale, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(sparkleTexture, position, null, CenterColor, rotation + MathHelper.PiOver2, orgin, scale * 0.55f, SpriteEffects.None, 0);
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            Texture2D value = TextureAssets.Extra[98].Value;
+            Color color = shineColor * opacity * 0.5f;
+            color.A = 0;
+            Vector2 origin = value.Size() / 2f;
+            Color color2 = drawColor * 0.5f;
+            float num = MathUtils.GetLerpValue(fadeInStart, fadeInEnd, flareCounter, clamped: true) * MathUtils.GetLerpValue(fadeOutEnd, fadeOutStart, flareCounter, clamped: true);
+            Vector2 vector = new Vector2(fatness.X * 0.5f, scale.X) * num;
+            Vector2 vector2 = new Vector2(fatness.Y * 0.5f, scale.Y) * num;
+            color *= num;
+            color2 *= num;
+            Main.EntitySpriteDraw(value, drawPos, null, color, (float)Math.PI / 2f + rotation, origin, vector, dir, 0);
+            Main.EntitySpriteDraw(value, drawPos, null, color, 0f + rotation, origin, vector2, dir, 0);
+            Main.EntitySpriteDraw(value, drawPos, null, color2, (float)Math.PI / 2f + rotation, origin, vector * 0.6f, dir, 0);
+            Main.EntitySpriteDraw(value, drawPos, null, color2, 0f + rotation, origin, vector2 * 0.6f, dir, 0);
         }
 
         public static void DrawPrettyLine(float opacity, SpriteEffects dir, Vector2 drawPos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, float scale, Vector2 fatness)

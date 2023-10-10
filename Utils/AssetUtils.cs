@@ -27,6 +27,7 @@ namespace MysteriousAlchemy.Utils
 
         public const string Projectiles = Asset + "Projectiles/";
         public const string WeaponProjectile = Projectiles + "WeaponProjectile/";
+        public const string Proj_Chilliness = Projectiles + "Chilliness/";
 
         public const string Tiles = Asset + "Tiles/";
 

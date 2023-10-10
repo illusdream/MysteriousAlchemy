@@ -3,6 +3,7 @@ using MysteriousAlchemy.Content.TileEntitys;
 using MysteriousAlchemy.Core.Interface;
 using MysteriousAlchemy.Items;
 using MysteriousAlchemy.Tiles;
+using MysteriousAlchemy.UI;
 using MysteriousAlchemy.Utils;
 using MysteriousAlchemy.VanillaJSONFronting;
 using Newtonsoft.Json;
@@ -62,22 +63,24 @@ namespace MysteriousAlchemy.Content.Tiles
 
         public override bool RightClick(int i, int j)
         {
-
+            MysteriousAltarTileEntity mysteriousAltarTileEntity;
+            TileUtils.TryGetTileEntityAs<MysteriousAltarTileEntity>(i, j, out mysteriousAltarTileEntity);
+            UI_AltarCompose.MysteriousAlterTileEntity = mysteriousAltarTileEntity;
+            for (int k = 0; k < mysteriousAltarTileEntity.Ingredient.Count; k++)
+            {
+                UI_AltarCompose.ItemSlots[k].Item = mysteriousAltarTileEntity.Ingredient[k];
+            }
+            mysteriousAltarTileEntity.altarAnimator.SwitchUI_AltarComposeVisable();
             return true;
         }
         public override void MouseOver(int i, int j)
         {
-            if (Main.mouseLeftRelease && Main.LocalPlayer.HeldItem.type == ModContent.ItemType<ActiveEther>() && Main.LocalPlayer.ItemAnimationActive)
-            {
-
-            }
             base.MouseOver(i, j);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
             ModContent.GetInstance<MysteriousAltarTileEntity>().Kill(i, j);
-            DebugUtils.NewText(new Vector2(i, j));
             base.KillMultiTile(i, j, frameX, frameY);
         }
     }
