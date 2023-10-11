@@ -82,5 +82,12 @@ namespace MysteriousAlchemy.Utils
             Vector2 target = GetVector2InCircle(randomIn2PI, min + (max - min) * randomInRing);
             return target;
         }
+        public static Vector2 RandomRingRange(float StartAngle, float EndAngle, float min, float max)
+        {
+            float randomInRange = Main.rand.NextFloat(StartAngle, EndAngle);
+            float randomInRing = Main.rand.NextFloat();
+            Vector2 target = GetVector2InCircle(randomInRange, min + (max - min) * randomInRing);
+            return target;
+        }
     }
 }

@@ -10,6 +10,6 @@ namespace MysteriousAlchemy.Core.Interface
     public interface ISpriteSortMode
     {
         //只用default和immediate
-        public SpriteSortMode Sort { get; set; }
+        public SpriteSortMode Sort { get; }
     }
 }

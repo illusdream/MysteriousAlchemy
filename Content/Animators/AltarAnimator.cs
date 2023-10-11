@@ -216,7 +216,7 @@ namespace MysteriousAlchemy.Content.Animators
                     Animator.magicRing_3.Scale = MathUtils.SteppingTrack(Animator.magicRing_3.Scale, MagicRing_3TargetScale, 0.05f);
                 }
                 Animator.CommonElementAI();
-
+                Animator.magicRing_1.Rotation -= MathHelper.PiOver4 * 0.05f * (Timer / TotalTime);
                 if (Timer > TotalTime)
                 {
                     Timer = 0;
@@ -300,6 +300,7 @@ namespace MysteriousAlchemy.Content.Animators
                     Animator.magicRing_3.Scale = MathUtils.SteppingTrack(Animator.magicRing_3.Scale, MagicRing_3TargetScale, 0.05f);
                 }
                 Animator.CommonElementAI();
+                Animator.magicRing_1.Rotation -= MathHelper.PiOver4 * 0.05f * ((TotalTime - Timer) / TotalTime);
                 if (Timer > TotalTime)
                 {
                     Timer = 0;

@@ -17,7 +17,7 @@ namespace MysteriousAlchemy.Core.System
 
     public class ParticleSystem : ModSystem
     {
-        public static int ParticleCount = 1000;
+        public static int ParticleCount = 2000;
 
         public static Particle[] particles;
 
@@ -64,7 +64,7 @@ namespace MysteriousAlchemy.Core.System
 
                 if (particles[i].ShouldUpdatePosition())
                     particles[i].position += particles[i].velocity;
-
+                particles[i].Update();
 
                 //防止存在时间过长
                 if (particles[i].scale < 0.01f)

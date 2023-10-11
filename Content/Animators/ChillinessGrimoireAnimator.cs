@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Content.Items.Chilliness;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Enum;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;
@@ -20,10 +22,12 @@ namespace MysteriousAlchemy.Content.Animators
         public Player Player { get; set; }
         Book book;
         MagicRing BookMagicRing;
+        public List<IceKingsTreasure> kingsTreasures;
         public override void Initialize()
         {
             RegisterState<DefaultState>(new DefaultState(this));
             SetState<DefaultState>();
+            kingsTreasures = new List<IceKingsTreasure>();
             base.Initialize();
         }
 
@@ -32,7 +36,12 @@ namespace MysteriousAlchemy.Content.Animators
             var instance = RegisterDrawUnit<MagicRing>(projectile.position);
             instance.magicRingStage = MagicRing.MagicRingStage.end;
         }
-
+        public void AddIceKingsTreasure(Vector2 offfest)
+        {
+            var instance = RegisterDrawUnit<IceKingsTreasure>();
+            instance.Offest = offfest;
+            kingsTreasures.Add(instance);
+        }
 
 
         #region //状态
@@ -43,6 +52,7 @@ namespace MysteriousAlchemy.Content.Animators
             }
             public override void OnState(IStateMachine animator)
             {
+                Animator.Position = Animator.Player.Center;
                 Vector2 MouseToward = (Animator.Player.Center - Main.MouseWorld).SafeNormalize(Vector2.One) * -50;
 
                 if (Animator.Player == null)
@@ -67,6 +77,12 @@ namespace MysteriousAlchemy.Content.Animators
                     }
 
                     Animator.BookMagicRing.StageToEnd();
+                }
+                foreach (var drawunit in Animator.kingsTreasures)
+                {
+                    drawunit.Pivot = Animator.Position;
+                    drawunit.AngleH = -(Main.MouseWorld - Animator.Player.Center).SafeNormalize(Vector2.One).ToRotation();
+                    drawunit.AngleV = MathHelper.PiOver4 * (((Main.MouseWorld - Animator.Player.Center).SafeNormalize(Vector2.One).X) < 0 ? -1 : 1);
                 }
                 base.OnState(animator);
             }
@@ -161,6 +177,50 @@ namespace MysteriousAlchemy.Content.Animators
                 {
                     Timer = 0;
                     magicRingStage = MagicRingStage.end;
+                }
+            }
+        }
+
+        public class IceKingsTreasure : DrawUnit
+        {
+            int timer;
+            public override void SetDefaults()
+            {
+
+                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_194");
+                DrawMode = DrawMode.Custom3D;
+                ModifyBlendState = ModifyBlendState.Additive;
+                color = Color.White;
+                DrawSortWithUnits = DrawSortWithUnits.Middle;
+                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+                Origin = Texture.Size() / 2f;
+                SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
+                Scale = Vector2.One * 100 / Texture.Size();
+                ShaderAciton += shader;
+                UpdateAction += update;
+                AngleV = MathHelper.PiOver2;
+                AngleH = 0;
+                ModifySpriteEffect = ModifySpriteEffect.None;
+                UseShader = true;
+                base.SetDefaults();
+            }
+            private void shader(DrawUnit drawUnit)
+            {
+                Effect effect = AssetUtils.GetEffect("CommenPolarVortex");
+                Main.graphics.GraphicsDevice.Textures[0] = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra3");
+                Main.graphics.GraphicsDevice.Textures[1] = AssetUtils.GetTexture2D(AssetUtils.Extra + "BlueVortex");
+                effect.Parameters["repeat"].SetValue(5);
+                effect.Parameters["zoom"].SetValue(3);
+                effect.Parameters["angleOffest"].SetValue(4);
+                effect.Parameters["lengthOffest"].SetValue(-(float)Main.time / 60);
+                effect.CurrentTechnique.Passes[0].Apply();
+            }
+            private void update(DrawUnit drawUnit)
+            {
+                timer++;
+                if (timer > 75)
+                {
+                    active = false;
                 }
             }
         }

@@ -103,6 +103,7 @@ Projectiles: {
 	// SyctheProj.DisplayName: Sycthe Proj
 	// BloodHarvestingProj.DisplayName: Blood Harvesting Proj
 	// FrostEssenceSwordProj.DisplayName: Frost Essence Sword Proj
+	// FrostEssenceCrystalBeam.DisplayName: Frost Essence Crystal Beam
 }
 
 Buffs: {
