@@ -21,7 +21,7 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
         int frameCount;
         Vector2 orginPosition;
         Player player;
-        int standbyTime = 90;
+        int standbyTime = 45;
         int Timer;
         public override string Texture => AssetUtils.Proj_Chilliness + Name;
 
@@ -108,19 +108,20 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
                 Projectile.velocity = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.One) * 15;
                 float angleH = -(Main.MouseWorld - player.Center).SafeNormalize(Vector2.One).ToRotation();
                 float angleV = MathHelper.PiOver4 * (((Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.One).X) < 0 ? -1 : 1);
-                if (Timer == 74)
+                if (Timer == 44)
                 {
 
                     for (int i = 0; i < 40; i++)
                     {
-                        var dust = Dust.NewDustPerfect(player.Center + orginPosition + DrawUtils.MartixTrans(MathUtils.GetVector2InCircle(MathHelper.TwoPi * i / 20f, 30), angleH, angleV),
+                        var dust = Dust.NewDustPerfect(Projectile.Center + DrawUtils.MartixTrans(MathUtils.GetVector2InCircle(MathHelper.TwoPi * i / 20f, 20), angleH, angleV),
                             264,
                             DrawUtils.MartixTrans(MathUtils.GetVector2InCircle(MathHelper.TwoPi * i / 20f, 2), angleH, angleV));
                         dust.noGravity = true;
                         dust.color = new Color(37, 102, 221);
                     }
                     SoundEngine.PlaySound(MASoundID.MaxMana, Projectile.position);
-                    Projectile.velocity = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.One).RotatedByRandom(MathHelper.PiOver4 / 4) * 15;
+
+                    Projectile.velocity = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.One).RotatedByRandom(MathHelper.PiOver4) * 15;
                 }
             }
             Lighting.AddLight(Projectile.Center, new Microsoft.Xna.Framework.Vector3(37, 102, 221) * 0.01f);

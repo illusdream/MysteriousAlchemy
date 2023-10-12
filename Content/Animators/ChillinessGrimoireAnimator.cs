@@ -187,7 +187,7 @@ namespace MysteriousAlchemy.Content.Animators
             public override void SetDefaults()
             {
 
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_194");
+                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_3");
                 DrawMode = DrawMode.Custom3D;
                 ModifyBlendState = ModifyBlendState.Additive;
                 color = Color.White;
@@ -207,7 +207,7 @@ namespace MysteriousAlchemy.Content.Animators
             private void shader(DrawUnit drawUnit)
             {
                 Effect effect = AssetUtils.GetEffect("CommenPolarVortex");
-                Main.graphics.GraphicsDevice.Textures[0] = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra3");
+                Main.graphics.GraphicsDevice.Textures[0] = AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_3");
                 Main.graphics.GraphicsDevice.Textures[1] = AssetUtils.GetTexture2D(AssetUtils.Extra + "BlueVortex");
                 effect.Parameters["repeat"].SetValue(5);
                 effect.Parameters["zoom"].SetValue(3);
@@ -215,10 +215,20 @@ namespace MysteriousAlchemy.Content.Animators
                 effect.Parameters["lengthOffest"].SetValue(-(float)Main.time / 60);
                 effect.CurrentTechnique.Passes[0].Apply();
             }
+            public override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                base.DrawSelf(spriteBatch);
+                Texture2D Bloom = AssetUtils.GetTexture2D(AssetUtils.Texture + "BloomCircle");
+                VisualPPSystem.AddAction
+                    (
+                    VisualPPSystem.VisualPPActionType.BloomAreaDraw,
+                    () => DrawUtils.DrawEntityInWorld(spriteBatch, Bloom, PositionInScreen, Color.White * 0.5f, default, 0, Vector2.One * 3, AngleH, AngleV)
+                    );
+            }
             private void update(DrawUnit drawUnit)
             {
                 timer++;
-                if (timer > 75)
+                if (timer > 45)
                 {
                     active = false;
                 }

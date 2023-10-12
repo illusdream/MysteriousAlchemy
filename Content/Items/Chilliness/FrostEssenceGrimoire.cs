@@ -66,7 +66,7 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
                 {
                     Vector2 randomShootPos = MathUtils.RandomRingRange(-MathHelper.Pi - MathHelper.PiOver4, MathHelper.PiOver4, 100, 200);
                     projectile = Projectile.NewProjectileDirect(source, position + randomShootPos, velocity, type, damage, knockback);
-                    animator.AddIceKingsTreasure(randomShootPos);
+                    animator.AddIceKingsTreasure(projectile.Center - player.Center);
                 }
             }
             if (player.altFunctionUse == 2)

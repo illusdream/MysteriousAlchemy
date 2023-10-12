@@ -36,7 +36,7 @@ namespace MysteriousAlchemy.Core.System
         private static RenderTarget2D BloomRender;
         private static RenderTarget2D BloomBlend;
         private static Action BloomAreaDraw = null;
-        private static int BloomIntensity = 30;
+        private static int BloomIntensity = 5;
 
         public int LoaderIndex => 5;
         public void Load()
@@ -246,7 +246,7 @@ namespace MysteriousAlchemy.Core.System
             //绘制需要被Bloom的部分
             gd.SetRenderTarget(BloomRender);
             gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             if (BloomAreaDraw != null)
             {
                 BloomAreaDraw.Invoke();

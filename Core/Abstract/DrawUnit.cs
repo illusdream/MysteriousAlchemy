@@ -75,6 +75,7 @@ namespace MysteriousAlchemy.Core.Abstract
         public int OldRotationLength;
         public float[] OldRotation;
 
+        public List<DrawUnit> children;
         /// <summary>
         /// 最好永远不要使用该构造函数 ,如要创建对象，应该在对应的<see cref="Animator"/>内使用<see cref="Animator.RegisterDrawUnit{T}"/>注册新对象<br/>;
         /// 不要使用基类，用继承创建新类，在<see cref="DrawUnit.SetDefaults"/>内设定初始参数
@@ -137,12 +138,44 @@ namespace MysteriousAlchemy.Core.Abstract
         {
             UpdateAction?.Invoke(this);
             UpdateOldInfoCache();
+            if (children is not null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                {
+                    children[i].Update();
+                    SetChildPivotInCenter(children[i]);
+                }
+            }
         }
 
         /// <summary>
         /// 绘制
         /// </summary>
         public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            if (children is not null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                {
+                    if (children[i].DrawSortWithUnits == DrawSortWithUnits.Behind || children[i].DrawSortWithUnits == DrawSortWithUnits.Middle)
+                    {
+                        children[i].Draw(spriteBatch);
+                    }
+                }
+            }
+            DrawSelf(spriteBatch);
+            if (children is not null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                {
+                    if (children[i].DrawSortWithUnits == DrawSortWithUnits.Front)
+                    {
+                        children[i].Draw(spriteBatch);
+                    }
+                }
+            }
+        }
+        public virtual void DrawSelf(SpriteBatch spriteBatch)
         {
             CheckCanDraw();
 
@@ -259,7 +292,6 @@ namespace MysteriousAlchemy.Core.Abstract
         }
 
 
-
         /// <summary>
         /// 防止null导致地报错使动画机整体停止工作,没写完
         /// </summary>
@@ -303,6 +335,24 @@ namespace MysteriousAlchemy.Core.Abstract
                 }
                 OldRotation[0] = Rotation;
             }
+        }
+
+        /// <summary>
+        /// 向<see cref="children"></see>中添加子元素，子元素的<see cref="Pivot"/>默认锁定在父元素的位置上
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Append<T>() where T : DrawUnit, new()
+        {
+            children ??= new List<DrawUnit>();
+            var instance = new T();
+            instance.SetDefaults();
+            children.Add(instance);
+            return instance;
+        }
+        public virtual void SetChildPivotInCenter(DrawUnit child)
+        {
+            child.Pivot = Pivot + Offest;
         }
     }
 
