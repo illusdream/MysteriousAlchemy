@@ -221,9 +221,14 @@ namespace MysteriousAlchemy.Content.Animators
                 Texture2D Bloom = AssetUtils.GetTexture2D(AssetUtils.Texture + "BloomCircle");
                 VisualPPSystem.AddAction
                     (
-                    VisualPPSystem.VisualPPActionType.BloomAreaDraw,
-                    () => DrawUtils.DrawEntityInWorld(spriteBatch, Bloom, PositionInScreen, Color.White * 0.5f, default, 0, Vector2.One * 3, AngleH, AngleV)
+                        VisualPPSystem.VisualPPActionType.BloomAreaDraw,
+                        () => DrawUtils.DrawEntityInWorld(spriteBatch, Bloom, PositionInScreen, Color.White * 0.5f, default, 0, Vector2.One * 3, AngleH, AngleV)
                     );
+                VisualPPSystem.AddAction
+                 (
+                    VisualPPSystem.VisualPPActionType.FlowGraphDraw,
+                    () => base.DrawSelf(spriteBatch)
+                );
             }
             private void update(DrawUnit drawUnit)
             {

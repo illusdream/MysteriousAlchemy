@@ -68,6 +68,7 @@ namespace MysteriousAlchemy.Content.Tiles
             UI_AltarCompose.MysteriousAlterTileEntity = mysteriousAltarTileEntity;
             for (int k = 0; k < mysteriousAltarTileEntity.Ingredient.Count; k++)
             {
+                DebugUtils.NewText(k);
                 UI_AltarCompose.ItemSlots[k].Item = mysteriousAltarTileEntity.Ingredient[k];
             }
             mysteriousAltarTileEntity.altarAnimator.SwitchUI_AltarComposeVisable();

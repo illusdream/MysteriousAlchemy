@@ -69,11 +69,11 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
                     animator.AddIceKingsTreasure(projectile.Center - player.Center);
                 }
             }
-            if (player.altFunctionUse == 2)
+            if (player.altFunctionUse == 2 && player.GetModPlayer<PLayerChilliness>().EnhanceChilliness)
             {
                 if (player.GetModPlayer<PLayerChilliness>().FrostEssenceCrystalCount < player.GetModPlayer<PLayerChilliness>().MaxfrostEssenceCrystalCount)
                 {
-                    projectile = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<FrostEssenceCrystalBeam>(), damage, knockback);
+                    projectile = Projectile.NewProjectileDirect(source, Main.MouseWorld, velocity, ModContent.ProjectileType<FrostEssenceCrystalBeam>(), (int)(damage * 0.65f), knockback);
                     player.GetModPlayer<PLayerChilliness>().FrostEssenceCrystalCount++;
                 }
             }

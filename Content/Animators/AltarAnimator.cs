@@ -7,19 +7,24 @@ using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Enum;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Core.System;
 using MysteriousAlchemy.Core.Trails;
 using MysteriousAlchemy.UI;
 using MysteriousAlchemy.Utils;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using Terraria.GameContent.RGB;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace MysteriousAlchemy.Content.Animators
 {
@@ -37,6 +42,8 @@ namespace MysteriousAlchemy.Content.Animators
         float Raduim_1 = 200;
         float Raduim_2 = 250;
         float Raduim_3 = 300;
+
+        public Item Product;
         public override void Initialize()
         {
             base.Initialize();
@@ -45,6 +52,8 @@ namespace MysteriousAlchemy.Content.Animators
             RegisterState<OpenUI>(new OpenUI(this));
             RegisterState<EntryOpenUI>(new EntryOpenUI(this));
             RegisterState<ExitOpenUI>(new ExitOpenUI(this));
+            RegisterState<EntryCompose>(new EntryCompose(this));
+            RegisterState<Compose>(new Compose(this));
 
 
             SetState<Standby>();
@@ -95,7 +104,7 @@ namespace MysteriousAlchemy.Content.Animators
         }
         public void SwitchUI_AltarComposeVisable()
         {
-            if (CurrectState is Standby && magicRing_1 != null && magicRing_2 != null && magicRing_3 != null)
+            if (CurrectState is Standby && magicRing_1 != null && magicRing_2 != null && magicRing_3 != null && etherCrystalList_Ready.Count > 0)
             {
                 SwitchState<EntryOpenUI>();
             }
@@ -147,10 +156,40 @@ namespace MysteriousAlchemy.Content.Animators
             }
         }
 
+        public void ShakeCrsytal()
+        {
 
+        }
+        public void DistoryCrtstal()
+        {
+            for (int i = 0; i < etherCrystalList_Ready.Count; i++)
+            {
+                var instance = RegisterDrawUnit<TrailDrawunit>(etherCrystalList_Ready[i].Pivot + etherCrystalList_Ready[i].Offest);
+                instance.TargetPos = Position;
+                instance.velocity = (etherCrystalList_Ready[i].Pivot - Position).SafeNormalize(Vector2.One).RotatedBy(MathHelper.Pi * Main.rand.NextFloat()) * 15 * Main.rand.NextFloat(1, 1.5f);
+                etherCrystalList_Ready[i].active = false;
+                SoundEngine.PlaySound(MASoundID.Ding_Item4);
+            }
+            etherCrystalList_Ready.Clear();
+        }
+
+        public void AddCorona()
+        {
+            var instance = RegisterDrawUnit<ShimmerCorona>(Position);
+            instance.AngleV = MathHelper.PiOver2;
+            instance.AngleH = 0;
+            instance.startAngle = MathHelper.TwoPi * Main.rand.NextFloat();
+            instance.raduim = Raduim_1 * 0.5f;
+        }
+        public override void AI()
+        {
+
+            base.AI();
+        }
         #region //状态
         private class Standby : AnimationState<AltarAnimator>
         {
+
             public Standby(IStateMachine stateMachine) : base(stateMachine)
             {
             }
@@ -161,6 +200,7 @@ namespace MysteriousAlchemy.Content.Animators
             }
             public override void OnState(IStateMachine animator)
             {
+                Timer++;
                 Animator.CommonElementAI();
                 AddMagicCircle();
                 base.OnState(animator);
@@ -270,7 +310,6 @@ namespace MysteriousAlchemy.Content.Animators
             Vector2 MagicRing_2TargetScale;
             Vector2 MagicRing_3TargetScale;
             float MagicRing_1TargetAngleH;
-            float Timer;
             float TotalTime = 60;
             public ExitOpenUI(IStateMachine stateMachine) : base(stateMachine)
             {
@@ -304,9 +343,85 @@ namespace MysteriousAlchemy.Content.Animators
                 if (Timer > TotalTime)
                 {
                     Timer = 0;
+                    if (UI_AltarCompose.CheckCanCompose())
+                    {
+                        Animator.SwitchState<EntryCompose>();
+
+                    }
+                    else
+                    {
+                        Animator.SwitchState<Standby>();
+                    }
+
+                }
+                base.OnState(animator);
+            }
+
+        }
+        private class EntryCompose : AnimationState<AltarAnimator>
+        {
+            float TotalTime = 60;
+            public EntryCompose(IStateMachine stateMachine) : base(stateMachine)
+            {
+            }
+            public override void OnState(IStateMachine animator)
+            {
+                Timer++;
+                float interget = 1 - (float)(Timer) / TotalTime;
+                if (Timer > TotalTime)
+                {
+                    Animator.SwitchState<Compose>();
+
+                }
+                Animator.CommonElementAI();
+                base.OnState(animator);
+            }
+            public override void ExitState(IStateMachine animator)
+            {
+                Timer = 0;
+                Animator.DistoryCrtstal();
+                base.ExitState(animator);
+            }
+            public override void EntryState(IStateMachine animator)
+            {
+                Animator.magicRing_1.magicRingStage = MagicRing.MagicRingStage.end;
+                Animator.magicRing_2.magicRingStage = MagicRing.MagicRingStage.end;
+                Animator.magicRing_3.magicRingStage = MagicRing.MagicRingStage.end;
+                base.EntryState(animator);
+            }
+        }
+        private class Compose : AnimationState<AltarAnimator>
+        {
+            int ComposeProgress;
+            int MaxComposeProgress = 12;
+            public Compose(IStateMachine stateMachine) : base(stateMachine)
+            {
+            }
+            public override void OnState(IStateMachine animator)
+            {
+                Animator.CommonElementAI();
+                foreach (var item in Animator.drawUnits)
+                {
+                    if (item is TrailDrawunit)
+                    {
+                        TrailDrawunit instance = item as TrailDrawunit;
+                        if ((instance.TargetPos - instance.Pivot).Length() < 10)
+                        {
+                            instance.active = false;
+                            ComposeProgress++;
+                        }
+                    }
+                }
+                if (ComposeProgress >= MaxComposeProgress)
+                {
+                    Item.NewItem(new EntitySource_DropAsItem(Main.LocalPlayer), Animator.Position, 10, 10, UI_AltarCompose.ComposeItem());
                     Animator.SwitchState<Standby>();
                 }
                 base.OnState(animator);
+            }
+            public override void ExitState(IStateMachine animator)
+            {
+                base.ExitState(animator);
             }
         }
         #endregion
@@ -342,7 +457,7 @@ namespace MysteriousAlchemy.Content.Animators
 
         private class MagicRing : DrawUnit
         {
-            MagicRingStage magicRingStage = MagicRingStage.start;
+            public MagicRingStage magicRingStage = MagicRingStage.start;
             int Timer = 0;
             int StartTime = 75;
             int EndTime = 75;
@@ -386,8 +501,13 @@ namespace MysteriousAlchemy.Content.Animators
                             magicRingStage = MagicRingStage.standby;
                         break;
                     case MagicRingStage.standby:
+                        Timer = 0;
                         break;
                     case MagicRingStage.end:
+                        Timer++;
+                        Fliter = (Timer / (float)StartTime);
+                        if (Timer > StartTime)
+                            active = false;
                         break;
                     default:
                         break;
@@ -399,91 +519,14 @@ namespace MysteriousAlchemy.Content.Animators
             }
         }
 
-        public class RandomLighting : DrawUnit
-        {
-            public Vector2 LightStart;
-            public Vector2 LightEnd;
-            public override void SetDefaults()
-            {
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Ether + "EtherCrystal");
-                DrawMode = DrawMode.Default;
-                ModifyBlendState = ModifyBlendState.NonPremultiplied;
-                color = Color.White;
-                DrawSortWithUnits = DrawSortWithUnits.Front;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
-                SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 0.55f;
-                base.SetDefaults();
-            }
-            public override void Draw(SpriteBatch spriteBatch)
-            {
-
-            }
-
-        }
-        public class ItemHolding : DrawUnit
-        {
-            ItemHoldingStage itemHoldingStage = ItemHoldingStage.start;
-            int Timer = 0;
-            int StartTime = 75;
-            int EndTime = 75;
-            float Fliter = 0;
-            public override void SetDefaults()
-            {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_2");
-                DrawMode = DrawMode.Custom3D;
-                ModifyBlendState = ModifyBlendState.AlphaBlend;
-                color = Color.White;
-                DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
-                SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 40 / Texture.Size();
-                ShaderAciton += shader;
-                AngleV = MathHelper.PiOver2;
-                AngleH = MathHelper.PiOver4;
-                ModifySpriteEffect = ModifySpriteEffect.None;
-                UseShader = true;
-                base.SetDefaults();
-            }
-            private void shader(DrawUnit drawUnit)
-            {
-                Effect effect = AssetUtils.GetEffect("AltarTransform");
-                effect.Parameters["timer"].SetValue((float)Main.time / 240f);
-                effect.Parameters["alpha"].SetValue(1);
-                effect.Parameters["Fliter"].SetValue(Fliter);
-                effect.CurrentTechnique.Passes[0].Apply();
-            }
-            private void update(DrawUnit drawUnit)
-            {
-                switch (itemHoldingStage)
-                {
-                    case ItemHoldingStage.start:
-                        Timer++;
-                        Fliter = 1 - (Timer / (float)StartTime);
-                        if (Timer > StartTime)
-                            itemHoldingStage = ItemHoldingStage.standby;
-                        break;
-                    case ItemHoldingStage.standby:
-                        break;
-                    case ItemHoldingStage.end:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            public enum ItemHoldingStage
-            {
-                start, standby, end
-            }
-        }
-
         public class TrailDrawunit : DrawUnit
         {
             Trail trail;
+            Trail Bloom;
             Vector2[] Oldpos = new Vector2[20];
+            public Vector2 TargetPos;
+            public Vector2 velocity;
+            int timer;
             public override void SetDefaults()
             {
 
@@ -501,45 +544,46 @@ namespace MysteriousAlchemy.Content.Animators
                 ModifySpriteEffect = ModifySpriteEffect.None;
                 UseShader = true;
                 UpdateAction += update;
+                for (int i = 0; i < Oldpos.Length; i++)
+                {
+                    Oldpos[i] = Pivot + Offest;
+                }
                 base.SetDefaults();
             }
+
             private void update(DrawUnit drawUnit)
             {
+                timer++;
+                velocity = MathUtils.LerpVelocity(velocity, (TargetPos - Pivot).SafeNormalize(Vector2.One) * 10, 0.03f);
+                Pivot += velocity;
                 for (int i = Oldpos.Length - 1; i > 0; i--)
                 {
                     Oldpos[i] = Oldpos[i - 1];
                 }
-                Oldpos[0] = Main.MouseWorld;
+                Oldpos[0] = Pivot + Offest;
                 trail ??= new Trail(Main.graphics.GraphicsDevice, 20, new NoTip(), factor =>
                 {
-                    return 8 * (1 - factor);
+                    return 24 * (1 - factor);
                 },
-                factor =>
-                {
-                    return Color.White * (1 - factor.X);
-                });
+                null);
                 trail.Positions = Oldpos;
-                drawUnit.Pivot = Main.MouseWorld;
-                //ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.StellarTune, new ParticleOrchestraSettings()
-                //{
-                //    PositionInWorld = Pivot,
-                //    MovementVector = Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(2f, 4f) * 10,
-
-                //});
+                Bloom ??= new Trail(Main.graphics.GraphicsDevice, 20, new NoTip(), factor =>
+                {
+                    return 48 * (1 - factor);
+                },
+                null);
+                Bloom.Positions = Oldpos;
+                if (timer > 1000)
+                    active = false;
             }
             public override void Draw(SpriteBatch spriteBatch)
             {
-                //                for (int i = 0; i < 3; i++)
-                //                {
-                //                    DrawUtils.DrawPrettyStarSparkle(1f, 0, Main.MouseScreen + new Vector2(10, 20), new Color(187, 166, 250) * 0.7f,
-                //new Color(157, 113, 236), 0.3f, 0f, 0.5f, 0.5f, 1f, 0, new Vector2(0.33f, 1), new Vector2(1, 1) / 2f);
-                //                }
-                //trail?.Render(shader);
-                //t/rail?.Render(shader);
-                //trail?.Render(shader);
-                //base.Draw(spriteBatch);
+
+                trail?.Render(shader);
+                trail?.Render(shader2);
+                VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.BloomAreaDraw, bloom);
+                base.Draw(spriteBatch);
             }
-            //离奇的bug，剔除不管用了，打算改为彩虹魔杖那个特效
             private void shader()
             {
                 Effect effect = AssetUtils.GetEffect("AltarShiningTrail");
@@ -548,14 +592,63 @@ namespace MysteriousAlchemy.Content.Animators
                 Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
                 effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-                effect.Parameters["UVoffest"].SetValue(new Vector2((float)Main.time / 60, 0));
-                effect.Parameters["UVScale"].SetValue(10);
-                effect.Parameters["Fliter"].SetValue(0.5f);
-                effect.Parameters["sampleTexture"].SetValue(AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_194"));
-                effect.Parameters["colorTexture"].SetValue(AssetUtils.GetColorBar("Shimmer"));
+                effect.Parameters["time"].SetValue((float)Main.time / 60);
+                effect.Parameters["sampleTexture"].SetValue(AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_3"));
+
                 effect.CurrentTechnique.Passes[0].Apply();
             }
+            private void shader2()
+            {
+                Effect effect = AssetUtils.GetEffect("AltarShiningTrail");
+                Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+                Matrix view = Main.GameViewMatrix.TransformationMatrix;
+                Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+                effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+                effect.Parameters["time"].SetValue((float)Main.time / 60);
+                effect.Parameters["sampleTexture"].SetValue(AssetUtils.GetTexture2D(AssetUtils.Extra + "Extra_197"));
+
+                effect.CurrentTechnique.Passes[0].Apply();
+            }
+            private void bloom()
+            {
+                Bloom?.Render(shader2);
+            }
         }
+
+        public class ShimmerCorona : DrawUnit
+        {
+            public float raduim;
+            public float startAngle;
+            int timer;
+            public override void SetDefaults()
+            {
+
+                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_60");
+                DrawMode = DrawMode.Default;
+                ModifyBlendState = ModifyBlendState.Additive;
+                color = Color.White;
+                DrawSortWithUnits = DrawSortWithUnits.Middle;
+                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+                Origin = Texture.Size() / 2f;
+                SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
+                Scale = new Vector2(1, 10) * 20 / Texture.Size();
+                AngleV = 0;
+                AngleH = MathHelper.PiOver4;
+                ModifySpriteEffect = ModifySpriteEffect.None;
+                UseShader = true;
+                base.SetDefaults();
+            }
+            public override void Update()
+            {
+                timer++;
+                Offest = MathUtils.GetVector2InCircle(timer * MathHelper.PiOver4 / 15 + startAngle, raduim);
+                Rotation = MathHelper.PiOver2 + timer * MathHelper.PiOver4 / 15 + startAngle;
+                base.Update();
+            }
+        }
+
+
         #endregion
     }
 }

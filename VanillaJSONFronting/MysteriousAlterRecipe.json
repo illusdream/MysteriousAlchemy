@@ -69,5 +69,76 @@
       "ItemID": 4956,
       "Stack": 1
     }
+  },
+  {
+    "OuterIngredient": [
+      {
+        "ItemIDMode": 1,
+        "ItemID": "ChillinessZircon",
+        "Stack": 5
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 5147,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 1,
+        "ItemID": "ChillinessZircon",
+        "Stack": 5
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 1572,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 1,
+        "ItemID": "ChillinessZircon",
+        "Stack": 5
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 726,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 3787,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 676,
+        "Stack": 1
+      }
+    ],
+    "MiddleIngredient": [
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      },
+      {
+        "ItemIDMode": 0,
+        "ItemID": 0,
+        "Stack": 1
+      }
+    ],
+    "Product": {
+      "ItemIDMode": 1,
+      "ItemID": "FrostEssenceGrimoire",
+      "Stack": 1
+    }
   }
 ]

@@ -4,6 +4,7 @@ using MysteriousAlchemy.Content.Particles;
 using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Core.Mapping;
 using MysteriousAlchemy.Core.Trails;
 using MysteriousAlchemy.Utils;
 using System.Numerics;
@@ -94,7 +95,7 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    ParticleUtils.SpwonFog(Projectile.Center, -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.5f), new Color(131, 189, 238), 0.2f, MathHelper.PiOver2, 0.03f);
+                    ParticleUtils.SpwonFog(Projectile.Center, -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.5f), ColorMap.Chiliiness, 0.2f, MathHelper.PiOver2, 0.03f);
 
                 }
                 var dust = Dust.NewDustDirect(Projectile.Center, 20, 20, DustID.IceTorch, -Projectile.velocity.X * Main.rand.NextFloat(0.3f, 0.5f), -Projectile.velocity.Y * Main.rand.NextFloat(0.3f, 0.5f));

@@ -163,7 +163,7 @@ namespace MysteriousAlchemy.Core.System
             //绘制流向图
             gd.SetRenderTarget(DistortFlowGraphRender);
             gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             if (FlowGraphDraw != null)
             {
                 FlowGraphDraw.Invoke();
@@ -190,30 +190,27 @@ namespace MysteriousAlchemy.Core.System
             //绘制最终结果
             gd.SetRenderTarget(Main.screenTarget);
             gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            //输入最终流向图
+            gd.Textures[1] = DistortFlowGraphRender;
+            //导入扭曲shader
+            DistortEffect.CurrentTechnique.Passes[0].Apply();
+            //绘制需要被扭曲的图像
+            sb.Draw(DistortRender, Vector2.Zero, Color.White);
             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             sb.End();
-            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            //输入最终流向图
-            gd.Textures[1] = DistortFlowGraphRender;
-            //导入扭曲shader
-            DistortEffect.CurrentTechnique.Passes[0].Apply();
-            //绘制需要被扭曲的图像
-            sb.Draw(DistortRender, Vector2.Zero, Color.White);
-            //sb.Draw(DistortFlowGraphRender, Vector2.Zero, Color.White);
-            sb.End();
 
-            gd.SetRenderTarget(DIstortFinalBloomText);
-            gd.Clear(Color.Transparent);
-            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            //输入最终流向图
-            gd.Textures[1] = DistortFlowGraphRender;
-            //导入扭曲shader
-            DistortEffect.CurrentTechnique.Passes[0].Apply();
-            //绘制需要被扭曲的图像
-            sb.Draw(DistortRender, Vector2.Zero, Color.White);
-            //sb.Draw(DistortFlowGraphRender, Vector2.Zero, Color.White);
-            sb.End();
+            //gd.SetRenderTarget(DIstortFinalBloomText);
+            //gd.Clear(Color.Transparent);
+            //sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            ////输入最终流向图
+            //gd.Textures[1] = DistortFlowGraphRender;
+            ////导入扭曲shader
+            //DistortEffect.CurrentTechnique.Passes[0].Apply();
+            ////绘制需要被扭曲的图像
+            //sb.Draw(DistortRender, Vector2.Zero, Color.White);
+            ////sb.Draw(DistortFlowGraphRender, Vector2.Zero, Color.White);
+            //sb.End();
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 

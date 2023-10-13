@@ -93,6 +93,11 @@ Items: {
 		// DisplayName: Active Ether
 		// Tooltip: ""
 	}
+
+	ChillinessZircon: {
+		// DisplayName: Chilliness Zircon
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -104,6 +109,8 @@ Projectiles: {
 	// BloodHarvestingProj.DisplayName: Blood Harvesting Proj
 	// FrostEssenceSwordProj.DisplayName: Frost Essence Sword Proj
 	// FrostEssenceCrystalBeam.DisplayName: Frost Essence Crystal Beam
+	// ProjStateMachine.DisplayName: Proj State Machine
+	// ProjWithPlayer.DisplayName: Proj With Player
 }
 
 Buffs: {

@@ -89,5 +89,13 @@ namespace MysteriousAlchemy.Utils
             Vector2 target = GetVector2InCircle(randomInRange, min + (max - min) * randomInRing);
             return target;
         }
+        public static float GetTime(float scale)
+        {
+            return (float)Main.time * scale;
+        }
+        public static Vector2 LerpVelocity(Vector2 origin, Vector2 target, float scale)
+        {
+            return (1 - scale) * origin + (target) * scale;
+        }
     }
 }

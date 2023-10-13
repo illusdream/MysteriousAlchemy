@@ -6,6 +6,7 @@ using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Tiles;
 using MysteriousAlchemy.UI.UIElements;
 using MysteriousAlchemy.Utils;
+using MysteriousAlchemy.VanillaJSONFronting;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
@@ -40,6 +41,7 @@ namespace MysteriousAlchemy.UI
                 ItemSlots.Add(vanillaItemSlotWrapper);
                 Append(vanillaItemSlotWrapper);
             }
+
         }
         public UI_AltarCompose() : base()
         {
@@ -78,7 +80,52 @@ namespace MysteriousAlchemy.UI
 
             base.Draw(spriteBatch);
         }
+        public static bool CheckContextCompared(List<VanillaItemSlotWrapper> InSlot, ItemContext[] Contexts)
+        {
+            for (int i = 0; i < Contexts.Length; i++)
+            {
+                if (!(InSlot[i].Item.type == Contexts[i].GetRealID()) || InSlot[i].Item.stack < Contexts[i].Stack)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public static bool CheckCanCompose()
+        {
+            List<MysteriousAlterRecipe> mysteriousAlterRecipes = new List<MysteriousAlterRecipe>();
+            mysteriousAlterRecipes = JSON_VanillaReader.Instance.GetJsonList<MysteriousAlterRecipe>("VanillaJSONFronting/MysteriousAlterRecipe");
+            foreach (var recipe in mysteriousAlterRecipes)
+            {
+                if (CheckContextCompared(ItemSlots, recipe.OuterIngredient))
+                {
+                    return true;
+                }
 
+            }
+            return false;
+        }
+        public static Item ComposeItem()
+        {
+            int cout = 0;
+            List<MysteriousAlterRecipe> mysteriousAlterRecipes = new List<MysteriousAlterRecipe>();
+            mysteriousAlterRecipes = JSON_VanillaReader.Instance.GetJsonList<MysteriousAlterRecipe>("VanillaJSONFronting/MysteriousAlterRecipe");
+            for (int i = 0; i < mysteriousAlterRecipes.Count; i++)
+            {
+                cout++;
+                if (CheckContextCompared(ItemSlots, mysteriousAlterRecipes[i].OuterIngredient))
+                {
+                    for (int k = 0; k < 8; k++)
+                    {
+                        ItemSlots[k].ComsumItem(mysteriousAlterRecipes[i].OuterIngredient[k].Stack);
+                    }
+                    var instance = new Item(mysteriousAlterRecipes[i].Product.GetRealID());
+                    instance.stack = mysteriousAlterRecipes[i].Product.Stack;
+                    return instance;
+                }
+            }
+            return null;
+        }
 
 
     }

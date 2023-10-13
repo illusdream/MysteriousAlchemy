@@ -432,8 +432,13 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         public T RegisterDrawUnit<T>(Vector2 pivot) where T : DrawUnit, new()
         {
-            var instance = RegisterDrawUnit<T>();
+            T instance = new T();
+
             instance.Pivot = pivot;
+            instance.SetDefaults();
+            instance.active = true;
+            drawUnits.Add(instance);
+
             return instance;
         }
         public int RegisterDrawUnitOutInt<T>() where T : DrawUnit, new()

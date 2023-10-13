@@ -12,7 +12,7 @@ namespace MysteriousAlchemy.Content.Global.ModPlayers
     {
         public bool EnhanceChilliness;
         private int frostEssenceCrystalCount;
-        private int maxfrostEssenceCrystalCount = 4;
+        private int maxfrostEssenceCrystalCount = 3;
         public int MaxfrostEssenceCrystalCount { get { return maxfrostEssenceCrystalCount; } }
 
         public int FrostEssenceCrystalCount

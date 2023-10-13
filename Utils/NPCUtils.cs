@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 
 namespace MysteriousAlchemy.Utils
 {
@@ -15,7 +16,7 @@ namespace MysteriousAlchemy.Utils
             NPC result = null;
             foreach (var npc in Main.npc)
             {
-                if (!npc.friendly && npc.active && (npc.Center - position).Length() < radium)
+                if (!npc.friendly && npc.active && (npc.Center - position).Length() < radium && npc.type != NPCID.TargetDummy)
                 {
                     if (result == null)
                     {
@@ -28,6 +29,13 @@ namespace MysteriousAlchemy.Utils
                 }
             }
             return result;
+        }
+        public static Vector2 GetVector2ToCanTrackNPC(Vector2 position, float radium)
+        {
+            NPC npc = GetNPCCanTrack(position, radium);
+            if (npc is not null)
+                return (npc.Center - position);
+            return Vector2.Zero;
         }
     }
 }
