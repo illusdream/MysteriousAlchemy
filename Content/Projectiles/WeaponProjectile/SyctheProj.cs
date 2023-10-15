@@ -307,16 +307,16 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                     break;
                 case AttackState.attack:
                     WeaponDraw();
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, GhostDraw);
+                    GhostDraw();
+                    SlashDraw();
                     VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.FlowGraphDraw, FlowGraphDraw);
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, SlashDraw);
 
                     break;
                 case AttackState.unwind:
                     WeaponDraw();
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, GhostDraw);
+                    GhostDraw();
+                    SlashDraw();
                     VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.FlowGraphDraw, FlowGraphDraw);
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, SlashDraw);
                     break;
                 default:
                     break;

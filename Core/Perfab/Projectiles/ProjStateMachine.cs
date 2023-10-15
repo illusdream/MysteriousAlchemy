@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace MysteriousAlchemy.Core.Perfab.Projectiles
 {
-    public class ProjStateMachine : ProjWithPlayer, IStateMachine
+    public abstract class ProjStateMachine : ProjWithPlayer, IStateMachine
     {
         public override string Texture => AssetUtils.Projectiles + Name;
         public IState CurrectState { get; set; }

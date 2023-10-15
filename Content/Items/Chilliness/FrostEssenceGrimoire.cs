@@ -16,7 +16,7 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
     public class FrostEssenceGrimoire : ModItem
     {
         ChillinessGrimoireAnimator animator;
-        public override string Texture => AssetUtils.Weapons + Name;
+        public override string Texture => AssetUtils.ItemChilliness + Name;
         public override void SetStaticDefaults()
         {
         }

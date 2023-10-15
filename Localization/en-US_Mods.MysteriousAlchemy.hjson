@@ -98,6 +98,11 @@ Items: {
 		DisplayName: Chilliness Zircon
 		Tooltip: ""
 	}
+
+	IceScythe: {
+		DisplayName: Ice Scythe
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -111,6 +116,7 @@ Projectiles: {
 	FrostEssenceCrystalBeam.DisplayName: Frost Essence Crystal Beam
 	ProjStateMachine.DisplayName: Proj State Machine
 	ProjWithPlayer.DisplayName: Proj With Player
+	IceScytheProj.DisplayName: Ice Scythe Proj
 }
 
 Buffs: {

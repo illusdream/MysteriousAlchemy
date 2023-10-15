@@ -94,7 +94,7 @@ namespace MysteriousAlchemy.Content.Animators
         {
             public override void SetDefaults()
             {
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Weapons + "FrostEssenceGrimoire");
+                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.ItemChilliness + "FrostEssenceGrimoire");
                 DrawMode = DrawMode.Default;
                 ModifyBlendState = ModifyBlendState.AlphaBlend;
                 color = Color.White;
@@ -222,7 +222,7 @@ namespace MysteriousAlchemy.Content.Animators
                 VisualPPSystem.AddAction
                     (
                         VisualPPSystem.VisualPPActionType.BloomAreaDraw,
-                        () => DrawUtils.DrawEntityInWorld(spriteBatch, Bloom, PositionInScreen, Color.White * 0.5f, default, 0, Vector2.One * 3, AngleH, AngleV)
+                        () => DrawUtils.DrawEntityInWorld(spriteBatch, Bloom, PositionInScreen, Color.White * 1f, default, 0, Vector2.One * 3, AngleH, AngleV)
                     );
                 VisualPPSystem.AddAction
                  (

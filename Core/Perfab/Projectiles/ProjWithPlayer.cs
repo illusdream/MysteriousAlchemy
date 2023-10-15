@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace MysteriousAlchemy.Core.Perfab.Projectiles
 {
-    public class ProjWithPlayer : ModProjectile
+    public abstract class ProjWithPlayer : ModProjectile
     {
         public override string Texture => AssetUtils.Projectiles + Name;
         private Player _player;

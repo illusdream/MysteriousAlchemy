@@ -141,7 +141,9 @@ namespace MysteriousAlchemy.Core.System
             spriteBatch.End();
             #endregion
 
-
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            DrawPrimitives(spriteBatch);
+            spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             NarrationSystem.instance.DrawAll(spriteBatch);
             spriteBatch.End();
@@ -170,5 +172,37 @@ namespace MysteriousAlchemy.Core.System
 
         }
         #endregion
+
+        public void DrawPrimitives(SpriteBatch spriteBatch)
+        {
+            //绘制Projectile
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                Projectile projectile = Main.projectile[i];
+                if (projectile.active && projectile.ModProjectile is IDrawPrimitives)
+                {
+                    (projectile.ModProjectile as IDrawPrimitives).DrawPrimitives(spriteBatch);
+                }
+            }
+            //绘制NPC
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.ModNPC is IDrawPrimitives)
+                {
+                    (npc.ModNPC as IDrawPrimitives).DrawPrimitives(spriteBatch);
+                }
+            }
+
+            //绘制Particle
+            for (int i = 0; i < ParticleSystem.ParticleCount; i++)
+            {
+                Particle particle = ParticleSystem.particles[i];
+                if (particle.active && particle is IDrawPrimitives)
+                {
+                    (particle as IDrawPrimitives).DrawPrimitives(spriteBatch);
+                }
+            }
+        }
     }
 }

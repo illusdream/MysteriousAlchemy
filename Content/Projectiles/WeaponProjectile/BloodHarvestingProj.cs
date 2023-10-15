@@ -308,16 +308,16 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                     break;
                 case AttackState.attack:
                     WeaponDraw();
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, GhostDraw);
+                    GhostDraw();
+                    SlashDraw();
                     VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.FlowGraphDraw, FlowGraphDraw);
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, SlashDraw);
 
                     break;
                 case AttackState.unwind:
                     WeaponDraw();
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, GhostDraw);
+                    GhostDraw();
+                    SlashDraw();
                     VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.FlowGraphDraw, FlowGraphDraw);
-                    VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.DistortedGraphDraw, SlashDraw);
                     break;
                 default:
                     break;
@@ -369,11 +369,11 @@ namespace MysteriousAlchemy.Projectiles.WeaponProjectile
                     //³¤ÖáÐÞÕý
                     if (Clockwise == 1)
                     {
-                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 0);
+                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.NonPremultiplied, 0);
                     }
                     else
                     {
-                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.AlphaBlend, 1);
+                        DrawUtils.DrawEntityInWorld(sb, weapon, HandPos - Main.screenPosition + centerFix, Color.White * ((WeaponRotation.Length - i) / (float)WeaponRotation.Length), null, WeaponRotation[i] + TexRotationFix * Clockwise, WeaponCurretSize / weapon.Size().Length(), AngleV, AngleH, null, BlendState.NonPremultiplied, 1);
                     }
                 }
             }

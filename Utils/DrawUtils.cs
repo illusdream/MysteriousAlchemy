@@ -292,10 +292,11 @@ namespace MysteriousAlchemy.Utils
                     //      Buttomleft---Topleft
                     triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(TopLeftTexcoord, 1)));
                     triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color, new Vector3(ButtomLeftTexcoord, 1)));
-                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(1, 1, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(ButtomRightTexcoord, 1)));
                     triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(TopLeftTexcoord, 1)));
-                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(1, 1, 1)));
                     triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(TopRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(ButtomRightTexcoord, 1)));
+
                     break;
                 default:
                     break;
@@ -504,7 +505,7 @@ namespace MysteriousAlchemy.Utils
 
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
                 Effect trail = ModContent.Request<Effect>("MysteriousAlchemy/Effects/Trail").Value;
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
