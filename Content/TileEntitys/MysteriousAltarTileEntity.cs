@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Content.Tiles;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Tiles;
 using MysteriousAlchemy.UI.UIElements;
 using MysteriousAlchemy.Utils;

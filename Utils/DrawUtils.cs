@@ -531,6 +531,66 @@ namespace MysteriousAlchemy.Utils
             }
         }
 
+        public static void DrawDefaultSlash(Vector2[] vertexUp, Vector2[] vertexDown, Vector2 pivot, Color Texcoordscolor, Texture2D maskTex, Texture2D color, Texture2D distortTex, Texture2D colorShapeTex, float distortPower, float distortBlend, float blendColor, float distortUVOffestSpeed, float alphaBlend, float lightScaleOfCT = 1, float alphaFlip = 0)
+        {
+            List<VertexPositionColorTexture> bars = new List<VertexPositionColorTexture>();
+            int arratLength = vertexUp.Length;
+            // 把所有的点都生成出来，按照顺序
+            for (int i = 0; i < arratLength; ++i)
+            {
+                if (vertexUp[i] == Vector2.Zero)
+                {
+                    break;
+                }
+                if (vertexDown[i] == Vector2.Zero) break;
+                //Main.spriteBatch.Draw(Main.magicPixel, oldPosi[i] - Main.screenPosition,
+                //    new Rectangle(0, 0, 1, 1), Color.White, 0f, new Vector2(0.5f, 0.5f), 5f, SpriteEffects.None, 0f);
+
+                var factor = i / (float)arratLength;
+                var w = MathHelper.Lerp(1f, 0.05f, factor);
+                bars.Add(new VertexPositionColorTexture((vertexUp[i] + pivot).Vec3(), Color.White, new Vector2(factor, 0)));
+                bars.Add(new VertexPositionColorTexture((vertexDown[i] + pivot).Vec3(), Color.White, new Vector2(factor, 1)));
+            }
+            List<VertexPositionColorTexture> triangleList = new List<VertexPositionColorTexture>();
+
+            if (bars.Count > 2)
+            {
+
+                // 按照顺序连接三角形
+
+                for (int i = 0; i < bars.Count - 2; i += 2)
+                {
+                    triangleList.Add(bars[i]);
+                    triangleList.Add(bars[i + 2]);
+                    triangleList.Add(bars[i + 1]);
+
+                    triangleList.Add(bars[i + 1]);
+                    triangleList.Add(bars[i + 2]);
+                    triangleList.Add(bars[i + 3]);
+                }
+
+                Effect effect = AssetUtils.GetEffect("DefaultSlash");
+                Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+                Matrix view = Main.GameViewMatrix.TransformationMatrix;
+                Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+                effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+                effect.Parameters["UVScale"].SetValue(1);
+                effect.Parameters["maskTexture"].SetValue(maskTex);
+                effect.Parameters["colorTexture"].SetValue(color);
+                effect.Parameters["distortTexture"].SetValue(distortTex);
+                effect.Parameters["colorShapeTexture"].SetValue(colorShapeTex);
+                effect.Parameters["distortPower"].SetValue(distortPower);
+                effect.Parameters["distortBlend"].SetValue(distortBlend);
+                effect.Parameters["BlendColor"].SetValue(blendColor);
+                effect.Parameters["distortUVOffest"].SetValue(new Vector2(MathUtils.GetTime(distortUVOffestSpeed), 0));
+                effect.Parameters["alphaFlip"].SetValue(alphaFlip);
+                effect.Parameters["alphaBlend"].SetValue(alphaBlend);
+                effect.Parameters["lightScaleOfCT"].SetValue(lightScaleOfCT);
+                effect.CurrentTechnique.Passes[0].Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+            }
+        }
+
         public static void DrawPrettyStarSparkle(float opacity, SpriteEffects dir, Vector2 drawPos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
         {
             Texture2D value = TextureAssets.Extra[98].Value;

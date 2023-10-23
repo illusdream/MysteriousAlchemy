@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;

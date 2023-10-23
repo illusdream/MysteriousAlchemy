@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour;
 using MysteriousAlchemy.Content.Animators;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Dusts;
 using MysteriousAlchemy.Items;
 using MysteriousAlchemy.Modsystem;

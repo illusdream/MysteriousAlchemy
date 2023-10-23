@@ -8,7 +8,8 @@ using Terraria;
 
 namespace MysteriousAlchemy.Core.Perfab.Projectiles
 {
-    public abstract class BaseHeldProj : ModProjectile
+    //手持弹幕，自带状态机
+    public abstract class BaseHeldProj : ProjStateMachine
     {
         /// <summary>
         /// 弹幕的拥有者，默认是玩家，如果需要是NPC请自行重写

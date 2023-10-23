@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using MysteriousAlchemy.Buffs;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Global.GlobalNPCs;
 using MysteriousAlchemy.Global.ModPlayers;
 using MysteriousAlchemy.Items.Weapons;

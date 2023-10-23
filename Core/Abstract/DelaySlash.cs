@@ -52,8 +52,10 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         public virtual void Draw()
         {
-            DebugUtils.NewText(postion);
-            DrawUtils.DrawDefaultSlash(vertexTop, vertexBottom, postion, color,
+            DrawUtils.DrawDefaultSlash(
+                MathUtils.TransVector2Array(vertexTop, 0, MathHelper.PiOver2, 1 + 0.4f * alphaFlip),
+                MathUtils.TransVector2Array(vertexBottom, 0, MathHelper.PiOver2, 1 + 0.4f * alphaFlip),
+                postion, color,
                 AssetUtils.GetTexture2D(maskTexture),
                 AssetUtils.GetTexture2D(colorTexture),
                 AssetUtils.GetTexture2D(distortTexture),
@@ -63,7 +65,8 @@ namespace MysteriousAlchemy.Core.Abstract
                 blendColor,
                 distortUVOffestSpeed,
                 alphaBlend,
-                lightScaleOfCT
+                lightScaleOfCT,
+                alphaFlip
                 );
             if (BloomAction is not null)
                 VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.BloomAreaDraw, BloomAction);

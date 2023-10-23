@@ -3,7 +3,7 @@ using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Content.Global.ModPlayers;
 using MysteriousAlchemy.Content.Projectiles.Chilliness;
 using MysteriousAlchemy.Core;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Projectiles;
 using MysteriousAlchemy.Utils;
 using Terraria;
@@ -16,7 +16,7 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
     public class FrostEssenceGrimoire : ModItem
     {
         ChillinessGrimoireAnimator animator;
-        public override string Texture => AssetUtils.ItemChilliness + Name;
+        public override string Texture => AssetUtils.Item_Chilliness + Name;
         public override void SetStaticDefaults()
         {
         }
@@ -30,7 +30,7 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
             Item.useAnimation = 10;
             Item.useTime = 10;
             Item.damage = 84;
-            Item.crit = 13;
+            Item.crit = 56;
             Item.mana = 10;
             Item.knockBack = 2;
             Item.DamageType = DamageClass.Magic;

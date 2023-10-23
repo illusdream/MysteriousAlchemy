@@ -13,7 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Humanizer.In;
 using static Terraria.ModLoader.PlayerDrawLayer;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 
 namespace MysteriousAlchemy.Projectiles.WeaponProjectile
 {

@@ -6,7 +6,7 @@ using MysteriousAlchemy.Content.Global.ModPlayers;
 using MysteriousAlchemy.Core.Interface;
 using MysteriousAlchemy.Core.Mapping;
 using MysteriousAlchemy.Core.Perfab.Projectiles;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Core.Trails;
 using MysteriousAlchemy.Utils;
 using System;

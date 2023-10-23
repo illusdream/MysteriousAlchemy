@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 
 namespace MysteriousAlchemy.Utils
 {
@@ -96,6 +97,41 @@ namespace MysteriousAlchemy.Utils
         public static Vector2 LerpVelocity(Vector2 origin, Vector2 target, float scale)
         {
             return (1 - scale) * origin + (target) * scale;
+        }
+        public static Vector2[] TransVector2Array(Vector2[] vector2s, float angleH, float angleV, float scale)
+        {
+            Vector2[] result = new Vector2[vector2s.Length];
+            for (int i = 0; i < vector2s.Length; i++)
+            {
+                result[i] = vector2s[i] * scale;
+                result[i] = DrawUtils.MartixTrans(result[i], angleH, angleV);
+            }
+            return result;
+        }
+        public static Vector2[] LerpTwoVector2Array(Vector2[] v1, Vector2[] v2, GetLerpvalues value)
+        {
+            int length = v1.Length < v2.Length ? v1.Length : v2.Length;
+            Vector2[] result = new Vector2[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = Vector2.Lerp(v1[i], v2[i], value.Invoke(i, length));
+            }
+            return result;
+        }
+        public delegate float GetLerpvalues(int i, int MaxLength);
+
+
+        public static bool Contain(Point16 topleft, Point16 size, Point16 target)
+        {
+            bool InX = topleft.X < target.X && (topleft.X + size.X) > target.X;
+            bool InY = topleft.Y < target.Y && (topleft.Y + size.Y) > target.Y;
+            return InX && InY;
+        }
+        public static bool Contain(Vector2 topleft, Vector2 size, Vector2 target)
+        {
+            bool InX = topleft.X < target.X && (topleft.X + size.X) > target.X;
+            bool InY = topleft.Y < target.Y && (topleft.Y + size.Y) > target.Y;
+            return InX && InY;
         }
     }
 }

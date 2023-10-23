@@ -12,7 +12,7 @@ namespace MysteriousAlchemy.Content.Items.Chilliness
 
     public class IceScythe : ModItem
     {
-        public override string Texture => AssetUtils.ItemChilliness + Name;
+        public override string Texture => AssetUtils.Item_Chilliness + Name;
         public override void SetStaticDefaults()
         {
         }

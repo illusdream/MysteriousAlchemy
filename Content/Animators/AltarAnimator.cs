@@ -7,7 +7,7 @@ using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Enum;
 using MysteriousAlchemy.Core.Interface;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Core.Trails;
 using MysteriousAlchemy.UI;
 using MysteriousAlchemy.Utils;

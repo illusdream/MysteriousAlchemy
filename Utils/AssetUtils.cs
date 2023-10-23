@@ -23,15 +23,16 @@ namespace MysteriousAlchemy.Utils
 
         public const string Items = Asset + "Items/";
         public const string Weapons = Items + "Weapons/";
-        public const string ItemChilliness = Items + "Chilliness/";
+        public const string Item_Chilliness = Items + "Chilliness/";
         public const string Ether = Items + "Ether/";
+        public const string Items_MagicComponents = Items + "MagicComponents/";
 
         public const string Projectiles = Asset + "Projectiles/";
         public const string WeaponProjectile = Projectiles + "WeaponProjectile/";
         public const string Proj_Chilliness = Projectiles + "Chilliness/";
 
         public const string Tiles = Asset + "Tiles/";
-
+        public const string Tiles_MagicComponents = Tiles + "MagicComponents/";
 
 
         public const string Texture = Asset + "Texture/";
@@ -69,5 +70,8 @@ namespace MysteriousAlchemy.Utils
         {
             return ModContent.Request<Effect>(Effect + name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
         }
+
+
+        public static Texture2D WhitePic = GetTexture2D(Texture + "polartest");
     }
 }

@@ -32,4 +32,17 @@ namespace MysteriousAlchemy.Core.Enum
         Front, Middle, Behind
     }
 
+
+
+    #region //炼金术相关
+
+    public enum EtherEntityPivot
+    {
+        InWorld, InInventory
+    }
+
+
+
+    #endregion
+
 }

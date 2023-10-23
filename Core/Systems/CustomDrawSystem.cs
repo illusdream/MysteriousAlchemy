@@ -103,6 +103,7 @@ namespace MysteriousAlchemy.Core.Systems
                     (particle as IDrawAddtive).DrawAddtive(spriteBatch);
                 }
             }
+
             spriteBatch.End();
             #endregion
 

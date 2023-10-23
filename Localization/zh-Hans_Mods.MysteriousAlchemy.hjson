@@ -103,6 +103,11 @@ Items: {
 		// DisplayName: Ice Scythe
 		// Tooltip: ""
 	}
+
+	StarTransInstrument: {
+		// DisplayName: Star Trans Instrument
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

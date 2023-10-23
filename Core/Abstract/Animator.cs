@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Core.Enum;
 using MysteriousAlchemy.Core.Interface;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;

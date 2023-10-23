@@ -7,7 +7,7 @@ using MysteriousAlchemy.Content.Particles;
 using MysteriousAlchemy.Content.Projectiles.Chilliness;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Loader;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System.Diagnostics;
 using System.Numerics;
@@ -62,6 +62,10 @@ namespace MysteriousAlchemy.Content.Items.TestItem
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
     }
 }

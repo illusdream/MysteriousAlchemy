@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-using MysteriousAlchemy.Core.System;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Projectiles.WeaponProjectile;
 using MysteriousAlchemy.Utils;
 using System;
