@@ -39,7 +39,6 @@ namespace MysteriousAlchemy.Content.Items.TestItem
             Item.autoReuse = false;
             Item.maxStack = 99;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.shoot = ModContent.ProjectileType<FrostEssenceSwordProj>();
             Item.useTime = 1;
             Item.useAnimation = 1;
             Item.autoReuse = false;
@@ -47,10 +46,6 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            for (int i = 0; i < 20; i++)
-            {
-                Particle.NewParticle<Particles.Fog>(Main.MouseWorld, (Main.MouseWorld - player.Center).SafeNormalize(Vector2.One).RotatedBy(Main.rand.NextFloat(0, 1)) * 5 * Main.rand.NextFloat(0.7f, 1), new Color(131, 189, 238), 0.1f);
-            }
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

@@ -18,16 +18,18 @@ namespace MysteriousAlchemy.Core.Systems
     public class AlchemySystem : ModSystem
     {
         ///存储在世界中的<see cref="AlchemyEntity"/>并更新与绘制
-        public static List<AlchemyEntity> alchemyEntities = new List<AlchemyEntity>();
+        public static List<AlchemyEntity> alchemyUnicodeEntities = new List<AlchemyEntity>();
+
+        public static Dictionary<AlchemyUnicode, AlchemyEntity> alchemyEntities = new Dictionary<AlchemyUnicode, AlchemyEntity>();
 
         public static bool TestVisable;
 
         //先于其他实体更新
         public override void PreUpdateEntities()
         {
-            for (int i = 0; i < alchemyEntities.Count; i++)
+            for (int i = 0; i < alchemyUnicodeEntities.Count; i++)
             {
-                alchemyEntities[i].Update();
+                alchemyUnicodeEntities[i].Update();
             }
             base.PreUpdateEntities();
         }
@@ -35,9 +37,9 @@ namespace MysteriousAlchemy.Core.Systems
         {
             if (TestVisable)
             {
-                for (int i = 0; i < alchemyEntities.Count; i++)
+                for (int i = 0; i < alchemyUnicodeEntities.Count; i++)
                 {
-                    AlchemyEntity instance = alchemyEntities[i];
+                    AlchemyEntity instance = alchemyUnicodeEntities[i];
                     Rectangle targetRect = new Rectangle((int)(instance.TopLeft.X - Main.screenPosition.X), (int)(instance.TopLeft.Y - Main.screenPosition.Y), (int)instance.Size.X, (int)instance.Size.Y);
                     spriteBatch.Draw(AssetUtils.WhitePic, targetRect, Color.White);
                 }
@@ -47,9 +49,9 @@ namespace MysteriousAlchemy.Core.Systems
         public static bool TryGetEtherEntity<T>(Vector2 target, out T result) where T : AlchemyEntity
         {
             result = null;
-            for (int i = 0; i < alchemyEntities.Count; i++)
+            for (int i = 0; i < alchemyUnicodeEntities.Count; i++)
             {
-                AlchemyEntity instance = alchemyEntities[i];
+                AlchemyEntity instance = alchemyUnicodeEntities[i];
                 if (MathUtils.Contain(instance.TopLeft, instance.Size, target))
                 {
                     result = (T)instance;
@@ -67,7 +69,7 @@ namespace MysteriousAlchemy.Core.Systems
         /// <returns></returns>
         public static void RegisterEtherEntity<T>(T instance, Vector2 postion) where T : AlchemyEntity
         {
-            alchemyEntities.Add(instance);
+            alchemyUnicodeEntities.Add(instance);
             instance.TopLeft = postion;
         }
         /// <summary>
@@ -88,13 +90,13 @@ namespace MysteriousAlchemy.Core.Systems
         #region //数据加载
         public override void LoadWorldData(TagCompound tag)
         {
-            alchemyEntities = tag.Get<List<AlchemyEntity>>(nameof(alchemyEntities));
+            alchemyUnicodeEntities = tag.Get<List<AlchemyEntity>>(nameof(alchemyUnicodeEntities));
 
             base.LoadWorldData(tag);
         }
         public override void SaveWorldData(TagCompound tag)
         {
-            tag[nameof(alchemyEntities)] = alchemyEntities;
+            tag[nameof(alchemyUnicodeEntities)] = alchemyUnicodeEntities;
 
             base.SaveWorldData(tag);
         }

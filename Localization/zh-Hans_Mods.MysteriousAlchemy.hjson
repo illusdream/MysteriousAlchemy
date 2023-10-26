@@ -146,4 +146,14 @@ Configs: {
 			// Tooltip: ""
 		}
 	}
+
+	AlchemyTestConfig: {
+		// DisplayName: Alchemy Test Config
+		// Headers.AlchemyTest: Alchemy Test Header
+
+		TestVisable: {
+			// Label: Test Visable
+			// Tooltip: ""
+		}
+	}
 }
