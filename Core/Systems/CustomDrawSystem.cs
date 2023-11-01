@@ -70,6 +70,8 @@ namespace MysteriousAlchemy.Core.Systems
                     (particle as IDrawAlphaBlend).DrawAlphaBlend(spriteBatch);
                 }
             }
+            AlchemySystem.TestDraw(spriteBatch);
+            DebugUtils.InvokoDebugDraw(spriteBatch);
             spriteBatch.End();
             #endregion
             #region 绘制Addtive

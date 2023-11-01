@@ -1,7 +1,10 @@
 ﻿using MysteriousAlchemy.Core.Systems;
+using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
@@ -10,126 +13,161 @@ using Terraria.ModLoader.IO;
 
 namespace MysteriousAlchemy.Core.Abstract
 {
-    public class Graph<T> : TagSerializable where T : Edge, new()
+    public class Graph<TLink, TNode> : TagSerializable where TLink : Link, new() where TNode : Node, new()
     {
-        Dictionary<AlchemyUnicode, Node<T>> Nodes;
+        protected Dictionary<AlchemyUnicode, AdjacencyList<TNode, TLink>> Dic_AdjacencyList;
 
-        public bool AddConnection(AlchemyEntity start, AlchemyEntity end, EdgeCallback<T> edgeCallback)
+        public Graph()
         {
-            if (Nodes is null)
-                return false;
-            if (!Nodes.ContainsKey(start.unicode) || !Nodes.ContainsKey(end.unicode))
-                return false;
-            if (Nodes[start.unicode].ConstainConnection(end.unicode))
-                return false;
-
-            Nodes[start.unicode].AddConnection(end, edgeCallback);
-            return true;
+            Dic_AdjacencyList = new Dictionary<AlchemyUnicode, AdjacencyList<TNode, TLink>>();
         }
-        public bool AddConnection(AlchemyUnicode start, AlchemyUnicode end, EdgeCallback<T> edgeCallback)
+        public bool AddLink(AlchemyEntity start, AlchemyEntity end, LinkCallback<TLink> edgeCallback)
         {
-            if (Nodes is null)
+            if (Dic_AdjacencyList is null)
                 return false;
-            if (!Nodes.ContainsKey(start) || !Nodes.ContainsKey(end))
+            if (!Dic_AdjacencyList.ContainsKey(start.unicode) || !Dic_AdjacencyList.ContainsKey(end.unicode))
                 return false;
-            if (Nodes[start].ConstainConnection(end))
-                return false;
-            var endInstance = Nodes[end].GetEntityInstance();
-            Nodes[start].AddConnection(endInstance, edgeCallback);
-            return true;
-        }
-        public bool RemoveConnection(AlchemyEntity start, AlchemyEntity end)
-        {
-            if (Nodes is null)
-                return false;
-            if (!Nodes.ContainsKey(start.unicode) || !Nodes.ContainsKey(end.unicode))
-                return false;
-            if (!Nodes[start.unicode].ConstainConnection(end.unicode))
+            if (Dic_AdjacencyList[start.unicode].ConstainLink(end.unicode))
                 return false;
 
-            Nodes[start.unicode].RemoveConnection(end);
+            Dic_AdjacencyList[start.unicode].AddLink(end, edgeCallback);
+            Dic_AdjacencyList[end.unicode].AdjacencyNodes.Add(start.unicode);
             return true;
         }
-        public bool RemoveConnection(AlchemyUnicode start, AlchemyUnicode end)
+        public bool AddLink(AlchemyUnicode start, AlchemyUnicode end, LinkCallback<TLink> edgeCallback)
         {
-            if (Nodes is null)
+            if (Dic_AdjacencyList is null)
                 return false;
-            if (!Nodes.ContainsKey(start) || !Nodes.ContainsKey(end))
+            if (!Dic_AdjacencyList.ContainsKey(start) || !Dic_AdjacencyList.ContainsKey(end))
                 return false;
-            if (!Nodes[start].ConstainConnection(end))
+            if (Dic_AdjacencyList[start].ConstainLink(end))
                 return false;
-            var endInstance = Nodes[end].GetEntityInstance();
-            Nodes[start].RemoveConnection(endInstance);
+            var endInstance = Dic_AdjacencyList[end].Node.GetEntityInstance();
+            Dic_AdjacencyList[start].AddLink(endInstance, edgeCallback);
+            Dic_AdjacencyList[end].AdjacencyNodes.Add(start);
             return true;
         }
-        public void ForEach(NodesCollectionCallBack<T> callBack)
+        public bool RemoveLink(AlchemyEntity start, AlchemyEntity end)
         {
-            foreach (var _keyValuePair in Nodes)
+            if (Dic_AdjacencyList is null)
+                return false;
+            if (!Dic_AdjacencyList.ContainsKey(start.unicode) || !Dic_AdjacencyList.ContainsKey(end.unicode))
+                return false;
+            if (!Dic_AdjacencyList[start.unicode].ConstainLink(end.unicode))
+                return false;
+
+            Dic_AdjacencyList[start.unicode].RemoveLink(end);
+            return true;
+        }
+        public bool RemoveLink(AlchemyUnicode start, AlchemyUnicode end)
+        {
+            if (Dic_AdjacencyList is null)
+                return false;
+            if (!Dic_AdjacencyList.ContainsKey(start) || !Dic_AdjacencyList.ContainsKey(end))
+                return false;
+            if (!Dic_AdjacencyList[start].ConstainLink(end))
+                return false;
+            var endInstance = Dic_AdjacencyList[end].Node.GetEntityInstance();
+            Dic_AdjacencyList[start].RemoveLink(endInstance);
+            return true;
+        }
+        public bool TryGetConnectionRangeInNode(AlchemyUnicode unicode, ref List<TLink> result)
+        {
+            if (!Dic_AdjacencyList.ContainsKey(unicode))
+                return false;
+            result = Dic_AdjacencyList[unicode].AdjacencyLinkToList_Value();
+            return true;
+
+        }
+        public bool TryGetConnectionRangeInNode(AlchemyEntity entity, ref List<TLink> result)
+        {
+            if (!Dic_AdjacencyList.ContainsKey(entity.unicode))
+                return false;
+            result = Dic_AdjacencyList[entity.unicode].AdjacencyLinkToList_Value();
+            return true;
+
+        }
+        public void ForEach(NodesCollectionCallBack<TNode, TLink> callBack)
+        {
+            if (Dic_AdjacencyList is null)
+                return;
+            foreach (var _keyValuePair in Dic_AdjacencyList)
             {
-                callBack(_keyValuePair);
+                AdjacencyList<TNode, TLink> adjacencyList = _keyValuePair.Value;
+                callBack?.Invoke(adjacencyList);
             }
         }
-        public bool FindNode(AlchemyEntity entity, out Node<T> target)
+        public bool FindNode(AlchemyEntity entity, out TNode target)
         {
             target = null;
-            if (!Nodes.ContainsKey(entity.unicode))
+            if (!Dic_AdjacencyList.ContainsKey(entity.unicode))
                 return false;
-            target = Nodes[entity.unicode];
+            target = Dic_AdjacencyList[entity.unicode].Node;
             return true;
         }
-        public bool FindNode(AlchemyUnicode unicode, out Node<T> target)
+        public bool FindNode(AlchemyUnicode unicode, out TNode target)
         {
             target = null;
-            if (!Nodes.ContainsKey(unicode))
+            if (!Dic_AdjacencyList.ContainsKey(unicode))
                 return false;
-            target = Nodes[unicode];
+            target = Dic_AdjacencyList[unicode].Node;
             return true;
         }
         public bool AddNode(AlchemyEntity entity)
         {
-            if (Nodes is null)
+            if (Dic_AdjacencyList is null)
                 return false;
-            if (Nodes.ContainsKey(entity.unicode))
+            if (Dic_AdjacencyList.ContainsKey(entity.unicode))
                 return false;
-            var instance = new Node<T>(entity);
-            Nodes.Add(entity.unicode, instance);
+            var instance = new TNode();
+            instance.SetEntity(entity);
+            Dic_AdjacencyList.Add(entity.unicode, new AdjacencyList<TNode, TLink>(instance));
             return true;
         }
 
-        public bool RemoveNode(AlchemyUnicode unicode)
+        public virtual bool RemoveNode(AlchemyUnicode unicode)
         {
-            if (Nodes is null)
+            if (Dic_AdjacencyList is null)
                 return false;
-            if (Nodes.ContainsKey(unicode))
+            if (!Dic_AdjacencyList.ContainsKey(unicode))
                 return false;
             //需要删除自己的同时将其他节点与此节点的链接删除
-            foreach (var _node in Nodes)
+            foreach (var AjN in Dic_AdjacencyList[unicode].AdjacencyNodes)
             {
-                var node = _node.Value;
-                node.RemoveConnection(unicode);
+                Dic_AdjacencyList[AjN].RemoveLink(unicode);
             }
-            Nodes.Remove(unicode);
+            Dic_AdjacencyList.Remove(unicode);
             return true;
         }
         public bool RemoveNode(AlchemyEntity alchemyEntity)
         {
             return RemoveNode(alchemyEntity.unicode);
         }
-        #region //数据保存
-        TagCompound CustomDate;
 
-        public static readonly Func<TagCompound, Graph<T>> DESERIALIZER = Load;
+        public bool IsEmpty()
+        {
+            return Dic_AdjacencyList.Count == 0;
+        }
+        public virtual void Clear()
+        {
+            Dic_AdjacencyList.Clear();
+        }
+        public int GetNodeCounts()
+        {
+            if (Dic_AdjacencyList is null)
+                return -1;
+            return Dic_AdjacencyList.Count;
+        }
+        public bool Contain(AlchemyUnicode unicode)
+        {
+            return Dic_AdjacencyList.ContainsKey(unicode);
+        }
+        #region //数据保存
+        protected TagCompound CustomDate;
+
+        public static Func<TagCompound, Graph<TLink, TNode>> DESERIALIZER = Load;
         public TagCompound SerializeData()
         {
-            var list = new List<TagCompound>();
-            foreach (var data in Nodes)
-            {
-                list.Add(new TagCompound()
-                {
-                    ["key"] = data.Key,
-                    ["value"] = data.Value
-                });
-            }
 
             CustomDate = new TagCompound();
             SaveData(CustomDate);
@@ -137,27 +175,16 @@ namespace MysteriousAlchemy.Core.Abstract
 
             var instance = new TagCompound()
             {
-                [nameof(CustomDate)] = CustomDate
+                [nameof(CustomDate)] = CustomDate,
             };
+            AssetUtils.SaveData_Dictionary(ref instance, ref Dic_AdjacencyList, nameof(Dic_AdjacencyList));
             return instance;
         }
-        public static Graph<T> Load(TagCompound tag)
+        public static Graph<TLink, TNode> Load(TagCompound tag)
         {
-            var instance = new Graph<T>();
+            var instance = new Graph<TLink, TNode>();
 
-
-            instance.Nodes ??= new Dictionary<AlchemyUnicode, Node<T>>();
-            var list = tag.GetList<TagCompound>(nameof(Nodes));
-            foreach (var data in list)
-            {
-                AlchemyUnicode unicode = data.Get<AlchemyUnicode>("key");
-                Node<T> edge = data.Get<Node<T>>("value");
-                instance.Nodes[unicode] = edge;
-            }
-
-
-
-
+            AssetUtils.LoadData_Dictionary(tag, nameof(Dic_AdjacencyList), ref instance.Dic_AdjacencyList);
 
             instance.CustomDate = tag.GetCompound(nameof(CustomDate));
             instance.LoadData(instance.CustomDate);
@@ -173,28 +200,31 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         #endregion
     }
-
-    //图的节点
-    public class Node<T> : TagSerializable where T : Edge, new()
+    //将node和以该node开头的link存储在一起，方便后面操作,将原本node中的大部分操作转移到这里
+    public class AdjacencyList<TNode, TLink> : TagSerializable where TNode : Node, new() where TLink : Link, new()
     {
-        //这两个变量不希望公开，图内部的元素应该保持相对的稳定性，用Node自身提供的函数以及Graph提供的函数保持内部的封装
-        //实例成员
-        AlchemyEntity entity;
-        //邻接表
-        Dictionary<AlchemyUnicode, T> Adjacency;
+        public Dictionary<AlchemyUnicode, TLink> AdjacencyLinks;
+        public List<AlchemyUnicode> AdjacencyNodes;
+        public TNode Node;
 
-        public Node()
+        public bool UnicodeCurrect(AlchemyUnicode unicode_Compared)
         {
-
+            return Node.GetUnicode() == unicode_Compared;
         }
-        public Node(AlchemyEntity alchemyEntity)
+        public AlchemyUnicode GetUnicode()
         {
-            entity = alchemyEntity;
-            Adjacency = new Dictionary<AlchemyUnicode, T>();
+            return Node.GetUnicode();
         }
-        public AlchemyEntity GetEntityInstance()
+        public AdjacencyList()
         {
-            return entity;
+            AdjacencyLinks = new Dictionary<AlchemyUnicode, TLink>();
+            AdjacencyNodes = new List<AlchemyUnicode>();
+        }
+        public AdjacencyList(TNode node)
+        {
+            Node = node;
+            AdjacencyLinks = new Dictionary<AlchemyUnicode, TLink>();
+            AdjacencyNodes = new List<AlchemyUnicode>();
         }
         /// <summary>
         ///创建两个节点之间的链接，如果创建成功返回<see langword="true"/>，创建失败返回<see langword="false"/><br/>
@@ -203,81 +233,143 @@ namespace MysteriousAlchemy.Core.Abstract
         /// <param name="Endentity">链接实例的另外一个节点</param>
         /// <param name="edgeCallback">回调函数</param>
         /// <returns></returns>
-        public bool AddConnection(AlchemyEntity Endentity, EdgeCallback<T> edgeCallback)
+        public bool AddLink(AlchemyEntity Endentity, LinkCallback<TLink> edgeCallback)
         {
-            if (Adjacency.ContainsKey(Endentity.unicode))
+            if (AdjacencyLinks.ContainsKey(Endentity.unicode))
                 return false;
-
-            var edgeInstance = new T();
-            edgeInstance.start = this.entity.unicode;
+            var edgeInstance = new TLink();
+            edgeInstance.start = Node.GetUnicode();
             edgeInstance.end = Endentity.unicode;
-            edgeCallback(edgeInstance);
-            Adjacency.Add(Endentity.unicode, edgeInstance);
+            edgeCallback?.Invoke(edgeInstance);
+            AdjacencyLinks.Add(Endentity.unicode, edgeInstance);
+
             return true;
         }
-
         /// <summary>
         ///删除两个节点之间的链接，如果创建成功返回<see langword="true"/>，创建失败返回<see langword="false"/><br/>
         ///删除失败的原因：不存在该链接<br/>
         /// </summary>
         /// <param name="Endentity">链接实例的另外一个节点</param>
         /// <returns></returns>
-        public bool RemoveConnection(AlchemyEntity Endentity)
+        public bool RemoveLink(AlchemyEntity Endentity)
         {
-            if (!Adjacency.ContainsKey(Endentity.unicode))
+            if (!AdjacencyLinks.ContainsKey(Endentity.unicode))
                 return false;
-            Adjacency.Remove(Endentity.unicode);
+            AdjacencyLinks.Remove(Endentity.unicode);
             return true;
         }
-        public bool RemoveConnection(AlchemyUnicode unicode)
+
+        public bool RemoveLink(AlchemyUnicode unicode)
         {
-            if (!Adjacency.ContainsKey(unicode))
+            if (!AdjacencyLinks.ContainsKey(unicode))
                 return false;
-            Adjacency.Remove(unicode);
+            AdjacencyLinks.Remove(unicode);
             return true;
         }
+
         /// <summary>
         /// 遍历邻接表
         /// </summary>
         /// <param name="HowToDo">你要干什么</param>
-        public void ForEachAdjacency(EdgeCollectionCallback<T> HowToDo)
+        public void ForEachAdjacency(LinkCollectionCallback<TLink> HowToDo)
         {
-            foreach (var connection in Adjacency)
+            foreach (var connection in AdjacencyLinks)
             {
                 HowToDo(connection);
             }
         }
-        public bool Find(AlchemyUnicode alchemyUnicode, out T target)
+        public bool FindLink(AlchemyUnicode alchemyUnicode, out TLink target)
         {
             target = null;
-            if (!Adjacency.ContainsKey(alchemyUnicode))
+            if (!AdjacencyLinks.ContainsKey(alchemyUnicode))
                 return false;
-            target = Adjacency[alchemyUnicode];
+            target = AdjacencyLinks[alchemyUnicode];
             return true;
         }
-        public bool ConstainConnection(AlchemyUnicode unicode)
+
+        public bool ConstainLink(AlchemyUnicode unicode)
         {
-            return Adjacency.ContainsKey(unicode);
+            return AdjacencyLinks.ContainsKey(unicode);
         }
         public bool HasConnection()
         {
-            return Adjacency.Count > 0;
+            return AdjacencyLinks.Count > 0;
         }
-        #region //数据保存
-        TagCompound CustomDate;
-
-        public static readonly Func<TagCompound, Node<T>> DESERIALIZER = Load;
+        public List<TLink> AdjacencyLinkToList_Value()
+        {
+            List<TLink> list = new List<TLink>();
+            ForEachAdjacency((o) =>
+            {
+                list.Add(o.Value);
+            });
+            return list;
+        }
+        public List<AlchemyUnicode> AdjacencyToList_Key()
+        {
+            List<AlchemyUnicode> list = new List<AlchemyUnicode>();
+            ForEachAdjacency((o) =>
+            {
+                list.Add(o.Key);
+            });
+            return list;
+        }
+        #region 数据存储
+        public readonly static Func<TagCompound, AdjacencyList<TNode, TLink>> DESERIALIZER = Load;
         public TagCompound SerializeData()
         {
-            var list = new List<TagCompound>();
-            foreach (var data in Adjacency)
+            var instance = new TagCompound()
             {
-                list.Add(new TagCompound()
-                {
-                    ["key"] = data.Key,
-                    ["value"] = data.Value
-                });
-            }
+                [nameof(Node)] = Node,
+                [nameof(AdjacencyNodes)] = AdjacencyNodes
+            };
+            AssetUtils.SaveData_Dictionary(ref instance, ref AdjacencyLinks, nameof(AdjacencyLinks));
+            return instance;
+        }
+        public static AdjacencyList<TNode, TLink> Load(TagCompound tag)
+        {
+            var instance = new AdjacencyList<TNode, TLink>();
+            instance.Node = tag.Get<TNode>(nameof(Node));
+            instance.AdjacencyNodes = tag.Get<List<AlchemyUnicode>>(nameof(AdjacencyNodes));
+            AssetUtils.LoadData_Dictionary(tag, nameof(AdjacencyLinks), ref instance.AdjacencyLinks);
+            return instance;
+        }
+        #endregion
+    }
+    //图的节点,不存储邻接表
+    public class Node : TagSerializable
+    {
+        protected AlchemyUnicode unicode;
+        //实例成员
+        protected AlchemyEntity entity { get { AlchemySystem.FindAlchemyEntitySafely<AlchemyEntity>(unicode, out var result); return result; } }
+
+        public Node()
+        {
+
+        }
+        public Node(AlchemyEntity alchemyEntity)
+        {
+            unicode = alchemyEntity.unicode;
+
+        }
+        public void SetEntity(AlchemyEntity entity)
+        {
+            this.unicode = entity.unicode;
+        }
+        public AlchemyEntity GetEntityInstance()
+        {
+            return entity;
+        }
+        public AlchemyUnicode GetUnicode()
+        {
+            return entity.unicode;
+        }
+
+        #region //数据保存
+        protected TagCompound CustomDate;
+
+        public readonly static Func<TagCompound, Node> DESERIALIZER = Load;
+        public TagCompound SerializeData()
+        {
 
             CustomDate = new TagCompound();
             SaveData(CustomDate);
@@ -286,25 +378,15 @@ namespace MysteriousAlchemy.Core.Abstract
             {
                 [nameof(CustomDate)] = CustomDate,
 
-                [nameof(entity)] = entity,
-                [nameof(Adjacency)] = list
-
+                [nameof(entity)] = entity.unicode,
             };
             return instance;
         }
-        public static Node<T> Load(TagCompound tag)
+        public static Node Load(TagCompound tag)
         {
-            var instance = new Node<T>();
+            var instance = new Node();
             instance.CustomDate = tag.GetCompound(nameof(CustomDate));
-            instance.entity = tag.Get<AlchemyEntity>(nameof(entity));
-            instance.Adjacency ??= new Dictionary<AlchemyUnicode, T>();
-            var list = tag.GetList<TagCompound>(nameof(Adjacency));
-            foreach (var data in list)
-            {
-                AlchemyUnicode unicode = data.Get<AlchemyUnicode>("key");
-                T edge = data.Get<T>("value");
-                instance.Adjacency[unicode] = edge;
-            }
+            instance.unicode = tag.Get<AlchemyUnicode>(nameof(entity));
 
 
             instance.LoadData(instance.CustomDate);
@@ -321,7 +403,7 @@ namespace MysteriousAlchemy.Core.Abstract
         #endregion
     }
 
-    public class Edge : TagSerializable
+    public class Link : TagSerializable
     {
         //关系的起点
         public AlchemyUnicode start;
@@ -330,16 +412,16 @@ namespace MysteriousAlchemy.Core.Abstract
 
         public int weight;
 
-        public Edge()
+        public Link()
         {
         }
-        public Edge(AlchemyUnicode start, AlchemyUnicode end)
+        public Link(AlchemyUnicode start, AlchemyUnicode end)
         {
             this.start = start;
             this.end = end;
 
         }
-        public Edge(AlchemyUnicode start, AlchemyUnicode end, int weight)
+        public Link(AlchemyUnicode start, AlchemyUnicode end, int weight)
         {
             this.start = start;
             this.end = end;
@@ -348,23 +430,15 @@ namespace MysteriousAlchemy.Core.Abstract
 
         public bool GetStartInstance<T>(out T target) where T : AlchemyEntity
         {
-            target = null;
-            if (!AlchemySystem.alchemyEntities.ContainsKey(start))
-                return false;
-            target = (T)AlchemySystem.alchemyEntities[start];
-            return true;
+            return AlchemySystem.FindAlchemyEntitySafely<T>(start, out target);
         }
         public bool GetEndInstance<T>(out T target) where T : AlchemyEntity
         {
-            target = null;
-            if (!AlchemySystem.alchemyEntities.ContainsKey(end))
-                return false;
-            target = (T)AlchemySystem.alchemyEntities[end];
-            return true;
+            return AlchemySystem.FindAlchemyEntitySafely<T>(end, out target);
         }
         #region //数据保存
-        TagCompound CustomDate;
-        public static readonly Func<TagCompound, Edge> DESERIALIZER = Load;
+        protected TagCompound CustomDate;
+        public static readonly Func<TagCompound, Link> DESERIALIZER = Load;
         public TagCompound SerializeData()
         {
             CustomDate = new TagCompound();
@@ -380,9 +454,9 @@ namespace MysteriousAlchemy.Core.Abstract
             };
             return instance;
         }
-        public static Edge Load(TagCompound tag)
+        public static Link Load(TagCompound tag)
         {
-            var instance = new Edge();
+            var instance = new Link();
             instance.start = tag.Get<AlchemyUnicode>(nameof(start));
             instance.end = tag.Get<AlchemyUnicode>(nameof(end));
             instance.weight = tag.GetInt(nameof(weight));
@@ -402,7 +476,7 @@ namespace MysteriousAlchemy.Core.Abstract
         #endregion
     }
 
-    public delegate void EdgeCallback<T>(T EgdeInstance) where T : Edge;
-    public delegate void EdgeCollectionCallback<T>(KeyValuePair<AlchemyUnicode, T> EgdeInstance) where T : Edge;
-    public delegate void NodesCollectionCallBack<T>(KeyValuePair<AlchemyUnicode, Node<T>> keyValuePair) where T : Edge, new();
+    public delegate void LinkCallback<T>(T EgdeInstance) where T : Link;
+    public delegate void LinkCollectionCallback<T>(KeyValuePair<AlchemyUnicode, T> EgdeInstance) where T : Link;
+    public delegate void NodesCollectionCallBack<TNode, TLink>(AdjacencyList<TNode, TLink> keyValuePair) where TNode : Node, new() where TLink : Link, new();
 }

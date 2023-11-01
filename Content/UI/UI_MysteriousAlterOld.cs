@@ -132,7 +132,7 @@ namespace MysteriousAlchemy.UI
             DictionaryProductImages.active = false;
             DictionaryPanel.Append(DictionaryProductImages);
 
-            var buttonTex = ModContent.Request<Texture2D>(AssetUtils.UI + "CookPrep");
+            var buttonTex = ModContent.Request<Texture2D>(AssetUtils.Texture_UI + "CookPrep");
             CustomButton closeButton = new CustomButton(buttonTex, "奥术合成");
             closeButton.Width.Set(176, 0);
             closeButton.Height.Set(42, 0);
@@ -156,7 +156,7 @@ namespace MysteriousAlchemy.UI
             ComposePanelButton.Clicked += ChangeComposeButtonString;
             MainPanel.Append(ComposePanelButton);
 
-            LeftButton = new CustomButton(ModContent.Request<Texture2D>(AssetUtils.UI + "LeftButton"), null);
+            LeftButton = new CustomButton(ModContent.Request<Texture2D>(AssetUtils.Texture_UI + "LeftButton"), null);
             LeftButton.Width.Set(22, 0);
             LeftButton.Height.Set(22, 0);
             LeftButton.Left.Set(40 + 100 - 11, 0);
@@ -166,7 +166,7 @@ namespace MysteriousAlchemy.UI
             MainPanel.Append(LeftButton);
 
 
-            RightButton = new CustomButton(ModContent.Request<Texture2D>(AssetUtils.UI + "RightButton"), null);
+            RightButton = new CustomButton(ModContent.Request<Texture2D>(AssetUtils.Texture_UI + "RightButton"), null);
             RightButton.Width.Set(22, 0);
             RightButton.Height.Set(22, 0);
             RightButton.Left.Set(40 + 300 - 11, 0);

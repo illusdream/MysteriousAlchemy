@@ -74,12 +74,9 @@ namespace MysteriousAlchemy.Projectiles.TestProj
         {
             base.PostAI();
         }
-        //是否可以造成伤害
         public override bool? CanDamage()
         {
-            // 当弹幕剩余存活时间小于0.5s时不造成伤害
-            if (Projectile.timeLeft < 30) return false;
-            // 返回null时则执行默认的原版判定
+            // 返回null时执行默认的原版判定
             return null;
         }
         //是否更新位置

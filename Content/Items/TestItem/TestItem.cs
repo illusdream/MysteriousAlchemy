@@ -5,6 +5,7 @@ using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Content.Dusts;
 using MysteriousAlchemy.Content.Particles;
 using MysteriousAlchemy.Content.Projectiles.Chilliness;
+using MysteriousAlchemy.Content.UI;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.Systems;
@@ -46,6 +47,7 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
+            UIloader.GetUIState<UI_AlchemyEntity>().SetVisable(!UI_AlchemyEntity.visable);
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

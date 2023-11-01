@@ -108,6 +108,26 @@ Items: {
 		DisplayName: Star Trans Instrument
 		Tooltip: ""
 	}
+
+	CLEAR: {
+		DisplayName: C L E A R
+		Tooltip: ""
+	}
+
+	Select: {
+		DisplayName: Select
+		Tooltip: ""
+	}
+
+	TestEtherProducerItem: {
+		DisplayName: Test Ether Producer Item
+		Tooltip: ""
+	}
+
+	Link: {
+		DisplayName: Link
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -153,6 +173,11 @@ Configs: {
 
 		TestVisable: {
 			Label: Test Visable
+			Tooltip: ""
+		}
+
+		TestPanelVisable: {
+			Label: Test Panel Visable
 			Tooltip: ""
 		}
 	}

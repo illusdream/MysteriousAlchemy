@@ -1,9 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace MysteriousAlchemy.Utils
 {
@@ -34,6 +36,8 @@ namespace MysteriousAlchemy.Utils
         public const string Tiles = Asset + "Tiles/";
         public const string Tiles_MagicComponents = Tiles + "MagicComponents/";
 
+        public const string UI = Asset + "UI/";
+        public const string UI_Alchemy = UI + "Alchemy/";
 
         public const string Texture = Asset + "Texture/";
 
@@ -42,7 +46,7 @@ namespace MysteriousAlchemy.Utils
         public const string Flow = Texture + "Flow/";
         public const string Mask = Texture + "Mask/";
         public const string Glow = Texture + "Glow/";
-        public const string UI = Texture + "UI/";
+        public const string Texture_UI = Texture + "UI/";
 
         public const string Effect = ModPath + "Effects/";
 
@@ -70,6 +74,45 @@ namespace MysteriousAlchemy.Utils
         {
             return ModContent.Request<Effect>(Effect + name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
         }
+
+
+
+        public static void SaveData_Dictionary<TKey, TValue>(ref TagCompound tag, ref Dictionary<TKey, TValue> Dic, string SaveName)
+        {
+            if (Dic == null)
+                return;
+            var list = new List<TagCompound>();
+            foreach (var data in Dic)
+            {
+                list.Add(new TagCompound()
+                {
+                    ["Key"] = data.Key,
+                    ["Value"] = data.Value
+                });
+            }
+            tag[SaveName] = list;
+        }
+        public static void LoadData_Dictionary<TKey, TValue>(TagCompound tag, string SaveName, ref Dictionary<TKey, TValue> Dic)
+        {
+            if (Dic is null)
+                Dic = new Dictionary<TKey, TValue>();
+            var list = tag.GetList<TagCompound>(SaveName);
+            foreach (var data in list)
+            {
+                var Key = data.Get<TKey>("Key");
+                var Value = data.Get<TValue>("Value");
+                Dic[Key] = Value;
+            }
+        }
+
+
+
+
+
+
+
+
+
 
 
         public static Texture2D WhitePic = GetTexture2D(Texture + "polartest");

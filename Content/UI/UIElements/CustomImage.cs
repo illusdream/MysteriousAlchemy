@@ -13,7 +13,7 @@ namespace MysteriousAlchemy.UI.UIElements
     public class CustomImage : UIImage
     {
         public bool active;
-        private static Texture2D TransparentTex = AssetUtils.GetTexture2D(AssetUtils.UI + "Transparent");
+        private static Texture2D TransparentTex = AssetUtils.GetTexture2D(AssetUtils.Texture_UI + "Transparent");
         public CustomImage(Asset<Texture2D> texture) : base(texture)
         {
 

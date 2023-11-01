@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MysteriousAlchemy.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,10 @@ namespace MysteriousAlchemy.Core.Timers
 
         public bool active;
 
+        public Timer()
+        {
+
+        }
         public Timer(float timeScale, float triggerTime)
         {
             this.timeScale = timeScale;
@@ -24,7 +29,17 @@ namespace MysteriousAlchemy.Core.Timers
 
         public virtual bool ConditionTrigger(bool Condition)
         {
-            return Condition && time > triggerTime;
+            if (Condition && time > triggerTime)
+            {
+                time = 0;
+                return true;
+            }
+            return false;
+        }
+        public virtual void ConditionTrigger(bool condition, Action HowToDo)
+        {
+            if (ConditionTrigger(condition))
+                HowToDo?.Invoke();
         }
         public virtual void update()
         {

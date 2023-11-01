@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,11 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         public static AlchemyEntity Load(TagCompound tag)
         {
-            var instance = new AlchemyEntity();
+            return InstanceLoad<AlchemyEntity>(tag);
+        }
+        public static T InstanceLoad<T>(TagCompound tag) where T : AlchemyEntity, new()
+        {
+            var instance = new T();
             instance.Ether = tag.GetFloat(nameof(Ether));
             instance.MaxEther = tag.GetFloat(nameof(MaxEther));
             instance.active = tag.GetBool(nameof(active));
@@ -78,7 +83,7 @@ namespace MysteriousAlchemy.Core.Abstract
 
         public Vector2 TopLeft;
 
-        public Vector2 Size;
+        public Vector2 Size = new Vector2(16, 16);
 
         public Vector2 Center
         {
@@ -139,14 +144,17 @@ namespace MysteriousAlchemy.Core.Abstract
         {
 
         }
+        public virtual void Trigger()
+        {
 
+        }
 
         /// <summary>
-        /// 每帧更新
+        /// 每帧更新,多用于更新魔力
         /// </summary>
         public virtual void Update()
         {
-            DebugUtils.NewText(unicode.value);
+
         }
         /// <summary>
         /// 当该<see cref="AlchemyEntity"/>出现在世界中的绘制，特指在方块中存储或者在被实体化MagicCircle中存储
@@ -169,13 +177,33 @@ namespace MysteriousAlchemy.Core.Abstract
 
         }
 
-
+        public virtual bool ResetUnicode(List<AlchemyUnicode> needExclude)
+        {
+            int repeatCount = 0;
+            bool Repeat = false;
+            while (true)
+            {
+                repeatCount++;
+                unicode = new AlchemyUnicode();
+                foreach (var exclude in needExclude)
+                {
+                    Repeat = Repeat || exclude == unicode;
+                }
+                if (!Repeat || repeatCount > 100)
+                {
+                    break;
+                }
+            }
+            return Repeat;
+        }
     }
 
     public struct AlchemyUnicode : TagSerializable
     {
         int _unicode;
 
+        int worldID = 0;
+        //用于检测是否在这个世界，-（世界ID）为不在这个世界但是正常执行更新函数，0为被玩家存储在背包中，正常执行更新内容，绘制执行玩家内绘制，正数为在这个世界中，正常更新并绘制
         public int value
         {
             get { return _unicode; }
@@ -184,7 +212,7 @@ namespace MysteriousAlchemy.Core.Abstract
                 _unicode = Math.Clamp(value, 0, 9999);
             }
         }
-
+        public int WorldID { get { return worldID; } set { worldID = value; } }
         public AlchemyUnicode()
         {
             _unicode = Main.rand.Next(0, 10000);
@@ -204,6 +232,7 @@ namespace MysteriousAlchemy.Core.Abstract
             var instance = new TagCompound()
             {
                 [nameof(_unicode)] = _unicode,
+                [nameof(worldID)] = worldID
             };
             return instance;
         }
@@ -211,6 +240,7 @@ namespace MysteriousAlchemy.Core.Abstract
         {
             var instance = new AlchemyUnicode();
             instance._unicode = tag.GetInt(nameof(_unicode));
+            instance.worldID = tag.GetInt(nameof(worldID));
             return instance;
         }
     }

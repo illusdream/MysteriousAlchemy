@@ -20,11 +20,11 @@
     <Folder Include="Asset\Texture\Mask\" />
     <Folder Include="Asset\Texture\Extra\" />
     <Folder Include="Asset\Tiles\MagicComponents\" />
+    <Folder Include="Asset\UI\Alchemy\" />
     <Folder Include="Content\Items\MagicComponetItems\" />
     <Folder Include="Content\Items\TileItems\" />
     <Folder Include="Content\TileEntitys\MagicComponents\" />
     <Folder Include="Content\Tiles\MagicComponents\" />
-    <Folder Include="Content\AlchemyEntities\" />
     <Folder Include="Core\Config\" />
   </ItemGroup>
 </Project>
