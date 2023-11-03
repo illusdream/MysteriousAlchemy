@@ -17,6 +17,8 @@ namespace MysteriousAlchemy.Core.Timers
 
         public bool active;
 
+        public bool pause;
+
         public Timer()
         {
 
@@ -43,11 +45,26 @@ namespace MysteriousAlchemy.Core.Timers
         }
         public virtual void update()
         {
-            time += timeScale;
+            if (!pause)
+            {
+                time += timeScale;
+            }
         }
         public virtual float GetTime()
         {
             return time;
+        }
+        public virtual float GetLinearInter()
+        {
+            return time / triggerTime;
+        }
+        public virtual float GetEaseInter()
+        {
+            return -(MathF.Cos(MathF.PI * GetLinearInter()) - 1) / 2;
+        }
+        public virtual void ResetTimer()
+        {
+            time = 0;
         }
     }
 }

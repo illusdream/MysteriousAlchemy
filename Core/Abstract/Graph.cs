@@ -21,7 +21,7 @@ namespace MysteriousAlchemy.Core.Abstract
         {
             Dic_AdjacencyList = new Dictionary<AlchemyUnicode, AdjacencyList<TNode, TLink>>();
         }
-        public bool AddLink(AlchemyEntity start, AlchemyEntity end, LinkCallback<TLink> edgeCallback)
+        public virtual bool AddLink(AlchemyEntity start, AlchemyEntity end, LinkCallback<TLink> edgeCallback)
         {
             if (Dic_AdjacencyList is null)
                 return false;
@@ -34,7 +34,7 @@ namespace MysteriousAlchemy.Core.Abstract
             Dic_AdjacencyList[end.unicode].AdjacencyNodes.Add(start.unicode);
             return true;
         }
-        public bool AddLink(AlchemyUnicode start, AlchemyUnicode end, LinkCallback<TLink> edgeCallback)
+        public virtual bool AddLink(AlchemyUnicode start, AlchemyUnicode end, LinkCallback<TLink> edgeCallback)
         {
             if (Dic_AdjacencyList is null)
                 return false;

@@ -223,7 +223,6 @@ namespace MysteriousAlchemy.Core.Systems
         }
         #endregion
     }
-
     public class AlchemyTestConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;

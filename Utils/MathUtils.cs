@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.UI;
 
 namespace MysteriousAlchemy.Utils
 {
@@ -93,6 +94,16 @@ namespace MysteriousAlchemy.Utils
         public static float GetTime(float scale)
         {
             return (float)Main.time * scale;
+        }
+
+        public static CalculatedStyle Lerp(CalculatedStyle origin, CalculatedStyle target, float inter)
+        {
+            CalculatedStyle result = new CalculatedStyle();
+            result.X = MathHelper.Lerp(origin.X, target.X, inter);
+            result.Y = MathHelper.Lerp(origin.Y, target.Y, inter);
+            result.Width = MathHelper.Lerp(origin.Width, target.Width, inter);
+            result.Height = MathHelper.Lerp(origin.Height, target.Height, inter);
+            return result;
         }
         public static Vector2 LerpVelocity(Vector2 origin, Vector2 target, float scale)
         {

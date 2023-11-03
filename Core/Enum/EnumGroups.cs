@@ -40,7 +40,10 @@ namespace MysteriousAlchemy.Core.Enum
     {
         InWorld, InInventory
     }
-
+    public enum AEGraphCategory
+    {
+        Ether, Subordinate
+    }
 
 
     #endregion

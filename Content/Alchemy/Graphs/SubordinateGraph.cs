@@ -50,6 +50,37 @@ namespace MysteriousAlchemy.Content.Alchemy.Graphs
                 }
             }
         }
+        public override bool AddLink(AlchemyEntity start, AlchemyEntity end, LinkCallback<SubordinateLink> edgeCallback)
+        {
+            return AddLink(start.unicode, end.unicode, edgeCallback);
+        }
+        public override bool AddLink(AlchemyUnicode start, AlchemyUnicode end, LinkCallback<SubordinateLink> edgeCallback)
+        {
+            if (Dic_AdjacencyList is null)
+                return false;
+            if (!Dic_AdjacencyList.ContainsKey(start) || !Dic_AdjacencyList.ContainsKey(end))
+                return false;
+            if (Dic_AdjacencyList[start].ConstainLink(end))
+                return false;
+
+            if (Dic_AdjacencyList[end].ConstainLink(start))
+            {
+                Dic_AdjacencyList[end].RemoveLink(start);
+            }
+            if (Dic_AdjacencyList[end].AdjacencyNodes.Count > 0)
+            {
+                Dic_AdjacencyList[end].AdjacencyNodes.ForEach((o) =>
+                {
+                    Dic_AdjacencyList[o].RemoveLink(end);
+                });
+            }
+            if (InWorld.Contains(end))
+                InWorld.Remove(end);
+            var endInstance = Dic_AdjacencyList[end].Node.GetEntityInstance();
+            Dic_AdjacencyList[start].AddLink(endInstance, edgeCallback);
+            Dic_AdjacencyList[end].AdjacencyNodes.Add(start);
+            return true;
+        }
         public override bool RemoveNode(AlchemyUnicode unicode)
         {
             bool result = base.RemoveNode(unicode);

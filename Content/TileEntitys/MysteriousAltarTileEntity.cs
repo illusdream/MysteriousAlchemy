@@ -102,7 +102,10 @@ namespace MysteriousAlchemy.Content.TileEntitys
             mysteriousAlterRecipes = JSON_VanillaReader.Instance.GetJsonList<MysteriousAlterRecipe>("VanillaJSONFronting/MysteriousAlterRecipe");
             foreach (var recipe in mysteriousAlterRecipes)
             {
-                if (CheckContextCompared(Ingredient, recipe.OuterIngredient)) ;
+                if (CheckContextCompared(Ingredient, recipe.OuterIngredient))
+                {
+
+                }
             }
         }
         private bool CheckContextCompared(List<Item> InSlot, ItemContext[] Contexts)
