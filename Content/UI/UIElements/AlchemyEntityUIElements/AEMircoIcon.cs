@@ -29,7 +29,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             if (AlchemySystem.FindAlchemyEntitySafely<AlchemyEntity>(unicode, out AlchemyEntity result))
             {
                 PositionInWorld = result.TopLeft;
-                //获取对应的Icon ：还没写
+                //获取对应的Icon ：还没写 ，预计内容量较大，单独写个函数吧
 
                 //转换坐标
                 Vector2 PanelTopLeft = Center - Range / 2f;

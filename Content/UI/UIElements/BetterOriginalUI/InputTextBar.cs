@@ -17,7 +17,8 @@ using Terraria.UI;
 namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 {
     /// <summary>
-    /// 对应的是原版的<see cref="UISearchBar"/>,原版的写的一坨，很多功能还得在外面额外添加<see cref="UIElement"/>才能实现
+    /// 对应的是原版的<see cref="UISearchBar"/>,原版的写的一坨，很多功能还得在外面额外添加<see cref="UIElement"/>才能实现，我写的也好不到哪去，反正能用就行，哪天
+    /// 整明白原版IO逻辑再重新写（
     /// </summary>
     public class InputTextBar : UIElement
     {

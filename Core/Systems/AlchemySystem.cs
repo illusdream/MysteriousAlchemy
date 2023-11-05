@@ -36,7 +36,7 @@ namespace MysteriousAlchemy.Core.Systems
 
         public static AlchemyUnicode SelectUnicode;
         public static List<AlchemyEntity> HasBeenSelect = new List<AlchemyEntity>();
-        public static Timer SelectTimer = TimerSystem.RegisterTimer<Timer>(1, 60);
+        public static Timer SelectTimer = TimerSystem.RegisterTimer<Timer>(1, 60, IsUI_Timer: false);
         public static int WorldID { get { return Main.worldID; } }
 
         public override void Load()
@@ -64,7 +64,7 @@ namespace MysteriousAlchemy.Core.Systems
 
 
 
-            SelectTimer ??= TimerSystem.RegisterTimer<Timer>(1, 60);
+            SelectTimer ??= TimerSystem.RegisterTimer<Timer>(1, 60, IsUI_Timer: false);
             if (SelectTimer.ConditionTrigger(true))
             {
                 HasBeenSelect.Clear();
@@ -112,7 +112,7 @@ namespace MysteriousAlchemy.Core.Systems
 
         public static bool TryGetEtherEntity<T>(Vector2 target, out T result) where T : AlchemyEntity
         {
-            SelectTimer ??= TimerSystem.RegisterTimer<Timer>(1, 60);
+            SelectTimer ??= TimerSystem.RegisterTimer<Timer>(1, 60, IsUI_Timer: false);
             result = null;
             foreach (var _entity in entities)
             {

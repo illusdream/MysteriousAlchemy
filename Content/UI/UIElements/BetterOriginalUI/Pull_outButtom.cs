@@ -16,7 +16,7 @@ using MysteriousAlchemy.Core;
 
 namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 {
-    internal class Pull_outButtom : UIElement
+    public class Pull_outButtom : UIElement
     {
         public float PulloutInter;
 
@@ -26,36 +26,43 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 
         public Vector2 PulloutVector;
 
-        private Texture2D _texture;
+        private string _texture;
 
         private float _visibilityActive = 1f;
 
         private float _visibilityInactive = 0.4f;
 
-        private Texture2D _borderTexture;
+        private string _borderTexture;
         public Pull_outButtom(Vector2 pulloutVector)
         {
             PulloutVector = pulloutVector;
-            _texture = AssetUtils.GetTexture2D(AssetUtils.UI + "triangle");
-            _borderTexture = AssetUtils.GetTexture2D(AssetUtils.UI + "triangleBackground");
-            Width.Set(_borderTexture.Width, 0);
-            Height.Set(_borderTexture.Height, 0);
+            _texture = AssetUtils.UI + "triangle";
+            _borderTexture = AssetUtils.UI + "triangleBackground";
+            Width.Set(22, 0);
+            Height.Set(22, 0);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (ContainsPoint(Main.MouseScreen))
+            if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
             float DrawRotation = PulloutVector.ToRotation() + MathHelper.Pi + (Pullout ? MathHelper.Pi * PulloutInter : MathHelper.Pi + MathHelper.Pi * PulloutInter);
             CalculatedStyle dimensions = GetDimensions();
-            spriteBatch.Draw(_borderTexture, dimensions.Position(), Color.White);
+
+
+            Texture2D background = AssetUtils.GetTexture2D(_borderTexture);
+            Texture2D triangle = AssetUtils.GetTexture2D(_texture);
+
+
+
+            spriteBatch.Draw(background, dimensions.Position(), Color.White);
             if (!IsInAnimation)
             {
-                spriteBatch.Draw(_texture, dimensions.Position() + _borderTexture.Size() / 2f, null, Color.White * (base.IsMouseHovering ? _visibilityActive : _visibilityInactive), DrawRotation, _texture.Size() / 2f, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(triangle, dimensions.Position() + background.Size() / 2f, null, Color.White * (base.IsMouseHovering ? _visibilityActive : _visibilityInactive), DrawRotation, triangle.Size() / 2f, 1, SpriteEffects.None, 0);
             }
             if (IsInAnimation)
             {
-                spriteBatch.Draw(_texture, dimensions.Position() + _borderTexture.Size() / 2f, null, Color.White, DrawRotation, _texture.Size() / 2f, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(triangle, dimensions.Position() + background.Size() / 2f, null, Color.White, DrawRotation, triangle.Size() / 2f, 1, SpriteEffects.None, 0);
             }
         }
 

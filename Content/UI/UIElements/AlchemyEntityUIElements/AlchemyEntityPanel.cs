@@ -27,7 +27,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         public bool IsInAnimation;
 
         public Timer AnimationTimer;
-        private CalculatedStyle OpenTargetRect = new CalculatedStyle(Main.screenWidth / 2f - 500, Main.screenHeight / 2f - 330, 1000, 660);
+        private CalculatedStyle OpenTargetRect = new CalculatedStyle(Main.screenWidth / 2f - 500, Main.screenHeight / 2f - 330, 1100, 660);
         private CalculatedStyle CloseTargetRect = new CalculatedStyle();
 
         private AEOpreatePanel opreatePanel;
@@ -39,7 +39,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
 
         public AEEditionPanel(CalculatedStyle start)
         {
-            AnimationTimer = TimerSystem.RegisterTimer<Timer>(1, 30);
+            AnimationTimer = TimerSystem.RegisterTimer<Timer>(1, 30, true);
             CloseTargetRect = start;
             Open = true;
             AddSubPanel();
@@ -47,18 +47,19 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
 
         private void AddSubPanel()
         {
-            AddViewNodePanel();
+
             AddOpreatePanel();
+            AddViewNodePanel();
             AddSearchPanel();
-            AddAdjacencyNodePanel();
-            AddAdjacencyLinksPanel();
+            //AddAdjacencyNodePanel();
+            //AddAdjacencyLinksPanel();
         }
         private void AddOpreatePanel()
         {
-            float OpWidth = 170;
+            float OpWidth = 440;
             opreatePanel = new AEOpreatePanel();
             opreatePanel.Top.Set(0, 0);
-            opreatePanel.Left.Set(viewNodePanel.Left.Pixels + viewNodePanel.Width.Pixels, 0);
+            opreatePanel.Left.Set(665, 0);
             opreatePanel.Width.Set(OpWidth, 0);
             opreatePanel.Height.Set(0, 1f);
             Append(opreatePanel);
@@ -72,6 +73,8 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             searchPanel.Width.Set(SpWidth, 0);
             searchPanel.Height.Set(0, 1f);
             Append(searchPanel);
+
+            viewNodePanel.NodeViewer.OnMircoIconClicked += OnIconClicked;
         }
         private void AddViewNodePanel()
         {
@@ -105,7 +108,10 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         }
 
 
-
+        private void OnIconClicked(AlchemyUnicode unicode)
+        {
+            opreatePanel.SetUnicode(unicode);
+        }
 
 
         private void AnimationUpdate()

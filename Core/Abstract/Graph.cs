@@ -113,6 +113,30 @@ namespace MysteriousAlchemy.Core.Abstract
             target = Dic_AdjacencyList[unicode].Node;
             return true;
         }
+
+        public bool FindLinks(AlchemyUnicode unicode, out List<TLink> result)
+        {
+            result = null;
+            if (!Dic_AdjacencyList.ContainsKey(unicode))
+                return false;
+            result = new List<TLink>();
+            result = Dic_AdjacencyList[unicode].AdjacencyLinkToList_Value();
+            return true;
+        }
+        public bool FindLinks(AlchemyEntity entity, out List<TLink> result)
+        {
+            return FindLinks(entity.unicode, out result);
+        }
+        public bool FindLink(AlchemyUnicode start, AlchemyUnicode end, out TLink result)
+        {
+            result = null;
+            if (!Dic_AdjacencyList.ContainsKey(start))
+                return false;
+            if (!Dic_AdjacencyList[start].AdjacencyLinks.ContainsKey(end))
+                return false;
+            result = Dic_AdjacencyList[start].AdjacencyLinks[end];
+            return true;
+        }
         public bool AddNode(AlchemyEntity entity)
         {
             if (Dic_AdjacencyList is null)

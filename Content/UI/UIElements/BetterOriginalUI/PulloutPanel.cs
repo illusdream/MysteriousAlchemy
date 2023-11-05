@@ -30,9 +30,10 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         {
             get { return _OpenWidth - 11; }
         }
+        public Vector2 PulloutVector = Vector2.UnitX;
         public PulloutPanel(float width, float widthpercent = 0)
         {
-            AnimationTimer = TimerSystem.RegisterTimer<Timer>(1, 15);
+            AnimationTimer = TimerSystem.RegisterTimer<Timer>(1, 15, true);
             AnimationTimer.pause = true;
 
             _OpenWidth = width;
@@ -46,7 +47,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             MainPanel.Width.Set(0, 0);
             base.Append(MainPanel);
 
-            OpenButtom = new Pull_outButtom(Vector2.UnitX);
+            OpenButtom = new Pull_outButtom(PulloutVector);
             OpenButtom.Top.Set(-OpenButtom.Height.Pixels / 2f, 0.5f);
             OpenButtom.Left.Set(11, 0);
             OpenButtom.OnLeftClick += PulloutSearchPanel;
@@ -54,7 +55,11 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 
             base.Append(OpenButtom);
         }
-
+        public void SetPulloutVector(Vector2 vector2)
+        {
+            PulloutVector = vector2;
+            OpenButtom.PulloutVector = vector2;
+        }
         private void PulloutSearchPanel(Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
         {
             Open = !Open;
@@ -138,11 +143,14 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         public bool InAnimation = false;
         public PulloutInnerPanel()
         {
+            BackgroundColor = new Color(63, 82, 151);
             OverflowHidden = true;
         }
         public override void Update(GameTime gameTime)
         {
             IgnoresMouseInteraction = !Open;
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
             if (Open && !InAnimation)
                 base.Update(gameTime);
         }

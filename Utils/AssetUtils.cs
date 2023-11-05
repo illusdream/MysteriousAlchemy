@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -46,6 +47,7 @@ namespace MysteriousAlchemy.Utils
         public const string Flow = Texture + "Flow/";
         public const string Mask = Texture + "Mask/";
         public const string Glow = Texture + "Glow/";
+        public const string Localization = Texture + "Localization/";
         public const string Texture_UI = Texture + "UI/";
 
         public const string Effect = ModPath + "Effects/";
@@ -74,8 +76,24 @@ namespace MysteriousAlchemy.Utils
         {
             return ModContent.Request<Effect>(Effect + name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
         }
-
-
+        /// <summary>
+        /// 提前写好了Mods.MysteriousAlchemy.UIImageText.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetUIImageTextInfoValue(string path)
+        {
+            return Language.GetTextValue("Mods.MysteriousAlchemy.UIImageText." + path);
+        }
+        /// <summary>
+        /// 提前写好了Mods.MysteriousAlchemy.UIImageText
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static LocalizedText GetUIImageTextInfo(string path)
+        {
+            return Language.GetText("Mods.MysteriousAlchemy.UIImageText." + path);
+        }
 
         public static void SaveData_Dictionary<TKey, TValue>(ref TagCompound tag, ref Dictionary<TKey, TValue> Dic, string SaveName)
         {

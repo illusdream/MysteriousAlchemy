@@ -1,4 +1,5 @@
-﻿using MysteriousAlchemy.Core.Abstract;
+﻿using Microsoft.Xna.Framework;
+using MysteriousAlchemy.Core.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +13,19 @@ namespace MysteriousAlchemy.Content.Alchemy.Graphs.Links
     public class EtherLink : Link
     {
         public float EtherCountPerFrame;
-
+        public float MaxCount = 20;
+        public float MinCount = 0;
         public EtherLink()
         {
             EtherCountPerFrame = 0.01f;
         }
         public EtherLink(float etherCountPerFrame)
         {
-            EtherCountPerFrame = etherCountPerFrame;
+            EtherCountPerFrame = MathHelper.Clamp(etherCountPerFrame, MinCount, MaxCount);
+        }
+        public void SetEtherCountPerFrame(float etherCountPerFrame)
+        {
+            EtherCountPerFrame = MathHelper.Clamp(etherCountPerFrame, MinCount, MaxCount);
         }
         public void HandlerEther(float statModify)
         {

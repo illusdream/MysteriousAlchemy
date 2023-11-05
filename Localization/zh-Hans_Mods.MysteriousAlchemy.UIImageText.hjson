@@ -1,0 +1,24 @@
+AlchemyUI: {
+	Node: {
+		Subordinate: {
+		}
+
+		Ether: {
+			Ether_now: /@Tex:MysteriousAlchemy/Asset/Texture/Localization/AlchemyIcon/EtherCrystal@/  当前：
+			Ether_Max: /@Tex:MysteriousAlchemy/Asset/Texture/Localization/AlchemyIcon/ActiveEther@/  最大：
+		}
+	}
+
+	Subordinate: {
+	}
+
+	Link.Ether.TransferRate: /@Tex:MysteriousAlchemy/Asset/UI/test1@/ 传输速率:
+
+	AdjNode: {
+		Subordinate: {
+		}
+
+		Ether: {
+		}
+	}
+}

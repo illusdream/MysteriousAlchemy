@@ -25,13 +25,14 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 
         public string HoverString;
 
-        public UITextBox HoverTextBox;
+        public UIText HoverTextBox;
         public ImageButtomWithText(string TexturePath, string HoverString)
         {
             _texture = TexturePath;
             this.HoverString = HoverString;
 
-            HoverTextBox = new UITextBox(HoverString);
+            HoverTextBox = new UIText(HoverString);
+            HoverTextBox.TextOriginX = 0;
             HoverTextBox.Width.Set(22, 0);
             HoverTextBox.Height.Set(66, 0);
             Append(HoverTextBox);

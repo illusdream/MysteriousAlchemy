@@ -19,7 +19,7 @@ namespace MysteriousAlchemy.Core.Abstract
     //炼金术相关基类,可保存
     public class AlchemyEntity : TagSerializable, IEtherContainer
     {
-
+        public string Name { get; set; } = "";
         #region //数据保存
         private TagCompound CustomData;
         public static readonly Func<TagCompound, AlchemyEntity> DESERIALIZER = Load;
@@ -37,7 +37,8 @@ namespace MysteriousAlchemy.Core.Abstract
                 [nameof(TopLeft)] = TopLeft,
                 [nameof(Size)] = Size,
                 [nameof(CustomData)] = CustomData,
-                [nameof(unicode)] = unicode
+                [nameof(unicode)] = unicode,
+                [nameof(Name)] = Name
 
             };
             return instance;
@@ -55,6 +56,7 @@ namespace MysteriousAlchemy.Core.Abstract
             instance.TopLeft = tag.Get<Vector2>(nameof(TopLeft));
             instance.Size = tag.Get<Vector2>(nameof(Size));
             instance.unicode = tag.Get<AlchemyUnicode>(nameof(unicode));
+            instance.Name = tag.GetString(nameof(Name));
             instance.CustomData = tag.Get<TagCompound>(nameof(CustomData));
 
             //额外的数据加载

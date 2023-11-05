@@ -42,11 +42,7 @@ namespace MysteriousAlchemy.Content.Items.TestItem
                         o.EtherCountPerFrame = 0.1f;
 
                     });
-                    AlchemySystem.subordinateGraph.AddLink(FristSelect, select, (o) =>
-                    {
 
-
-                    });
                     FristSelect = null;
                     return base.UseItem(player);
                 }

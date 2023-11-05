@@ -32,6 +32,7 @@ namespace MysteriousAlchemy.Utils
             return target / texture2D.Size();
         }
 
+
         /// <summary>
         /// 用于使用顶点绘制绘制伪3d图像，获得正确的顶点坐标
         /// </summary>
@@ -296,6 +297,130 @@ namespace MysteriousAlchemy.Utils
                     triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color, new Vector3(TopLeftTexcoord, 1)));
                     triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color, new Vector3(TopRightTexcoord, 1)));
                     triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color, new Vector3(ButtomRightTexcoord, 1)));
+
+                    break;
+                default:
+                    break;
+            }
+
+
+
+            //绘制
+
+            //使用shader
+            effectAction?.Invoke();
+
+            Main.graphics.GraphicsDevice.Textures[0] = texture;
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, triangleList.ToArray(), 0, triangleList.Count - 2);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="texture"></param>
+        /// <param name="PositionInScreen"></param>
+        /// <param name="color"></param>
+        /// <param name="alphaInFourAngle">左上，左下，右上，右下</param>
+        /// <param name="SourceRectangle"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
+        /// <param name="angleH"></param>
+        /// <param name="angleV"></param>
+        /// <param name="modifySpriteEffect"></param>
+        /// <param name="effectAction"></param>
+        public static void DrawEntityInWorld(SpriteBatch spriteBatch, Texture2D texture, Vector2 PositionInScreen, Color color, Vector4 alphaInFourAngle, Rectangle SourceRectangle = default, float rotation = 0, Vector2 scale = default, float angleH = 0, float angleV = MathHelper.PiOver2, ModifySpriteEffect modifySpriteEffect = ModifySpriteEffect.None, Action effectAction = null)
+        {
+            if (SourceRectangle == default)
+            {
+                SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            }
+            if (scale == default)
+            {
+                scale = Vector2.One;
+            }
+            //对角线一半的长度，用来矫正位置
+            Vector2 TextureHalfDiagonalLength = texture.Size() / 2f;
+            //
+            float VertexPosAngleFix = -MathHelper.PiOver4 * 3;
+
+            //按泰拉的顺时针取顶点
+            Vector2 NonTransVertex_Topleft = new Vector2(MathF.Cos(rotation + VertexPosAngleFix) * scale.X, MathF.Sin(rotation + VertexPosAngleFix) * scale.Y) * TextureHalfDiagonalLength;
+            Vector2 vertex_Topleft = DrawUtils.MartixTrans(NonTransVertex_Topleft, angleH, angleV);
+
+            Vector2 NonTransVertex_Topright = new Vector2(MathF.Cos(rotation + VertexPosAngleFix + MathHelper.PiOver2) * scale.X, MathF.Sin(rotation + VertexPosAngleFix + MathHelper.PiOver2) * scale.Y) * TextureHalfDiagonalLength;
+            Vector2 vertex_Topright = DrawUtils.MartixTrans(NonTransVertex_Topright, angleH, angleV);
+
+            Vector2 NonTransVertex_Buttomright = new Vector2(MathF.Cos(rotation + VertexPosAngleFix + MathHelper.PiOver2 * 2) * scale.X, MathF.Sin(rotation + VertexPosAngleFix + MathHelper.PiOver2 * 2) * scale.Y) * TextureHalfDiagonalLength;
+            Vector2 vertex_Buttomright = DrawUtils.MartixTrans(NonTransVertex_Buttomright, angleH, angleV);
+
+            Vector2 NonTransVertex_Buttomleft = new Vector2(MathF.Cos(rotation + VertexPosAngleFix + MathHelper.PiOver2 * 3) * scale.X, MathF.Sin(rotation + VertexPosAngleFix + MathHelper.PiOver2 * 3) * scale.Y) * TextureHalfDiagonalLength;
+            Vector2 vertex_Buttomleft = DrawUtils.MartixTrans(NonTransVertex_Buttomleft, angleH, angleV);
+
+
+            //获取正确的顶点采样坐标
+            RectangleF currectTexcoords = DrawUtils.GetCurrectRectangleInVertexPaint(SourceRectangle, texture);
+            Vector2 TopLeftTexcoord = new Vector2(currectTexcoords.X, currectTexcoords.Y);
+            Vector2 TopRightTexcoord = new Vector2(currectTexcoords.X + currectTexcoords.Width, currectTexcoords.Y);
+            Vector2 ButtomLeftTexcoord = new Vector2(currectTexcoords.X, currectTexcoords.Y + currectTexcoords.Height);
+            Vector2 ButtomRightTexcoord = new Vector2(currectTexcoords.X + currectTexcoords.Width, currectTexcoords.Y + currectTexcoords.Height);
+
+            List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
+            //逆时针连接各个顶点
+            switch (modifySpriteEffect)
+            {
+                case ModifySpriteEffect.None:
+                    //      Topleft ---- Topright
+                    //          |   \        |
+                    //          |      \     |
+                    //          |          \ |
+                    //      Buttomleft---Buttomright
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(ButtomLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(TopRightTexcoord, 1)));
+
+                    break;
+                case ModifySpriteEffect.FlipHorizontally:
+                    //      Topright ---- Topleft
+                    //          |   \        |
+                    //          |      \     |
+                    //          |          \ |
+                    //      Buttomright---Buttomleft
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(ButtomLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(TopRightTexcoord, 1)));
+                    break;
+                case ModifySpriteEffect.FlipVertically:
+                    //      Buttomleft ---- Buttomright
+                    //          |   \        |
+                    //          |      \     |
+                    //          |          \ |
+                    //      Topleft---------Topright
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(ButtomLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(TopRightTexcoord, 1)));
+                    break;
+                case ModifySpriteEffect.FlipDiagonally:
+                    //      Buttomright ---- Topright
+                    //          |   \        |
+                    //          |      \     |
+                    //          |          \ |
+                    //      Buttomleft---Topleft
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomleft + PositionInScreen, color * alphaInFourAngle.Y, new Vector3(ButtomLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(ButtomRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Buttomright + PositionInScreen, color * alphaInFourAngle.W, new Vector3(TopLeftTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topright + PositionInScreen, color * alphaInFourAngle.Z, new Vector3(TopRightTexcoord, 1)));
+                    triangleList.Add(new CustomVertexInfo(vertex_Topleft + PositionInScreen, color * alphaInFourAngle.X, new Vector3(ButtomRightTexcoord, 1)));
 
                     break;
                 default:

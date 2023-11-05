@@ -13,6 +13,9 @@ using Terraria.UI;
 
 namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
 {
+    /// <summary>
+    /// 通过名字搜索对应的AE，如果没有名字那就搜不到喽，过滤器还没写。。。
+    /// </summary>
     public class AESearchPanel : PulloutPanel
     {
         public InputTextBar inputText;

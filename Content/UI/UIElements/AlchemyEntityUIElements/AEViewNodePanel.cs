@@ -19,67 +19,100 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
 {
     public class AEViewNodePanel : UIPanel
     {
+        public InnerNodeViewer NodeViewer;
+        public NodeViewOpreationPanel OpreationPanel;
+        public AEViewNodePanel()
+        {
+
+
+            AddInnerViewer();
+            AddOpreationPanel();
+        }
+
+        private void ToDefaultPosition_Size_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
+        {
+            NodeViewer.ViewRange = new Vector2(Main.screenWidth, Main.screenHeight);
+            NodeViewer.ViewCenter = Main.LocalPlayer.Center;
+        }
+
+        private void ToDefaultSize_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
+        {
+            NodeViewer.ViewRange = new Vector2(Main.screenWidth, Main.screenHeight);
+        }
+
+        private void ToDefaultCenter_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
+        {
+            NodeViewer.ViewCenter = Main.LocalPlayer.Center;
+        }
+
+        private void AddInnerViewer()
+        {
+            NodeViewer = new InnerNodeViewer();
+            NodeViewer.Width.Set(0, 1);
+            NodeViewer.Height.Set(0, 1);
+            NodeViewer.Top.Set(0, 0);
+            NodeViewer.Left.Set(0, 0);
+            Append(NodeViewer);
+        }
+        private void AddOpreationPanel()
+        {
+            OpreationPanel = new NodeViewOpreationPanel();
+            OpreationPanel.Width.Set(44, 0);
+            OpreationPanel.Height.Set(0, 1);
+            OpreationPanel.Top.Set(0, 0);
+            OpreationPanel.Left.Set(-44, 1);
+
+            OpreationPanel.ToDefaultCenter.OnLeftClick += ToDefaultCenter_OnLeftClick;
+            OpreationPanel.ToDefaultSize.OnLeftClick += ToDefaultSize_OnLeftClick;
+            OpreationPanel.ToDefaultPosition_Size.OnLeftClick += ToDefaultPosition_Size_OnLeftClick;
+            Append(OpreationPanel);
+        }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+        public override void LeftMouseDown(UIMouseEvent evt)
+        {
+            base.RightMouseDown(evt);
+        }
+        public override void LeftMouseUp(UIMouseEvent evt)
+        {
+            base.RightMouseUp(evt);
+        }
+        public override void ScrollWheel(UIScrollWheelEvent evt)
+        {
+            base.ScrollWheel(evt);
+        }
+    }
+
+    /// <summary>
+    /// 可以拖动内部元素
+    /// </summary>
+    public class InnerNodeViewer : UIElement
+    {
+        //初始映射坐标的中心
         public Vector2 ViewCenter = Main.LocalPlayer.Center;
-        public Vector2 ViewRange = new Vector2(Main.screenWidth, Main.screenHeight);
-
-
+        //初始映射坐标的范围
+        public Vector2 ViewRange = new Vector2(Main.screenWidth, Main.screenWidth);
+        //是否被拖动
         public bool IsToggle;
+        //被拖动的相对距离
         public Vector2 ToggleVec = Vector2.Zero;
+        //被拖动的起始坐标
         public Vector2 StartPoint = Vector2.Zero;
+
+        public Action<AlchemyUnicode> OnMircoIconClicked;
 
 
         public List<AEMircoIcon> icons = new List<AEMircoIcon>();
-        public ImageButtomWithText ToDefaultCenter;
-        public ImageButtomWithText ToDefaultSize;
-        public ImageButtomWithText ToDefaultPosition_Size;
-        public AEViewNodePanel()
+
+        public InnerNodeViewer()
         {
             OverflowHidden = true;
 
             AddMircoIcon();
 
-
-            ToDefaultCenter = new ImageButtomWithText(AssetUtils.UI + "ToDefaultPosition", "ToDefaultPosition");
-            ToDefaultCenter.Width.Set(22, 0);
-            ToDefaultCenter.Height.Set(22, 0);
-            ToDefaultCenter.Top.Set(0, 0);
-            ToDefaultCenter.Left.Set(-22, 1f);
-            ToDefaultCenter.OnLeftClick += ToDefaultCenter_OnLeftClick;
-            Append(ToDefaultCenter);
-
-            ToDefaultSize = new ImageButtomWithText(AssetUtils.UI + "ToDefaultSize", "ToDefaultSize");
-            ToDefaultSize.Width.Set(22, 0);
-            ToDefaultSize.Height.Set(22, 0);
-            ToDefaultSize.Top.Set(0, 0);
-            ToDefaultSize.Left.Set(-55, 1f);
-            ToDefaultSize.OnLeftClick += ToDefaultSize_OnLeftClick;
-            Append(ToDefaultSize);
-
-            ToDefaultPosition_Size = new ImageButtomWithText(AssetUtils.UI + "ToDefaultPosition_Size", "ToDefaultPosition&Size");
-            ToDefaultPosition_Size.Width.Set(22, 0);
-            ToDefaultPosition_Size.Height.Set(22, 0);
-            ToDefaultPosition_Size.Top.Set(0, 0);
-            ToDefaultPosition_Size.Left.Set(-88, 1f);
-            ToDefaultPosition_Size.OnLeftClick += ToDefaultPosition_Size_OnLeftClick; ;
-            Append(ToDefaultPosition_Size);
         }
-
-        private void ToDefaultPosition_Size_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
-        {
-            ViewRange = new Vector2(Main.screenWidth, Main.screenHeight);
-            ViewCenter = Main.LocalPlayer.Center;
-        }
-
-        private void ToDefaultSize_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
-        {
-            ViewRange = new Vector2(Main.screenWidth, Main.screenHeight);
-        }
-
-        private void ToDefaultCenter_OnLeftClick(UIMouseEvent evt, UIElement listeningElement)
-        {
-            ViewCenter = Main.LocalPlayer.Center;
-        }
-
         private void AddMircoIcon()
         {
             AlchemySystem.subordinateGraph.InWorld.ForEach((o) =>
@@ -97,12 +130,14 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         private void AEIconClick(UIMouseEvent evt, UIElement listeningElement)
         {
             DebugUtils.NewText(((AEMircoIcon)listeningElement).unicode.value);
+            OnMircoIconClicked?.Invoke(((AEMircoIcon)listeningElement).unicode);
         }
 
         public override void Update(GameTime gameTime)
         {
             if (IsToggle)
             {
+                //实时计算拖动的距离
                 ToggleVec = Main.MouseScreen - StartPoint;
             }
             if (IsMouseHovering)
@@ -130,9 +165,46 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         }
         public override void ScrollWheel(UIScrollWheelEvent evt)
         {
-            ViewRange += new Vector2(evt.ScrollWheelValue);
+            ViewRange -= new Vector2(evt.ScrollWheelValue);
             ViewRange = new Vector2(Math.Clamp(ViewRange.X, 0, Main.rightWorld), Math.Clamp(ViewRange.Y, 0, Main.bottomWorld));
             base.ScrollWheel(evt);
+        }
+    }
+
+    public class NodeViewOpreationPanel : UIPanel
+    {
+        public ImageButtomWithText ToDefaultCenter;
+        public ImageButtomWithText ToDefaultSize;
+        public ImageButtomWithText ToDefaultPosition_Size;
+        public NodeViewOpreationPanel()
+        {
+            Width.Set(44, 0);
+            ToDefaultCenter = new ImageButtomWithText(AssetUtils.UI + "ToDefaultPosition", "ToDefaultPosition");
+            ToDefaultCenter.Width.Set(22, 0);
+            ToDefaultCenter.Height.Set(22, 0);
+            ToDefaultCenter.Top.Set(11, 0);
+            ToDefaultCenter.Left.Set(-11, 0.5f);
+            Append(ToDefaultCenter);
+
+            ToDefaultSize = new ImageButtomWithText(AssetUtils.UI + "ToDefaultSize", "ToDefaultSize");
+            ToDefaultSize.Width.Set(22, 0);
+            ToDefaultSize.Height.Set(22, 0);
+            ToDefaultSize.Top.Set(44, 0);
+            ToDefaultSize.Left.Set(-11, 0.5f);
+            Append(ToDefaultSize);
+
+            ToDefaultPosition_Size = new ImageButtomWithText(AssetUtils.UI + "ToDefaultPosition_Size", "ToDefaultPosition&Size");
+            ToDefaultPosition_Size.Width.Set(22, 0);
+            ToDefaultPosition_Size.Height.Set(22, 0);
+            ToDefaultPosition_Size.Top.Set(77, 0);
+            ToDefaultPosition_Size.Left.Set(-11, 0.5f);
+            Append(ToDefaultPosition_Size);
+        }
+        public override void Update(GameTime gameTime)
+        {
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+            base.Update(gameTime);
         }
     }
 }
