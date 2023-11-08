@@ -6,6 +6,7 @@ using MysteriousAlchemy.Content.Dusts;
 using MysteriousAlchemy.Content.Particles;
 using MysteriousAlchemy.Content.Projectiles.Chilliness;
 using MysteriousAlchemy.Content.UI;
+using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.Systems;
@@ -14,10 +15,12 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.UI;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -47,7 +50,22 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            UIloader.GetUIState<UI_AlchemyEntity>().SetVisable(!UI_AlchemyEntity.visable);
+            if (UI_AlchemyEditor.visable)
+            {
+                SoundEngine.PlaySound(MASoundID.MenuClose);
+                if (Main.gameMenu)
+                    Main.menuMode = 0;
+                else
+                    IngameFancyUI.Close();
+                UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
+            }
+            else
+            {
+                IngameFancyUI.OpenUIState(UIloader.GetUIState<UI_AlchemyEditor>());
+                UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
+            }
+
+
             return base.UseItem(player);
         }
         public override void UpdateInventory(Player player)

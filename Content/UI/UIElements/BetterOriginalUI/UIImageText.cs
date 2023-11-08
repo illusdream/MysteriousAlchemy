@@ -16,12 +16,10 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         public float scale = 1;
         //计算下个UIElement的横坐标
         private float TotalLeft = 0;
-        public UIImageText(string LocalizationText)
+        public UIImageText(string LocalizationText, float height)
         {
+            Height.Set(height, 0);
             this.LocalizationText = LocalizationText;
-            Height.Set(40, 0);
-            MinHeight.Set(40, 0);
-            MaxHeight.Set(40, 0);
             AddElements();
         }
 
@@ -36,7 +34,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         }
         private UISampleIcon AddIcon(string path)
         {
-            UISampleIcon instance = new UISampleIcon(path, new Tuple<float, float>(0, 1));
+            UISampleIcon instance = new UISampleIcon(path, new Tuple<float, float>(Height.Pixels, 0));
             Append(instance);
             return instance;
         }
@@ -101,7 +99,6 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         public void SetLocalization(string LocalizationText)
         {
             this.LocalizationText = LocalizationText;
-            RemoveAllChildren();
             AddElements();
         }
     }

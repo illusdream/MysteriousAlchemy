@@ -25,12 +25,12 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
 
         public string HoverString;
 
+        public Vector2 HoverTextDirection = new Vector2(-1, 1);
         public UIText HoverTextBox;
         public ImageButtomWithText(string TexturePath, string HoverString)
         {
             _texture = TexturePath;
             this.HoverString = HoverString;
-
             HoverTextBox = new UIText(HoverString);
             HoverTextBox.TextOriginX = 0;
             HoverTextBox.Width.Set(22, 0);
@@ -52,8 +52,9 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         }
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
-            HoverTextBox.Top.Set(0, 1f);
-            HoverTextBox.Left.Set(0, 0f);
+            HoverTextBox.Top.Set(HoverTextDirection.Y > 0 ? 0 : 0, HoverTextDirection.Y > 0 ? 1 : 0);
+            HoverTextBox.Left.Set(HoverTextDirection.X > 0 ? -HoverTextBox.Width.Pixels : 0, HoverTextDirection.X > 0 ? 1 : 0);
+            Recalculate();
             if (IsMouseHovering)
             {
                 Main.LocalPlayer.mouseInterface = true;

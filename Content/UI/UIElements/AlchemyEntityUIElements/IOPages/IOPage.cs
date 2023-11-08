@@ -62,6 +62,10 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPage
         {
             base.Append(element);
         }
+        public void ListRemove(UIElement element)
+        {
+            UIList.Remove(element);
+        }
         public void SetUnicode(AlchemyUnicode unicode)
         {
             this.unicode = unicode;

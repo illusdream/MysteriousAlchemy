@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Utils;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
@@ -45,6 +46,7 @@ namespace MysteriousAlchemy.Core.Loader
 
                     BetterUIStates?.Add(instance);
                     UserInterfaces?.Add(userInterface);
+                    instance.Recalculate();
                 }
             }
 

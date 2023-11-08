@@ -27,14 +27,12 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         public bool IsInAnimation;
 
         public Timer AnimationTimer;
-        private CalculatedStyle OpenTargetRect = new CalculatedStyle(Main.screenWidth / 2f - 500, Main.screenHeight / 2f - 330, 1100, 660);
+        private CalculatedStyle OpenTargetRect = new CalculatedStyle(Main.screenWidth / 2f - 550, Main.screenHeight / 2f - 330, 1100, 660);
         private CalculatedStyle CloseTargetRect = new CalculatedStyle();
 
-        private AEOpreatePanel opreatePanel;
-        private AESearchPanel searchPanel;
-        private AEViewNodePanel viewNodePanel;
-        private AEAdjacencyNodePanel adjacencyNodePanel;
-        private AEAdjacencyLinksPanel adjacencyLinksPanel;
+        public AEOpreatePanel opreatePanel;
+        public AESearchPanel searchPanel;
+        public AEViewNodePanel viewNodePanel;
 
 
         public AEEditionPanel(CalculatedStyle start)
@@ -86,31 +84,16 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             viewNodePanel.Width.Set(660, 0);
             Append(viewNodePanel);
         }
-        private void AddAdjacencyNodePanel()
+        public void RefreshAllPanel(AlchemyUnicode unicode)
         {
-            float LeftPanelWidth = 170;
-            adjacencyNodePanel = new AEAdjacencyNodePanel();
-            adjacencyNodePanel.Top.Set(0, 0);
-            adjacencyNodePanel.Left.Set(opreatePanel.Left.Pixels + opreatePanel.Width.Pixels, 0);
-            adjacencyNodePanel.Width.Set(LeftPanelWidth, 0);
-            adjacencyNodePanel.Height.Set(0, 0.33f);
-            Append(adjacencyNodePanel);
+            //searchPanel
+            //viewpanel
+            opreatePanel.SetUnicode(unicode);
         }
-        private void AddAdjacencyLinksPanel()
-        {
-            float LeftPanelWidth = 170;
-            adjacencyLinksPanel = new AEAdjacencyLinksPanel();
-            adjacencyLinksPanel.Top.Set(220, 0);
-            adjacencyLinksPanel.Left.Set(opreatePanel.Left.Pixels + opreatePanel.Width.Pixels, 0);
-            adjacencyLinksPanel.Width.Set(LeftPanelWidth, 0);
-            adjacencyLinksPanel.Height.Set(0, 0.66f);
-            Append(adjacencyLinksPanel);
-        }
-
 
         private void OnIconClicked(AlchemyUnicode unicode)
         {
-            opreatePanel.SetUnicode(unicode);
+            UIloader.GetUIState<UI_AlchemyEditor>().SetUnicode(unicode);
         }
 
 
@@ -140,6 +123,11 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             AnimationTimer.ConditionTrigger(IsInAnimation, () =>
             {
                 IsInAnimation = false;
+                Left.Set(-OpenTargetRect.Width / 2f, 0.5f);
+                Top.Set(-OpenTargetRect.Height / 2f, 0.5f);
+                Width.Set(OpenTargetRect.Width, 0);
+                Height.Set(OpenTargetRect.Height, 0);
+                Recalculate();
             });
         }
         public override void Update(GameTime gameTime)
@@ -147,6 +135,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             AnimationUpdate();
             base.Update(gameTime);
         }
+
 
     }
 }

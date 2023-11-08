@@ -25,7 +25,6 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             this.texturePath = texturePath;
             this.StaticEdgeH = StaticEdgeH;
             SetDimensons(null, null, width, height);
-            Recalculate();
         }
         public void SetTexture(string path)
         {
@@ -35,19 +34,19 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         {
             if (left != null)
             {
-                Left = new StyleDimension(left.Item1, left.Item2);
+                Left.Set(left.Item1, left.Item2);
             }
             if (top != null)
             {
-                Top = new StyleDimension(top.Item1, top.Item2);
+                Top.Set(top.Item1, top.Item2);
             }
             if (width != null)
             {
-                Width = new StyleDimension(width.Item1, width.Item2);
+                Width.Set(width.Item1, width.Item2);
             }
             if (height != null)
             {
-                Height = new StyleDimension(height.Item1, height.Item2);
+                Height.Set(height.Item1, height.Item2);
             }
         }
         public void CalculateCurrectSize()
@@ -56,14 +55,14 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             //高不变
             if (StaticEdgeH)
             {
-                float height = Height.GetValue(Parent.Height.Pixels);
+                float height = Height.GetValue(Parent.GetDimensions().Height);
                 float CurrectWidth = height * (TextureSize.X / TextureSize.Y);
                 Width.Set(CurrectWidth, 0);
             }
             //宽不变
             else
             {
-                float width = Width.GetValue(Parent.Width.Pixels);
+                float width = Width.GetValue(Parent.GetDimensions().Width);
                 float CurrectHeight = width * (TextureSize.Y / TextureSize.X);
                 Height.Set(CurrectHeight, 0);
             }

@@ -46,14 +46,14 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         {
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
-            float DrawRotation = PulloutVector.ToRotation() + MathHelper.Pi + (Pullout ? MathHelper.Pi * PulloutInter : MathHelper.Pi + MathHelper.Pi * PulloutInter);
+            float DrawRotation = PulloutVector.ToRotation() + (Pullout ? MathHelper.Pi * PulloutInter : MathHelper.Pi + MathHelper.Pi * PulloutInter);
             CalculatedStyle dimensions = GetDimensions();
 
 
             Texture2D background = AssetUtils.GetTexture2D(_borderTexture);
             Texture2D triangle = AssetUtils.GetTexture2D(_texture);
 
-
+            DebugUtils.NewText(PulloutInter);
 
             spriteBatch.Draw(background, dimensions.Position(), Color.White);
             if (!IsInAnimation)

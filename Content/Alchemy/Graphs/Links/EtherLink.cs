@@ -13,7 +13,7 @@ namespace MysteriousAlchemy.Content.Alchemy.Graphs.Links
     public class EtherLink : Link
     {
         public float EtherCountPerFrame;
-        public float MaxCount = 20;
+        public float MaxCount = 20 / 60f;
         public float MinCount = 0;
         public EtherLink()
         {

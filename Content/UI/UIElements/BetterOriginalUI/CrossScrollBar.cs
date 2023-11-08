@@ -43,7 +43,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         }
         public float GetMappingValue()
         {
-            return (float)Math.Round((MaxViewPosition - MinViewPosition) * ViewPosition, 2);
+            return (MaxViewPosition - MinViewPosition) * ViewPosition;
         }
         public override void Update(GameTime gameTime)
         {

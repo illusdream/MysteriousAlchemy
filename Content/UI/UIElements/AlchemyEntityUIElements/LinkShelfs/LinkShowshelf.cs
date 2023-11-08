@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Enum;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
@@ -16,6 +17,8 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.LinkSh
         public AlchemyUnicode start;
         public AlchemyUnicode end;
 
+        public delegate bool UIListremoveSelf(UIElement element);
+        public UIListremoveSelf removeSelf;
         public LinkShowshelf(AlchemyUnicode start, AlchemyUnicode end)
         {
 

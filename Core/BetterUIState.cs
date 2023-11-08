@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using MysteriousAlchemy.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.UI;
 
 namespace MysteriousAlchemy.Core
@@ -74,7 +77,7 @@ namespace MysteriousAlchemy.Core
         /// <param name="widthPercent">The width in percentage of the parents width</param>
         /// <param name="height">The height in pixels</param>
         /// <param name="heightPercent">The height in percentage of the parents height</param>
-        internal void AddElement(UIElement element, int x, float xPercent, int y, float yPercent, int width, float widthPercent, int height, float heightPercent)
+        internal void AddElement(UIElement element, float x, float xPercent, float y, float yPercent, float width, float widthPercent, float height, float heightPercent)
         {
             element.Left.Set(x, xPercent);
             element.Top.Set(y, yPercent);
@@ -103,6 +106,25 @@ namespace MysteriousAlchemy.Core
             element.Width.Set(width, widthPercent);
             element.Height.Set(height, heightPercent);
             appendTo.Append(element);
+        }
+        public override void OnActivate()
+        {
+            Recalculate();
+            base.OnActivate();
+        }
+        public override void OnInitialize()
+        {
+            Recalculate();
+            base.OnInitialize();
+        }
+        public override void Update(GameTime gameTime)
+        {
+            //不知道为什么，uistate的坐标有问题，不得不手动更新一下
+            if (GetDimensions().Width != UserInterface.ActiveInstance.GetDimensions().Width)
+            {
+                Recalculate();
+            }
+            base.Update(gameTime);
         }
     }
 }

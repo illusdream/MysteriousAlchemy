@@ -21,11 +21,13 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
     {
         public InnerNodeViewer NodeViewer;
         public NodeViewOpreationPanel OpreationPanel;
+        public UIPanel TipPanel;
         public AEViewNodePanel()
         {
 
 
             AddInnerViewer();
+            AddTipPanel();
             AddOpreationPanel();
         }
 
@@ -48,10 +50,10 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         private void AddInnerViewer()
         {
             NodeViewer = new InnerNodeViewer();
-            NodeViewer.Width.Set(0, 1);
-            NodeViewer.Height.Set(0, 1);
-            NodeViewer.Top.Set(0, 0);
-            NodeViewer.Left.Set(0, 0);
+            NodeViewer.Width.Set(-44, 1);
+            NodeViewer.Height.Set(660 - 44, 0);
+            NodeViewer.Top.Set(-660 + 44, 1);
+            NodeViewer.Left.Set(+44, 0);
             Append(NodeViewer);
         }
         private void AddOpreationPanel()
@@ -60,12 +62,21 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             OpreationPanel.Width.Set(44, 0);
             OpreationPanel.Height.Set(0, 1);
             OpreationPanel.Top.Set(0, 0);
-            OpreationPanel.Left.Set(-44, 1);
+            OpreationPanel.Left.Set(0, 0);
 
             OpreationPanel.ToDefaultCenter.OnLeftClick += ToDefaultCenter_OnLeftClick;
             OpreationPanel.ToDefaultSize.OnLeftClick += ToDefaultSize_OnLeftClick;
             OpreationPanel.ToDefaultPosition_Size.OnLeftClick += ToDefaultPosition_Size_OnLeftClick;
             Append(OpreationPanel);
+        }
+        private void AddTipPanel()
+        {
+            TipPanel = new UIPanel();
+            TipPanel.Width.Set(-44, 1);
+            TipPanel.Height.Set(190, 0);
+            TipPanel.Top.Set(0, 0);
+            TipPanel.Left.Set(44, 0);
+            Append(TipPanel);
         }
         public override void Update(GameTime gameTime)
         {

@@ -16,9 +16,9 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPage
         IconTextMoniter etherMax;
         public EtherNodeIOPage(Pull_outButtom pull_OutButtom, int AnimationTime, Vector2 StaticEdgeRange, Vector2 ActiveEdgeRange, Vector2 PulloutVector, Vector2 bottomOriginOffest) : base(pull_OutButtom, AnimationTime, StaticEdgeRange, ActiveEdgeRange, PulloutVector, bottomOriginOffest)
         {
-            etherNow = new IconTextMoniter(AssetUtils.GetUIImageTextInfoValue("AlchemyUI.Node.Ether.Ether_now"));
+            etherNow = new IconTextMoniter(AssetUtils.GetUIImageTextInfoValue("AlchemyUI.Node.Ether.Ether_now"), 40);
             Append(etherNow);
-            etherMax = new IconTextMoniter(AssetUtils.GetUIImageTextInfoValue("AlchemyUI.Node.Ether.Ether_Max"));
+            etherMax = new IconTextMoniter(AssetUtils.GetUIImageTextInfoValue("AlchemyUI.Node.Ether.Ether_Max"), 40);
             Append(etherMax);
         }
         public override void Update(GameTime gameTime)

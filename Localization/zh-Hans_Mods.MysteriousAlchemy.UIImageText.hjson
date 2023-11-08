@@ -9,10 +9,20 @@ AlchemyUI: {
 		}
 	}
 
-	Subordinate: {
-	}
+	Link: {
+		Subordinate: {
+		}
 
-	Link.Ether.TransferRate: /@Tex:MysteriousAlchemy/Asset/UI/test1@/ 传输速率:
+		Ether: {
+			TransferRate: /@Tex:MysteriousAlchemy/Asset/UI/test1@/ 传输速率:
+			TransferRate1: /@Tex:MysteriousAlchemy/Asset/UI/test1@/ 传输速率:
+		}
+
+		CommenUI: {
+			AddNewLink: /@Tex:MysteriousAlchemy/Asset/UI/test1@/ 添加新链接
+			space: "111"
+		}
+	}
 
 	AdjNode: {
 		Subordinate: {
@@ -21,4 +31,6 @@ AlchemyUI: {
 		Ether: {
 		}
 	}
+
+	Other.CancelLink: Cancel Link
 }

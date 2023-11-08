@@ -46,8 +46,8 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
 
         CrossScrollElements crossScrollElements;
 
-        public float PagesWidth = 400;
-        public Vector2 PagesHeightRange = new Vector2(21, 460);
+        public float PagesWidth = 636;
+        public Vector2 PagesHeightRange = new Vector2(21, 660 - 22);
         public AEOpreatePanel()
         {
             AddCrossScrollElements();
@@ -104,7 +104,12 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
                 {
                     crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "OpreationType_Ether", AEGraphCategory.Ether), OnSwitchOpreateGraphType);
 
-                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_0", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
+                    crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
                 }
             }
             OnSwitchOpreateGraphType(AEGraphCategory.Ether);

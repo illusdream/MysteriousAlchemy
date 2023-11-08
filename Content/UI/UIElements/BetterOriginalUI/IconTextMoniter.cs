@@ -16,9 +16,12 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         UIImageText IconText;
         UIText MonitorText;
 
-        public IconTextMoniter(string LocalizationText)
+        public IconTextMoniter(string LocalizationText, float heightPiexl)
         {
-            IconText = new UIImageText(LocalizationText);
+            Height.Set(heightPiexl, 0);
+
+            IconText = new UIImageText(LocalizationText, heightPiexl);
+            IconText.Height.Set(0, 1f);
 
             MonitorText = new UIText("");
             MonitorText.TextOriginX = 0;
@@ -28,7 +31,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             Append(IconText);
             Append(MonitorText);
 
-            Height.Set(40, 0);
+
             MonitorText.Left.Set(IconText.Left.Pixels + IconText.Width.Pixels, 0);
             Width.Set(IconText.Width.Pixels + MonitorText.Width.Pixels, 0);
         }

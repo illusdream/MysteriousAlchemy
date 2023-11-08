@@ -49,15 +49,7 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         public bool RemoveLink(AlchemyEntity start, AlchemyEntity end)
         {
-            if (Dic_AdjacencyList is null)
-                return false;
-            if (!Dic_AdjacencyList.ContainsKey(start.unicode) || !Dic_AdjacencyList.ContainsKey(end.unicode))
-                return false;
-            if (!Dic_AdjacencyList[start.unicode].ConstainLink(end.unicode))
-                return false;
-
-            Dic_AdjacencyList[start.unicode].RemoveLink(end);
-            return true;
+            return RemoveLink(start.unicode, end.unicode);
         }
         public bool RemoveLink(AlchemyUnicode start, AlchemyUnicode end)
         {
@@ -68,6 +60,7 @@ namespace MysteriousAlchemy.Core.Abstract
             if (!Dic_AdjacencyList[start].ConstainLink(end))
                 return false;
             var endInstance = Dic_AdjacencyList[end].Node.GetEntityInstance();
+            Dic_AdjacencyList[end].AdjacencyNodes.Remove(start);
             Dic_AdjacencyList[start].RemoveLink(endInstance);
             return true;
         }
@@ -434,6 +427,28 @@ namespace MysteriousAlchemy.Core.Abstract
         //关系的终点
         public AlchemyUnicode end;
 
+        public string startName
+        {
+            get
+            {
+                if (AlchemySystem.FindAlchemyEntitySafely<AlchemyEntity>(start, out var result))
+                {
+                    return result.Name;
+                }
+                return start.value.ToString();
+            }
+        }
+        public string endName
+        {
+            get
+            {
+                if (AlchemySystem.FindAlchemyEntitySafely<AlchemyEntity>(end, out var result))
+                {
+                    return result.Name == "" ? end.value.ToString() : result.Name;
+                }
+                return end.value.ToString();
+            }
+        }
         public int weight;
 
         public Link()
