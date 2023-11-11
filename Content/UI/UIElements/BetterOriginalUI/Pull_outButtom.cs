@@ -53,7 +53,6 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             Texture2D background = AssetUtils.GetTexture2D(_borderTexture);
             Texture2D triangle = AssetUtils.GetTexture2D(_texture);
 
-            DebugUtils.NewText(PulloutInter);
 
             spriteBatch.Draw(background, dimensions.Position(), Color.White);
             if (!IsInAnimation)

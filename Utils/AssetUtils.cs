@@ -133,6 +133,6 @@ namespace MysteriousAlchemy.Utils
 
 
 
-        public static Texture2D WhitePic = GetTexture2D(Texture + "polartest");
+        public static Texture2D WhitePic = GetTexture2D(Texture + "White");
     }
 }

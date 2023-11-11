@@ -53,8 +53,6 @@ namespace MysteriousAlchemy.Content.Items.TestItem
         }
         public override void UpdateInventory(Player player)
         {
-            if (FristSelect != null)
-                DebugUtils.NewText(FristSelect?.unicode.value);
             base.UpdateInventory(player);
         }
     }

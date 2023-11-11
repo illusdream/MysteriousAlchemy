@@ -1,6 +1,7 @@
 ﻿using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -128,6 +129,22 @@ namespace MysteriousAlchemy.Core.Abstract
             if (!Dic_AdjacencyList[start].AdjacencyLinks.ContainsKey(end))
                 return false;
             result = Dic_AdjacencyList[start].AdjacencyLinks[end];
+            return true;
+        }
+        public bool FindAdjacencyNodes(AlchemyEntity end, out List<AlchemyUnicode> result)
+        {
+            result = null;
+            if (!Dic_AdjacencyList.ContainsKey(end.unicode))
+                return false;
+            result = Dic_AdjacencyList[end.unicode].AdjacencyNodes;
+            return true;
+        }
+        public bool FindAdjacencyNodes(AlchemyUnicode end, out List<AlchemyUnicode> result)
+        {
+            result = null;
+            if (!Dic_AdjacencyList.ContainsKey(end))
+                return false;
+            result = Dic_AdjacencyList[end].AdjacencyNodes;
             return true;
         }
         public bool AddNode(AlchemyEntity entity)
@@ -433,7 +450,7 @@ namespace MysteriousAlchemy.Core.Abstract
             {
                 if (AlchemySystem.FindAlchemyEntitySafely<AlchemyEntity>(start, out var result))
                 {
-                    return result.Name;
+                    return result.Name == "" ? start.value.ToString() : result.Name;
                 }
                 return start.value.ToString();
             }

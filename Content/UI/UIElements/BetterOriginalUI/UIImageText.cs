@@ -90,7 +90,6 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
             icon.Left.Set(TotalLeft, 0);
             icon.CalculateCurrectSize();
             TotalLeft += icon.Width.Pixels;
-            DebugUtils.NewText(TotalLeft);
             //递归处理剩下部分
             RecursionMatches(ref matches, strings[1]);
         }

@@ -5,6 +5,7 @@ using MysteriousAlchemy.Content.Alchemy.Graphs.Nodes;
 using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPages.LinkPages;
 using MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI;
 using MysteriousAlchemy.Core.Abstract;
+using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System;
@@ -70,6 +71,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.LinkSh
         private void CancelLinkButtom_OnLeftClick(Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
         {
             AlchemySystem.etherGraph.RemoveLink(start, end);
+            UIloader.GetUIState<UI_AlchemyEditor>().viewNodePanel.ResetViewPanel();
             removeSelf?.Invoke(this);
         }
 

@@ -19,7 +19,7 @@ namespace MysteriousAlchemy.Core.Abstract
     //炼金术相关基类,可保存
     public class AlchemyEntity : TagSerializable, IEtherContainer
     {
-        public string Name { get; set; } = "";
+
         #region //数据保存
         private TagCompound CustomData;
         public static readonly Func<TagCompound, AlchemyEntity> DESERIALIZER = Load;
@@ -73,7 +73,7 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         #endregion
 
-
+        public string Name { get; set; } = "";
         public float Ether { get; set; }
         public float MaxEther { get; set; }
         //达到该值后触发效果
@@ -94,9 +94,11 @@ namespace MysteriousAlchemy.Core.Abstract
                 return TopLeft + Size / 2f;
             }
         }
-        //0--9999的整数，用于在图中确定对应的实体
+
+        //1--9999的整数，用于在图中确定对应的实体 ,0为默认值，代表无
         public AlchemyUnicode unicode;
 
+        public virtual string Icon => AssetUtils.UI_Alchemy + "AEmciroIcon_0";
         public AlchemyEntity()
         {
             unicode = new AlchemyUnicode();
@@ -211,14 +213,21 @@ namespace MysteriousAlchemy.Core.Abstract
             get { return _unicode; }
             set
             {
-                _unicode = Math.Clamp(value, 0, 9999);
+                _unicode = Math.Clamp(value, 1, 9999);
             }
         }
         public int WorldID { get { return worldID; } set { worldID = value; } }
         public AlchemyUnicode()
         {
-            _unicode = Main.rand.Next(0, 10000);
+            _unicode = Main.rand.Next(1, 10000);
         }
+        private AlchemyUnicode(int unicode)
+        {
+            _unicode = unicode;
+        }
+
+        public static AlchemyUnicode Zero = new AlchemyUnicode(0);
+
         public static bool operator ==(AlchemyUnicode u1, AlchemyUnicode u2)
         {
             return u1.value == u2.value;

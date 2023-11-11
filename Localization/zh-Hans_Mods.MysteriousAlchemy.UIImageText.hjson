@@ -32,5 +32,9 @@ AlchemyUI: {
 		}
 	}
 
-	Other.CancelLink: Cancel Link
+	Other: {
+		CancelLink: Cancel Link
+		Monitor_ViewCenter: /@Tex:MysteriousAlchemy/Asset/UI/NowCenter@/ Center:
+		Monitor_ViewSize: /@Tex:MysteriousAlchemy/Asset/UI/NowSize@/ Size:
+	}
 }

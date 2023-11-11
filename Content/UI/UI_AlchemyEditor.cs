@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements;
 using MysteriousAlchemy.Core;
 using MysteriousAlchemy.Core.Abstract;
+using MysteriousAlchemy.Core.Enum;
 using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
@@ -24,12 +25,19 @@ namespace MysteriousAlchemy.Content.UI
         public static bool visable = false;
         public override bool Visable => visable;
 
-        AlchemyUnicode Selectunicode;
+        public AEGraphCategory AEGraphType = AEGraphCategory.Ether;
+        /// <summary>
+        /// <see cref="viewNodePanel"/>应该显示的节点，默认是世界内的，（不包括收到背包里的
+        /// </summary>
+        public List<AlchemyUnicode> SelectListOfAE;
+        AlchemyUnicode _Selectunicode = AlchemyUnicode.Zero;
 
-        AEEditionPanel editionPanel;
-        AESearchPanel searchPanel;
-        AEOpreatePanel opreatePanel;
-        AEViewNodePanel viewNodePanel;
+        public AlchemyUnicode Selectunicode { get { return _Selectunicode; } }
+        public AlchemyUnicode HoverUnicode = AlchemyUnicode.Zero;
+
+        public AESearchPanel searchPanel;
+        public AEOpreatePanel opreatePanel;
+        public AEViewNodePanel viewNodePanel;
 
 
         // 定位用的
@@ -88,11 +96,12 @@ namespace MysteriousAlchemy.Content.UI
             AddElement(Base, -PanelSize.X / 2f, 0.5f, -PanelSize.Y / 2f + 100, 0.5f, PanelSize.X, 0, PanelSize.Y, 0);
             AddSubPanel();
             MakeExitButton(Base);
+            SelectListOfAE ??= AlchemySystem.subordinateGraph.InWorld;
         }
         public override void Update(GameTime gameTime)
         {
-            DebugUtils.NewText(Selectunicode.value);
-            //CheckCanVisable();
+            CheckCanVisable();
+            HoverUnicode = AlchemyUnicode.Zero;
             base.Update(gameTime);
         }
         private void CheckCanVisable()
@@ -103,18 +112,20 @@ namespace MysteriousAlchemy.Content.UI
         {
             //searchPanel
             //viewpanel
+            viewNodePanel.ResetViewPanel(Selectunicode);
             opreatePanel.SetUnicode(Selectunicode);
         }
         public void SetUnicode(AlchemyUnicode unicode)
         {
-            if (IsLinking && Selectunicode != null)
+            if (IsLinking && Selectunicode != AlchemyUnicode.Zero)
             {
                 AlchemySystem.etherGraph.AddLink(Selectunicode, unicode, null);
+                RefreshAllPanel();
                 IsLinking = false;
             }
             else
             {
-                Selectunicode = unicode;
+                _Selectunicode = unicode;
                 RefreshAllPanel();
             }
 
@@ -163,10 +174,6 @@ namespace MysteriousAlchemy.Content.UI
             viewNodePanel.Width.Set(660, 0);
             Base.Append(viewNodePanel);
             viewNodePanel.NodeViewer.OnMircoIconClicked += OnIconClicked;
-        }
-        public void RefreshAllPanel(AlchemyUnicode unicode)
-        {
-
         }
 
         private void OnIconClicked(AlchemyUnicode unicode)

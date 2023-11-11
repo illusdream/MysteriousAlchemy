@@ -131,7 +131,17 @@ namespace MysteriousAlchemy.Utils
         }
         public delegate float GetLerpvalues(int i, int MaxLength);
 
+        public static Vector2 Mapping(this Vector2 vector2, Vector2 center, Vector2 range)
+        {
+            Vector2 PanelTopLeft = center - range / 2f;
 
+            Vector2 RelativeCoord = vector2 - PanelTopLeft;
+            return RelativeCoord;
+        }
+        public static Vector2 Round(this Vector2 vector2, int digits = 2)
+        {
+            return new Vector2((float)Math.Round(vector2.X, digits), (float)Math.Round(vector2.X, digits));
+        }
         public static bool Contain(Point16 topleft, Point16 size, Point16 target)
         {
             bool InX = topleft.X < target.X && (topleft.X + size.X) > target.X;

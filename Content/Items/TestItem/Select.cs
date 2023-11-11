@@ -32,10 +32,7 @@ namespace MysteriousAlchemy.Content.Items.TestItem
         }
         public override bool? UseItem(Player player)
         {
-            if (AlchemySystem.TryGetEtherEntity<AlchemyEntity>(Main.MouseWorld, out var result))
-            {
-                DebugUtils.NewText(result.unicode.value);
-            }
+
 
             return base.UseItem(player);
         }

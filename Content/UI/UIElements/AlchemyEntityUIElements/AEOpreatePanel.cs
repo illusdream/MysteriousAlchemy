@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPages;
+using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPages.AdjacencyLink;
 using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPages.LinkPages;
 using MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements.IOPages.NodePages;
 using MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI;
 using MysteriousAlchemy.Core.Abstract;
 using MysteriousAlchemy.Core.Enum;
+using MysteriousAlchemy.Core.Loader;
 using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using rail;
@@ -112,7 +114,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
                     crossScrollElements.AddIcon(new CSEIcon(AssetUtils.UI_Alchemy + "AEmciroIcon_1", AEGraphCategory.Subordinate), OnSwitchOpreateGraphType);
                 }
             }
-            OnSwitchOpreateGraphType(AEGraphCategory.Ether);
+            OnSwitchOpreateGraphType(UIloader.GetUIState<UI_AlchemyEditor>().AEGraphType);
 
         }
         //加入操作面板的逻辑
@@ -123,6 +125,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             IsOpen_AdjNode = AdjacencyNodeOpreationPage == null ? false : AdjacencyNodeOpreationPage.Open;
             RemoveAllPulloutPage();
             OpreateGraphType = (AEGraphCategory)graphCategory;
+            SetUIGraphType(OpreateGraphType);
             switch (OpreateGraphType)
             {
                 case AEGraphCategory.Ether:
@@ -133,6 +136,9 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
                 default:
                     break;
             }
+            NodeOpreationPage.SetUnicode(unicode);
+            LinkOpreationPage.SetUnicode(unicode);
+            AdjacencyNodeOpreationPage.SetUnicode(unicode);
         }
 
         private void ResetIOPanel_Ether()
@@ -152,7 +158,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
             LinkOpreationPage.Top.Set(160, 0);
             LinkOpreationPage.Left.Set(-PagesWidth / 2f, 0.5f);
 
-            AdjacencyNodeOpreationPage = new IOPage(AdjacencyNodeOpreationPageButtom, 20, new Vector2(PagesWidth, PagesWidth), PagesHeightRange, Vector2.UnitY, new Vector2(22, 0));
+            AdjacencyNodeOpreationPage = new AdjEtherLinkIOPage(AdjacencyNodeOpreationPageButtom, 20, new Vector2(PagesWidth, PagesWidth), PagesHeightRange, Vector2.UnitY, new Vector2(22, 0));
             AdjacencyNodeOpreationPage.Top.Set(160, 0);
             AdjacencyNodeOpreationPage.Left.Set(-PagesWidth / 2f, 0.5f);
 
@@ -169,6 +175,11 @@ namespace MysteriousAlchemy.Content.UI.UIElements.AlchemyEntityUIElements
         private void ResetIOPanel_Subordinate()
         {
 
+        }
+        private void SetUIGraphType(AEGraphCategory type)
+        {
+            UIloader.GetUIState<UI_AlchemyEditor>().AEGraphType = type;
+            UIloader.GetUIState<UI_AlchemyEditor>().viewNodePanel.ResetViewPanel(UIloader.GetUIState<UI_AlchemyEditor>().Selectunicode);
         }
         //切换AE时防止面板一直开启动画
         private void ResetIOPanel_Open()

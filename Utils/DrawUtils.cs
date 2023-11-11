@@ -748,6 +748,15 @@ namespace MysteriousAlchemy.Utils
             Main.EntitySpriteDraw(value, drawPos, null, color, (float)Math.PI / 2f + rotation, origin, vector, dir, 0);
             Main.EntitySpriteDraw(value, drawPos, null, color2, (float)Math.PI / 2f + rotation, origin, vector * 0.6f, dir, 0);
         }
+
+        public static void DrawVertexLine(SpriteBatch spriteBatch, Vector2 startPoint, Vector2 endPoint, Color color)
+        {
+            List<CustomVertexInfo> LineList = new List<CustomVertexInfo>();
+            LineList.Add(new CustomVertexInfo(startPoint, color, new Vector3(0, 0, 0)));
+            LineList.Add(new CustomVertexInfo(endPoint, color, new Vector3(1, 0, 0)));
+            Main.graphics.GraphicsDevice.Textures[0] = AssetUtils.GetTexture2D(AssetUtils.Texture + "White");
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, LineList.ToArray(), 0, 1);
+        }
     }
     struct CustomVertexInfo : IVertexType
     {

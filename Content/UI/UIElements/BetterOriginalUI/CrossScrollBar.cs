@@ -108,7 +108,7 @@ namespace MysteriousAlchemy.Content.UI.UIElements.BetterOriginalUI
         }
         public override void ScrollWheel(UIScrollWheelEvent evt)
         {
-            float perScroll = 1 / ((MaxViewPosition - MinViewPosition) == 0 ? 10 : (MaxViewPosition - MinViewPosition));
+            float perScroll = 1 / 20f;
             ViewPosition += perScroll * Math.Sign(evt.ScrollWheelValue);
             ViewPosition = MathHelper.Clamp(ViewPosition, 0, 1);
             SoundEngine.PlaySound(MASoundID.MenuTick);
