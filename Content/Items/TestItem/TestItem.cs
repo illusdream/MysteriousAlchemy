@@ -50,21 +50,20 @@ namespace MysteriousAlchemy.Content.Items.TestItem
 
         public override bool? UseItem(Player player)
         {
-            if (UI_AlchemyEditor.visable)
-            {
-                SoundEngine.PlaySound(MASoundID.MenuClose);
-                if (Main.gameMenu)
-                    Main.menuMode = 0;
-                else
-                    IngameFancyUI.Close();
-                UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
-            }
-            else
-            {
-                IngameFancyUI.OpenUIState(UIloader.GetUIState<UI_AlchemyEditor>());
-                UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
-            }
-
+            //if (UI_AlchemyEditor.visable)
+            //{
+            //    SoundEngine.PlaySound(MASoundID.MenuClose);
+            //    if (Main.gameMenu)
+            //        Main.menuMode = 0;
+            //    else
+            //        IngameFancyUI.Close();
+            //    UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
+            //}
+            //else
+            //{
+            //    IngameFancyUI.OpenUIState(UIloader.GetUIState<UI_AlchemyEditor>());
+            //    UIloader.GetUIState<UI_AlchemyEditor>().SetVisable(!UI_AlchemyEditor.visable);
+            //}
 
             return base.UseItem(player);
         }
@@ -81,6 +80,23 @@ namespace MysteriousAlchemy.Content.Items.TestItem
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+        }
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        {
+            VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.BloomAreaDraw, () =>
+            {
+                spriteBatch.Draw(AssetUtils.GetTexture2D(AssetUtils.Texture + "White"), new Rectangle(0, 0, (int)(Main.screenWidth / 2f), (int)(Main.screenHeight / 2f)), Color.White);
+            });
+
+            base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
+        }
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            VisualPPSystem.AddAction(VisualPPSystem.VisualPPActionType.BloomAreaDraw, () =>
+            {
+                spriteBatch.Draw(AssetUtils.GetTexture2D(AssetUtils.Texture + "White"), new Rectangle((int)(Main.screenWidth / 2f), (int)(Main.screenHeight / 2f), 200, 200), Color.Red);
+            });
+            return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
     }
 }

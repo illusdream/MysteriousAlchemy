@@ -26,7 +26,7 @@ namespace MysteriousAlchemy.Content.Animators
         public override void Initialize()
         {
             RegisterState<DefaultState>(new DefaultState(this));
-            SetState<DefaultState>();
+            SetState(typeof(DefaultState).ToString());
             kingsTreasures = new List<IceKingsTreasure>();
             base.Initialize();
         }
@@ -94,15 +94,15 @@ namespace MysteriousAlchemy.Content.Animators
         {
             public override void SetDefaults()
             {
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Item_Chilliness + "FrostEssenceGrimoire");
+                texture = AssetUtils.Item_Chilliness + "FrostEssenceGrimoire";
                 DrawMode = DrawMode.Default;
                 ModifyBlendState = ModifyBlendState.AlphaBlend;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Front;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 25 / Texture.Size();
+                Scale = Vector2.One * 25 / TextureInstance.Size();
                 base.SetDefaults();
             }
         }
@@ -115,16 +115,15 @@ namespace MysteriousAlchemy.Content.Animators
             float Fliter = 0;
             public override void SetDefaults()
             {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Texture + "Projectile_490");
+                texture = AssetUtils.Texture + "Projectile_490";
                 DrawMode = DrawMode.Custom3D;
                 ModifyBlendState = ModifyBlendState.AlphaBlend;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 60 / Texture.Size();
+                Scale = Vector2.One * 60 / TextureInstance.Size();
                 ShaderAciton += shader;
                 UpdateAction += update;
                 AngleV = MathHelper.PiOver2;
@@ -186,16 +185,15 @@ namespace MysteriousAlchemy.Content.Animators
             int timer;
             public override void SetDefaults()
             {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_3");
+                texture = AssetUtils.Extra + "Extra_3";
                 DrawMode = DrawMode.Custom3D;
                 ModifyBlendState = ModifyBlendState.Additive;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 100 / Texture.Size();
+                Scale = Vector2.One * 100 / TextureInstance.Size();
                 ShaderAciton += shader;
                 UpdateAction += update;
                 AngleV = MathHelper.PiOver2;

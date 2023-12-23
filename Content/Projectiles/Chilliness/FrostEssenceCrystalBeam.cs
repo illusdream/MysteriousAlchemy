@@ -216,7 +216,7 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
         {
             RegisterState<standby>(new standby(this));
             RegisterState<Attack_NoEnhanceChilliness>(new Attack_NoEnhanceChilliness(this));
-            SetState<standby>();
+            SetState(typeof(standby).ToString());
             base.Initialize();
         }
 
@@ -235,7 +235,7 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
 
                 if (NPCUtils.GetNPCCanTrack(Projectile.Projectile.Center, 1000) is not null)
                 {
-                    Projectile.SwitchState<Attack_NoEnhanceChilliness>();
+                    Projectile.SwitchState(typeof(Attack_NoEnhanceChilliness).ToString());
                     Projectile.direction = Main.rand.NextBool() ? 1 : -1;
                     Projectile.StartAngle = NPCUtils.GetVector2ToCanTrackNPC(Projectile.Projectile.Center, 1000).ToRotation() - (Projectile.TotalAngle / 2f * Projectile.direction);
                 }
@@ -263,7 +263,7 @@ namespace MysteriousAlchemy.Content.Projectiles.Chilliness
                     ParticleUtils.SpwonFog(Projectile.Projectile.Center, MathUtils.RandomRing(new Vector2(1, 1), 2, 7), ColorMap.Chiliiness, 0.2f, MathHelper.TwoPi, 0.05f);
 
                 if (Timer > AttackTime)
-                    Projectile.SwitchState<standby>();
+                    Projectile.SwitchState(typeof(standby).ToString());
                 base.OnState(stateMachine);
             }
             public override void ExitState(IStateMachine stateMachine)

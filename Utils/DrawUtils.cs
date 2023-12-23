@@ -757,6 +757,25 @@ namespace MysteriousAlchemy.Utils
             Main.graphics.GraphicsDevice.Textures[0] = AssetUtils.GetTexture2D(AssetUtils.Texture + "White");
             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, LineList.ToArray(), 0, 1);
         }
+        public static RenderTarget2D CreateTextureBufffer(Action<SpriteBatch> draw, int? width, int? height)
+        {
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            SpriteBatch sb = Main.spriteBatch;
+            RenderTarget2D render;
+            int _width;
+            int _height;
+            _width = width.HasValue ? width.Value : Main.screenWidth;
+            _height = height.HasValue ? height.Value : Main.screenHeight;
+
+            render = new RenderTarget2D(Main.graphics.GraphicsDevice, _width, _height);
+            gd.SetRenderTarget(render);
+            gd.Clear(Color.Transparent);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            draw?.Invoke(sb);
+            sb.End();
+            gd.SetRenderTarget(Main.screenTarget);
+            return render;
+        }
     }
     struct CustomVertexInfo : IVertexType
     {

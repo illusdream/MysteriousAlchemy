@@ -17,5 +17,12 @@ namespace MysteriousAlchemy.Core.Interface
         public void OnState(IStateMachine stateMachine);
         //退出该状态
         public void ExitState(IStateMachine stateMachine);
+
+        /// <summary>
+        /// 修改索引名，返回true表示修改>
+        /// </summary>
+        /// <param name="name">修改后的值</param>
+        /// <returns></returns>
+        public bool ModifyName(out string name);
     }
 }

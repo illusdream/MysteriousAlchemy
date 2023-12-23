@@ -14,6 +14,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace MysteriousAlchemy.Core.Systems
 {
@@ -25,26 +26,36 @@ namespace MysteriousAlchemy.Core.Systems
         public static Terraria.Graphics.Effects.On_FilterManager.hook_EndCapture EndCaptureGroup;
 
         //绘制扭曲流向图用的render
-        private static RenderTarget2D DistortFlowGraphRender;
+        private RenderTarget2D DistortFlowGraphRender;
         private static Action FlowGraphDraw = null;
         //绘制被扭曲图像的render
-        private static RenderTarget2D DistortRender;
+        private RenderTarget2D DistortRender;
         private static Action DistortedGraphDraw = null;
-        private static RenderTarget2D DIstortFinalBloomText;
-
+        private RenderTarget2D DIstortFinalBloomText;
         //绘制Bloom的属性图
-        private static RenderTarget2D BloomRender;
-        private static RenderTarget2D BloomBlend;
-        private static Action BloomAreaDraw = null;
-        private static int BloomIntensity = 7;
+        private RenderTarget2D OldBloomRender;
+        private RenderTarget2D OldBloomBlend;
+        private static Action OldBloomAreaDraw = null;
+        private static int OldBloomIntensity = 7;
+        //高质量的Bloom
+        //用来生成map链，生成高质量？的圆形模糊效果,下采样
+        //private RenderTarget2D[] MipMaps = new RenderTarget2D[DownSampleStep];
+        ////上采样
+        //private RenderTarget2D[] BloomUp = new RenderTarget2D[DownSampleStep - 1];
+        //发光部分，直接额外draw，提取yuan
+        private RenderTarget2D Glow;
+        private static Action BloomDraw = null;
 
+        private static int DownSampleStep = 10;
+        private static int DownSize = 2;
         public int LoaderIndex => 5;
         public void Load()
         {
             var _drawmethod = typeof(Terraria.Graphics.Effects.FilterManager).GetMethod("EndCapture", BindingFlags.Instance | BindingFlags.Public);
             MonoModHooks.Add(_drawmethod, FilterManager_EndCapture);
             MonoModHooks.Add(_drawmethod, DistortRenderDraw);
-            MonoModHooks.Add(_drawmethod, BloomRenderDraw);
+            //MonoModHooks.Add(_drawmethod, OldBloomRenderDraw);
+            //MonoModHooks.Add(_drawmethod, BloomRenderDraw);
         }
 
         public void Unload()
@@ -52,8 +63,9 @@ namespace MysteriousAlchemy.Core.Systems
             DistortFlowGraphRender = null;
             DistortRender = null;
             DIstortFinalBloomText = null;
-            BloomRender = null;
-            BloomBlend = null;
+            OldBloomRender = null;
+            OldBloomBlend = null;
+            Glow = null;
         }
         public static void PutRT2Ddelegate(Action actionDraw, Action EffectApply)
         {
@@ -220,16 +232,16 @@ namespace MysteriousAlchemy.Core.Systems
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
-        private void BloomRenderDraw(Terraria.Graphics.Effects.On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        private void OldBloomRenderDraw(Terraria.Graphics.Effects.On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
             //创建rt2d实例
-            if (BloomRender == null)
+            if (OldBloomRender == null)
             {
-                BloomRender = CreateRender();
+                OldBloomRender = CreateRender();
             }
-            if (BloomBlend == null)
+            if (OldBloomBlend == null)
             {
-                BloomBlend = CreateRender();
+                OldBloomBlend = CreateRender();
             }
             if (DIstortFinalBloomText == null)
             {
@@ -247,23 +259,23 @@ namespace MysteriousAlchemy.Core.Systems
             sb.End();
 
             //绘制需要被Bloom的部分
-            gd.SetRenderTarget(BloomRender);
+            gd.SetRenderTarget(OldBloomRender);
             gd.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            if (BloomAreaDraw != null)
+            if (OldBloomAreaDraw != null)
             {
-                BloomAreaDraw.Invoke();
-                ClearAction(ref BloomAreaDraw);
+                OldBloomAreaDraw.Invoke();
+                ClearAction(ref OldBloomAreaDraw);
             }
             sb.End();
 
             //剔除不需要Bloom的区域
-            gd.SetRenderTarget(BloomBlend);
+            gd.SetRenderTarget(OldBloomBlend);
             gd.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             //剔除shader
             gd.Textures[0] = Main.screenTargetSwap;
-            gd.Textures[1] = BloomRender;
+            gd.Textures[1] = OldBloomRender;
             Bloom.CurrentTechnique.Passes[0].Apply();
             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             sb.End();
@@ -274,20 +286,20 @@ namespace MysteriousAlchemy.Core.Systems
             Bloom.Parameters["uRange"].SetValue(2f);
             Bloom.Parameters["uScreenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             //导入初始化参数
-            for (int i = 0; i < BloomIntensity; i++)
+            for (int i = 0; i < OldBloomIntensity; i++)
             {
                 //横向Bloom
                 gd.Textures[0] = Main.screenTargetSwap;
-                gd.Textures[1] = BloomRender;
+                gd.Textures[1] = OldBloomRender;
                 Bloom.CurrentTechnique.Passes[1].Apply();
                 gd.SetRenderTarget(Main.screenTarget);
                 gd.Clear(Color.Transparent);
-                sb.Draw(BloomBlend, Vector2.Zero, Color.White);
+                sb.Draw(OldBloomBlend, Vector2.Zero, Color.White);
                 //纵向Bloom
                 gd.Textures[0] = Main.screenTargetSwap;
-                gd.Textures[1] = BloomRender;
+                gd.Textures[1] = OldBloomRender;
                 Bloom.CurrentTechnique.Passes[2].Apply();
-                gd.SetRenderTarget(BloomBlend);
+                gd.SetRenderTarget(OldBloomBlend);
                 gd.Clear(Color.Transparent);
                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             }
@@ -301,12 +313,127 @@ namespace MysteriousAlchemy.Core.Systems
             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             sb.Draw(DIstortFinalBloomText, Vector2.Zero, Color.White);
             //绘制bloom图像
-            sb.Draw(BloomBlend, Vector2.Zero, Color.White);
+            sb.Draw(OldBloomBlend, Vector2.Zero, Color.White);
             //sb.Draw(BloomRender, Vector2.Zero, Color.White);
             sb.End();
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
-        private RenderTarget2D CreateRender()
+        //private void BloomRenderDraw(Terraria.Graphics.Effects.On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        //{
+        //    //创建rt2d实例
+
+        //    Glow ??= CreateRender();
+        //    MipMaps ??= new RenderTarget2D[DownSampleStep];
+        //    BloomUp ??= new RenderTarget2D[DownSampleStep - 1];
+        //    for (int i = 0; i < DownSampleStep; i++)
+        //    {
+
+        //        //创建mipmap
+        //        MipMaps[i] ??= new RenderTarget2D(Main.graphics.GraphicsDevice, (int)(Main.screenWidth / Math.Pow(DownSize, i)), (int)(Main.screenHeight / Math.Pow(DownSize, i)));
+        //    }
+        //    for (int i = 0; i < DownSampleStep - 1; i++)
+        //    {
+        //        //创建mipmap
+        //        BloomUp[i] ??= new RenderTarget2D(Main.graphics.GraphicsDevice, MipMaps[i].Width, MipMaps[i].Height);
+        //    }
+        //    GraphicsDevice gd = Main.instance.GraphicsDevice;
+        //    SpriteBatch sb = Main.spriteBatch;
+        //    Effect Bloom = AssetUtils.GetEffect("Bloom");
+        //    Effect GenerateMipmap = AssetUtils.GetEffect("GenerateMipmap");
+        //    //保存初始
+        //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //    gd.Clear(Color.Transparent);
+        //    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+        //    sb.End();
+
+        //    //绘制需要被Bloom的部分
+        //    gd.SetRenderTarget(Glow);
+        //    gd.Clear(Color.Transparent);
+        //    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        //    if (BloomDraw != null)
+        //    {
+        //        BloomDraw.Invoke();
+        //        ClearAction(ref BloomDraw);
+        //    }
+        //    sb.End();
+
+        //    //模糊图像
+
+        //    for (int i = 0; i < DownSampleStep; i++)
+        //    {
+
+        //        if (i == 0)
+        //        {
+
+        //            gd.SetRenderTarget(MipMaps[i]);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+        //            sb.Draw(Glow, new Rectangle(0, 0, MipMaps[i].Width, MipMaps[i].Height), Color.White);
+        //            sb.End();
+        //        }
+        //        else
+        //        {
+        //            gd.SetRenderTarget(MipMaps[i]);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+        //            gd.Textures[0] = MipMaps[i - 1];
+        //            //GenerateMipmap.Parameters["TexSize"].SetValue(MipMaps[i - 1].Size());
+        //            //GenerateMipmap.CurrentTechnique.Passes[0].Apply();
+        //            sb.Draw(MipMaps[i - 1], new Rectangle(0, 0, MipMaps[i].Width, MipMaps[i].Height), Color.White);
+        //            sb.End();
+        //        }
+        //    }
+
+        //    //上采样，并叠加
+
+        //    for (int i = DownSampleStep - 2; i >= 0; i--)
+        //    {
+        //        if (i == DownSampleStep - 2)
+        //        {
+        //            gd.SetRenderTarget(BloomUp[i]);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+        //            sb.Draw(MipMaps[i + 1], new Rectangle(0, 0, BloomUp[i].Width, BloomUp[i].Height), Color.White);
+        //            sb.Draw(MipMaps[i], new Rectangle(0, 0, BloomUp[i].Width, BloomUp[i].Height), Color.White);
+        //            sb.End();
+        //        }
+        //        else
+        //        {
+        //            gd.SetRenderTarget(BloomUp[i]);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+        //            sb.Draw(BloomUp[i + 1], new Rectangle(0, 0, BloomUp[i].Width, BloomUp[i].Height), Color.White);
+        //            sb.Draw(MipMaps[i], new Rectangle(0, 0, BloomUp[i].Width, BloomUp[i].Height), Color.White);
+        //            sb.End();
+        //        }
+        //    }
+
+
+        //    //混合效果
+        //    gd.SetRenderTarget(Main.screenTarget);
+        //    gd.Clear(Color.Transparent);
+        //    sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicWrap, DepthStencilState.Default, RasterizerState.CullNone);
+        //    //绘制原始图像
+        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //    //绘制bloom图像
+        //    DebugUtils.NewText(MipMaps[7].Size());
+        //    //sb.Draw(MipMaps[0], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[1], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[2], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[3], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[4], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[5], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[6], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[7], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[8], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    //sb.Draw(MipMaps[9], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        //    sb.Draw(BloomUp[0], new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+        //    sb.End();
+        //    orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
+        //}
+        private static RenderTarget2D CreateRender()
         {
             return new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
         }
@@ -324,14 +451,14 @@ namespace MysteriousAlchemy.Core.Systems
                     DistortedGraphDraw += action;
                     break;
                 case VisualPPActionType.BloomAreaDraw:
-                    BloomAreaDraw += action;
+                    BloomDraw += action;
                     break;
                 default:
                     break;
             }
         }
 
-        private void ClearAction(ref Action action)
+        private static void ClearAction(ref Action action)
         {
             Delegate[] allAction = action.GetInvocationList();
             for (int i = 0; i < allAction.Length; i++)

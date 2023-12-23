@@ -74,7 +74,7 @@ namespace MysteriousAlchemy.Core.Perfab.Projectiles
         {
             RegisterState<SwingState>(new SwingState(this));
             RegisterState<SweepState>(new SweepState(this));
-            SetState<SwingState>();
+            SetState(typeof(SwingState).ToString());
             base.Initialize();
         }
         public override void AI()
@@ -300,7 +300,7 @@ namespace MysteriousAlchemy.Core.Perfab.Projectiles
             {
                 if (Projectile.CanSweep && !Projectile.Owner.controlUseItem)
                 {
-                    Projectile.SwitchState<SweepState>();
+                    Projectile.SwitchState(typeof(SweepState).ToString());
                     return;
                 }
 

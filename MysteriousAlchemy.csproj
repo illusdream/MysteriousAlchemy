@@ -21,6 +21,8 @@
     <Folder Include="Asset\Texture\Extra\" />
     <Folder Include="Asset\Tiles\MagicComponents\" />
     <Folder Include="Asset\UI\Alchemy\" />
+    <Folder Include="Content\Animators\AEAnimator\" />
+    <Folder Include="Content\Animators\DrawUnits\LayOut\" />
     <Folder Include="Content\Items\MagicComponetItems\" />
     <Folder Include="Content\Items\TileItems\" />
     <Folder Include="Content\TileEntitys\MagicComponents\" />

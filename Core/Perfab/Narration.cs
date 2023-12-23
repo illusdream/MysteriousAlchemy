@@ -63,7 +63,7 @@ namespace MysteriousAlchemy.Core.Perfab
             RegisterState(new EntryState());
             RegisterState(new ShowState());
             RegisterState(new HideState());
-            SetState<EntryState>();
+            SetState(typeof(EntryState).ToString());
             base.Initialize();
         }
 
@@ -75,6 +75,12 @@ namespace MysteriousAlchemy.Core.Perfab
 
             }
 
+            public virtual bool ModifyName(out string name)
+            {
+                name = null;
+                return false;
+            }
+
             public void OnState(IStateMachine stateMachine)
             {
                 Narration text = SMUtils.GetStateMachineCurrect<Narration>(stateMachine);
@@ -83,7 +89,7 @@ namespace MysteriousAlchemy.Core.Perfab
                 if ((stateMachine as Narration).Timer > (stateMachine as Narration).EntryTime)
                 {
                     (stateMachine as Narration).Timer = 0;
-                    stateMachine.SetState<ShowState>();
+                    stateMachine.SetState(typeof(ShowState).ToString());
                 }
 
             }
@@ -127,8 +133,14 @@ namespace MysteriousAlchemy.Core.Perfab
                 if ((stateMachine as Narration).Timer > (stateMachine as Narration).ShowTime)
                 {
                     (stateMachine as Narration).Timer = 0;
-                    stateMachine.SetState<HideState>();
+                    stateMachine.SetState(typeof(HideState).ToString());
                 }
+            }
+
+            public virtual bool ModifyName(out string name)
+            {
+                name = null;
+                return false;
             }
         }
         public class HideState : IState
@@ -141,6 +153,12 @@ namespace MysteriousAlchemy.Core.Perfab
             public void ExitState(IStateMachine stateMachine)
             {
 
+            }
+
+            public virtual bool ModifyName(out string name)
+            {
+                name = null;
+                return false;
             }
 
             public void OnState(IStateMachine stateMachine)

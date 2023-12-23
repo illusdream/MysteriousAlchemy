@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
@@ -58,6 +59,7 @@ namespace MysteriousAlchemy.Core.Systems
             foreach (var _instance in entities)
             {
                 _instance.Value.Update();
+                _instance.Value.AnimatorSyncing();
             }
             etherGraph.UpdateAllEtherHandler();
             subordinateGraph.Update();
@@ -143,11 +145,9 @@ namespace MysteriousAlchemy.Core.Systems
             bool cancelRigister = false;
             var instance = new T();
             if (entities.ContainsKey(instance.unicode))
-                cancelRigister = instance.ResetUnicode(entities.Keys.ToList());
+                instance.ResetUnicode(entities.Keys.ToHashSet<AlchemyUnicode>());
 
 
-            if (cancelRigister)
-                return;
 
             instance.SetDefault();
             instance.active = true;
@@ -163,10 +163,44 @@ namespace MysteriousAlchemy.Core.Systems
             subordinateGraph.AddSubordinateLink(instance, SubTarget);
 
         }
+        public static bool TryRegisterAlchemyEntity(Type AlchemyEntityType, out AlchemyEntity instance)
+        {
+            instance = null;
+            bool result = false;
+            bool repeat = false;
+            if (!AlchemyEntityType.IsSubclassOf(typeof(AlchemyEntity)))
+            {
+
+                return result;
+            }
+
+
+            instance = (AlchemyEntity)Activator.CreateInstance(AlchemyEntityType);
+            if (entities.ContainsKey(instance.unicode))
+                repeat = instance.ResetUnicode(entities.Keys.ToHashSet<AlchemyUnicode>());
+
+
+
+            result = true;
+            instance.SetDefault();
+            instance.active = true;
+            instance.unicode.WorldID = WorldID;
+
+
+
+
+            entities.Add(instance.unicode, instance);
+            etherGraph.AddNode(instance);
+            subordinateGraph.AddNode(instance);
+
+            return result;
+        }
         public static void RemoveAlchemyEntity(AlchemyUnicode unicode)
         {
             if (entities.ContainsKey(unicode))
             {
+                entities[unicode].RemoveFromWorld();
+
                 entities.Remove(unicode);
                 etherGraph.RemoveNode(unicode);
                 subordinateGraph.RemoveNode(unicode);
@@ -201,9 +235,13 @@ namespace MysteriousAlchemy.Core.Systems
         }
         public static void ClearAllGraphAndEntity()
         {
-            entities.Clear();
-            etherGraph.Clear();
-            subordinateGraph.Clear();
+            int count = 0;
+            foreach (var instance in entities)
+            {
+                count++;
+                DebugUtils.NewText(count);
+                RemoveAlchemyEntity(instance.Key);
+            }
         }
         #region //数据加载
         public override void LoadWorldData(TagCompound tag)

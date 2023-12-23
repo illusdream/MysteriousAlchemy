@@ -54,5 +54,11 @@ namespace MysteriousAlchemy.Core.Abstract
 
 
         }
+
+        public virtual bool ModifyName(out string name)
+        {
+            name = GetType().ToString();
+            return false;
+        }
     }
 }

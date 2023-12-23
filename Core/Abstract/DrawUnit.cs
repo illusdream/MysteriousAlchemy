@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Core.Enum;
+using MysteriousAlchemy.Core.Timers;
 using MysteriousAlchemy.Utils;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +26,10 @@ namespace MysteriousAlchemy.Core.Abstract
     /// </summary>
     public class DrawUnit
     {
+        public string texture;
 
-        public Texture2D Texture;
+        public Texture2D TextureInstance { get { return AssetUtils.GetTexture2D(texture, AssetUtils.LoadStyle.Static); } }
+
 
         public Vector2 Pivot;
 
@@ -32,6 +37,8 @@ namespace MysteriousAlchemy.Core.Abstract
         public Vector2 PositionInScreen { get { return DrawUtils.ToScreenPosition(Pivot + Offest); } }
 
         public bool active;
+
+
 
         public DrawMode DrawMode;
         //混合模式
@@ -76,6 +83,9 @@ namespace MysteriousAlchemy.Core.Abstract
         public float[] OldRotation;
 
         public List<DrawUnit> children;
+        public DrawUnit Parent;
+        public Animator Animator;
+
         /// <summary>
         /// 最好永远不要使用该构造函数 ,如要创建对象，应该在对应的<see cref="Animator"/>内使用<see cref="Animator.RegisterDrawUnit{T}"/>注册新对象<br/>;
         /// 不要使用基类，用继承创建新类，在<see cref="DrawUnit.SetDefaults"/>内设定初始参数
@@ -95,9 +105,9 @@ namespace MysteriousAlchemy.Core.Abstract
         /// <param name="updateAction"></param>
         /// <param name="useShader"></param>
         /// <param name="shaderAction"></param>
-        public DrawUnit(Texture2D texture, Vector2 position, DrawMode drawMode, ModifyBlendState modifyBlendState, DrawSortWithUnits drawSortWithUnits, Color color, float rotation, Vector2 scale, Rectangle? sourceRectangle, Vector2 origin, SpriteEffects spriteEffects, int layer, Action<DrawUnit> updateAction, bool useShader, Action<DrawUnit> shaderAction)
+        public DrawUnit(string texture, Vector2 position, DrawMode drawMode, ModifyBlendState modifyBlendState, DrawSortWithUnits drawSortWithUnits, Color color, float rotation, Vector2 scale, Rectangle? sourceRectangle, Vector2 origin, SpriteEffects spriteEffects, int layer, Action<DrawUnit> updateAction, bool useShader, Action<DrawUnit> shaderAction)
         {
-            Texture = texture;
+            this.texture = texture;
             Pivot = position;
             DrawMode = drawMode;
             ModifyBlendState = modifyBlendState;
@@ -163,7 +173,10 @@ namespace MysteriousAlchemy.Core.Abstract
                     }
                 }
             }
-            DrawSelf(spriteBatch);
+            if (CheckCanDraw())
+            {
+                DrawSelf(spriteBatch);
+            }
             if (children is not null)
             {
                 for (int i = 0; i < children.Count; i++)
@@ -177,13 +190,13 @@ namespace MysteriousAlchemy.Core.Abstract
         }
         public virtual void DrawSelf(SpriteBatch spriteBatch)
         {
-            CheckCanDraw();
+            InitializeParameters();
 
             //原版绘制
             if (DrawMode == DrawMode.Default)
             {
                 ShaderAciton?.Invoke(this);
-                spriteBatch.Draw(Texture, PositionInScreen, SourceRectangle, color, Rotation, Origin, Scale, SpriteEffect, layers);
+                spriteBatch.Draw(TextureInstance, PositionInScreen, SourceRectangle, color, Rotation, Origin, Scale, SpriteEffect, layers);
             }
             else //3d绘制
             {
@@ -192,7 +205,7 @@ namespace MysteriousAlchemy.Core.Abstract
 
 
                 //对角线一半的长度，用来矫正位置
-                Vector2 TextureHalfDiagonalLength = Texture.Size() / 2f;
+                Vector2 TextureHalfDiagonalLength = TextureInstance.Size() / 2f;
                 //
                 float VertexPosAngleFix = -MathHelper.PiOver4 * 3;
 
@@ -211,7 +224,7 @@ namespace MysteriousAlchemy.Core.Abstract
 
 
                 //获取正确的顶点采样坐标
-                RectangleF currectTexcoords = DrawUtils.GetCurrectRectangleInVertexPaint(SourceRectangle, Texture);
+                RectangleF currectTexcoords = DrawUtils.GetCurrectRectangleInVertexPaint(SourceRectangle, TextureInstance);
                 Vector2 TopLeftTexcoord = new Vector2(currectTexcoords.X, currectTexcoords.Y);
                 Vector2 TopRightTexcoord = new Vector2(currectTexcoords.X + currectTexcoords.Width, currectTexcoords.Y);
                 Vector2 ButtomLeftTexcoord = new Vector2(currectTexcoords.X, currectTexcoords.Y + currectTexcoords.Height);
@@ -285,7 +298,7 @@ namespace MysteriousAlchemy.Core.Abstract
                 //使用shader
                 ShaderAciton?.Invoke(this);
 
-                Main.graphics.GraphicsDevice.Textures[0] = Texture;
+                Main.graphics.GraphicsDevice.Textures[0] = TextureInstance;
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, triangleList.ToArray(), 0, triangleList.Count - 2);
 
             }
@@ -295,19 +308,24 @@ namespace MysteriousAlchemy.Core.Abstract
         /// <summary>
         /// 防止null导致地报错使动画机整体停止工作,没写完
         /// </summary>
-        private void CheckCanDraw()
+        protected virtual bool CheckCanDraw()
         {
             //防止null报错
-            if (Texture == null)
+            if (TextureInstance == null)
             {
-                return;
+                return false;
             }
+            return true;
+        }
+        protected virtual void InitializeParameters()
+        {
             //初始化sourseRectangle
             if (SourceRectangle == new Rectangle())
             {
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
             }
         }
+
 
         private void ClearAction(ref Action<DrawUnit> action)
         {
@@ -348,12 +366,44 @@ namespace MysteriousAlchemy.Core.Abstract
             var instance = new T();
             instance.SetDefaults();
             children.Add(instance);
+            instance.Parent = this;
+            instance.Animator = Animator;
             return instance;
         }
         public virtual void SetChildPivotInCenter(DrawUnit child)
         {
             child.Pivot = Pivot + Offest;
         }
+        public virtual void RemoveAllChildren()
+        {
+            children.Clear();
+        }
+        public virtual bool RemoveChild(DrawUnit child)
+        {
+            return children.Remove(child);
+        }
+        //public static void RemoveSelf(this DrawUnit self)
+        //{
+        //    self.RemoveAllChildren();
+
+        //    if (self.Parent is not null)
+        //        self.Parent.RemoveChild(self);
+
+
+        //    if (self.Animator is not null && self.Parent is null)
+        //        self.Animator.RemoveDrawUnit(self);
+        //}
     }
 
+    public class DrawUnitLayOut : DrawUnit
+    {
+        protected override bool CheckCanDraw()
+        {
+            return true;
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+
+        }
+    }
 }

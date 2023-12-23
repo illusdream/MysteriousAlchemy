@@ -1,6 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using rail;
+using ReLogic.Content;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -29,6 +32,7 @@ namespace MysteriousAlchemy.Utils
         public const string Item_Chilliness = Items + "Chilliness/";
         public const string Ether = Items + "Ether/";
         public const string Items_MagicComponents = Items + "MagicComponents/";
+        public const string Items_AlchemySlab = Items + "AlchemySlab/";
 
         public const string Projectiles = Asset + "Projectiles/";
         public const string WeaponProjectile = Projectiles + "WeaponProjectile/";
@@ -41,6 +45,7 @@ namespace MysteriousAlchemy.Utils
         public const string UI_Alchemy = UI + "Alchemy/";
 
         public const string Texture = Asset + "Texture/";
+        public const string Runes = Asset + "Runes/";
 
         public const string ColorBar = Texture + "ColorBar/";
         public const string Extra = Texture + "Extra/";
@@ -52,9 +57,49 @@ namespace MysteriousAlchemy.Utils
 
         public const string Effect = ModPath + "Effects/";
 
-        public static Texture2D GetTexture2D(string path)
+        public enum LoadStyle
         {
-            return ModContent.Request<Texture2D>(path).Value;
+            Aysnc, ImmediateLoad, Static
+        }
+        #region 静态存储
+        public static Dictionary<string, Texture2D> TextureDic = new Dictionary<string, Texture2D>() { };
+
+        public static Texture2D TryGetTextureInStaticDictionary(string path)
+        {
+            TextureDic ??= new Dictionary<string, Texture2D>();
+            if (TextureDic.ContainsKey(path))
+            {
+                return TextureDic[path];
+            }
+            else
+            {
+                Texture2D instance = ModContent.Request<Texture2D>(path, AssetRequestMode.ImmediateLoad).Value;
+                TextureDic.Add(path, instance);
+                return instance;
+            }
+        }
+        #endregion
+        public static Texture2D GetTexture2D(string path, LoadStyle loadStyle = LoadStyle.Aysnc)
+        {
+            switch (loadStyle)
+            {
+                case LoadStyle.Aysnc:
+                    return ModContent.Request<Texture2D>(path).Value;
+
+                case LoadStyle.ImmediateLoad:
+                    return ModContent.Request<Texture2D>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+                case LoadStyle.Static:
+                    return TryGetTextureInStaticDictionary(path);
+                default:
+                    return ModContent.Request<Texture2D>(path).Value;
+
+            }
+
+        }
+        public static Asset<Texture2D> GetTexture2DAsset(string path)
+        {
+            return ModContent.Request<Texture2D>(path);
         }
         public static Texture2D GetTexture2DImmediate(string path)
         {
@@ -75,6 +120,27 @@ namespace MysteriousAlchemy.Utils
         public static Effect GetEffect(string name)
         {
             return ModContent.Request<Effect>(Effect + name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+        }
+        public static string GetRunesFullPath(string Char)
+        {
+            if (Regex.IsMatch(Char, "^[A-Z0-9]$|^10$"))
+            {
+                var path = Runes + Char;
+                return path;
+            }
+            else
+            {
+                return Runes + 'A';
+            }
+
+        }
+        public static Texture2D GetRunesTexture(string Char)
+        {
+            return ModContent.Request<Texture2D>(GetRunesFullPath(Char)).Value;
+        }
+        public static string GetRandomChar()
+        {
+            return ((char)('A' + Main.rand.Next(0, 26))).ToString();
         }
         /// <summary>
         /// 提前写好了Mods.MysteriousAlchemy.UIImageText.
@@ -135,4 +201,6 @@ namespace MysteriousAlchemy.Utils
 
         public static Texture2D WhitePic = GetTexture2D(Texture + "White");
     }
+
+
 }

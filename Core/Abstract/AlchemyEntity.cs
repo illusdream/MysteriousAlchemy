@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MysteriousAlchemy.Core.Interface;
+using MysteriousAlchemy.Core.Perfab.AEAnimator;
 using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,12 +14,13 @@ using System.Threading.Tasks;
 using System.Timers;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace MysteriousAlchemy.Core.Abstract
 {
     //炼金术相关基类,可保存
-    public class AlchemyEntity : TagSerializable, IEtherContainer
+    public class AlchemyEntity : TagSerializable, IEtherContainer, IStateMachine
     {
 
         #region //数据保存
@@ -98,10 +101,40 @@ namespace MysteriousAlchemy.Core.Abstract
         //1--9999的整数，用于在图中确定对应的实体 ,0为默认值，代表无
         public AlchemyUnicode unicode;
 
+
+        public virtual Type AnimatorType => typeof(BaseAEAnimator);
+        private Animator _animator;
+        public Animator Animator
+        {
+            get
+            {
+                if (_animator != null)
+                {
+                    return _animator;
+                }
+                else
+                {
+                    Core.Abstract.Animator instance = AnimatorManager.Instance.FindAnimator("AE" + unicode.ToString());
+                    return instance ?? AnimatorCreate();
+                }
+            }
+            set
+            {
+                _animator = value;
+            }
+        }
+
+
         public virtual string Icon => AssetUtils.UI_Alchemy + "AEmciroIcon_0";
+
+        public IState CurrectState { get; set; }
+        public Dictionary<string, IState> States { get; set; }
+
         public AlchemyEntity()
         {
             unicode = new AlchemyUnicode();
+            AnimatorCreate();
+            Initialize();
         }
         public void Limit()
         {
@@ -132,7 +165,23 @@ namespace MysteriousAlchemy.Core.Abstract
         {
 
         }
+        /// <summary>
+        /// 重写该函数的时候最好把Base放前面，base内写了创建动画机部分，不写就自己实现
+        /// </summary>
+        public virtual Animator AnimatorCreate()
+        {
+            if (!AnimatorType.IsSubclassOf(typeof(BaseAEAnimator)) && AnimatorType != typeof(BaseAEAnimator))
+            {
+                throw new ArgumentException("AE动画机类型不对，检查AnimatorType");
+            }
+            Animator instance = (Animator)Activator.CreateInstance(AnimatorType, Center);
 
+            instance.Name = "AE" + unicode.ToString();
+
+            AnimatorManager.Instance.AddAnimator(instance);
+            Animator = instance;
+            return instance;
+        }
 
         public virtual bool EtherTrigger()
         {
@@ -154,52 +203,113 @@ namespace MysteriousAlchemy.Core.Abstract
         }
 
         /// <summary>
-        /// 每帧更新,多用于更新魔力
+        /// 逻辑更新
         /// </summary>
-        public virtual void Update()
+        public void Update()
+        {
+            AI();
+            OnUpdate();
+        }
+        public virtual void OnUpdate()
+        {
+
+        }
+        /// <summary>
+        /// 同步动画机与AE状态与位置
+        /// </summary>
+        public void AnimatorSyncing()
+        {
+            if (Animator != null)
+            {
+                Animator.Position = Center;
+                AnimatorUpdate();
+            }
+
+        }
+        public virtual void AnimatorUpdate()
+        {
+
+        }
+        public void RemoveFromWorld()
+        {
+            RemoveAnimator();
+        }
+        public virtual void OnRemoveFromWorld()
+        {
+
+        }
+        public void RemoveAnimator()
+        {
+            OnRemoveAnimator();
+            AnimatorManager.Instance.RemoveAnimator(Animator);
+        }
+        public virtual void OnRemoveAnimator()
         {
 
         }
         /// <summary>
         /// 当该<see cref="AlchemyEntity"/>出现在世界中的绘制，特指在方块中存储或者在被实体化MagicCircle中存储
         /// </summary>
-        public virtual void DrawInWorld()
+
+
+        public virtual bool ResetUnicode(HashSet<AlchemyUnicode> needExclude)
         {
 
-        }
-        /// <summary>
-        /// 对背包部分的绘制
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="position"></param>
-        /// <param name="drawColor"></param>
-        /// <param name="itemColor"></param>
-        /// <param name="origin"></param>
-        /// <param name="scale"></param>
-        public virtual void DrawInInventory(SpriteBatch spriteBatch, Vector2 position, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-
-        }
-
-        public virtual bool ResetUnicode(List<AlchemyUnicode> needExclude)
-        {
-            int repeatCount = 0;
             bool Repeat = false;
             while (true)
             {
-                repeatCount++;
                 unicode = new AlchemyUnicode();
-                foreach (var exclude in needExclude)
-                {
-                    Repeat = Repeat || exclude == unicode;
-                }
-                if (!Repeat || repeatCount > 100)
-                {
-                    break;
-                }
+                if (!needExclude.Contains(unicode))
+                    return true;
             }
-            return Repeat;
         }
+        #region 动画机相关
+        public void RegisterState<T>(T state) where T : IState
+        {
+            States ??= new Dictionary<string, IState>();
+            if (state.ModifyName(out string name))
+            {
+                if (States.ContainsKey(name))
+                    throw new ArgumentException("已被注册");
+                States.Add(name, state);
+                return;
+            }
+            if (States.ContainsKey(typeof(T).ToString()))
+                throw new ArgumentException("已被注册");
+            States.Add(typeof(T).ToString(), state);
+        }
+
+        public void SetState(string Name)
+        {
+            if (!States.ContainsKey(Name)) throw new ArgumentException("该状态并不存在");
+            if (States.ContainsKey(Name))
+                CurrectState = States[Name];
+        }
+
+        public void SwitchState(string Name)
+        {
+            CurrectState.ExitState(this);
+            if (!States.ContainsKey(Name)) throw new ArgumentException("该状态并不存在");
+            States[Name].EntryState(this);
+            SetState(Name);
+        }
+
+        public virtual void Initialize()
+        {
+            RegisterState<AlchemyEntityState_Deactive>(new AlchemyEntityState_Deactive(this));
+            RegisterState<AlchemyEntityState_EntryActive>(new AlchemyEntityState_EntryActive(this));
+            RegisterState<AlchemyEntityState_Active>(new AlchemyEntityState_Active(this));
+            RegisterState<AlchemyEntityState_ExitActive>(new AlchemyEntityState_ExitActive(this));
+            SetState("Deactive");
+            //先执行一遍进入状态函数
+            CurrectState.EntryState(this);
+        }
+
+        public virtual void AI()
+        {
+            CurrectState?.OnState(this);
+        }
+        #endregion
     }
 
     public struct AlchemyUnicode : TagSerializable
@@ -219,7 +329,7 @@ namespace MysteriousAlchemy.Core.Abstract
         public int WorldID { get { return worldID; } set { worldID = value; } }
         public AlchemyUnicode()
         {
-            _unicode = Main.rand.Next(1, 10000);
+            _unicode = Main.rand.Next(1, 9999);
         }
         private AlchemyUnicode(int unicode)
         {
@@ -236,6 +346,14 @@ namespace MysteriousAlchemy.Core.Abstract
         {
             return u1.value != u2.value;
         }
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+
+
+
+
 
         public static readonly Func<TagCompound, AlchemyUnicode> DESERIALIZER = Load;
         public TagCompound SerializeData()
@@ -253,6 +371,21 @@ namespace MysteriousAlchemy.Core.Abstract
             instance._unicode = tag.GetInt(nameof(_unicode));
             instance.worldID = tag.GetInt(nameof(worldID));
             return instance;
+        }
+
+        public override bool Equals(object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+            return ((AlchemyUnicode)obj)._unicode == _unicode;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_unicode);
         }
     }
 }

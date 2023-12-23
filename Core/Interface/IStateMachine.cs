@@ -22,12 +22,12 @@ namespace MysteriousAlchemy.Core.Interface
         /// <summary>
         /// 切换状态，顺序：BeforeState.ExitState ->NextState.EntryState->SetState
         /// </summary>
-        public void SwitchState<T>() where T : IState;
+        public void SwitchState(string Name);
         /// <summary>
         /// 设置状态
         /// </summary>
         /// <param name="state"></param>
-        public void SetState<T>() where T : IState;
+        public void SetState(string Name);
 
         public void RegisterState<T>(T state) where T : IState;
 

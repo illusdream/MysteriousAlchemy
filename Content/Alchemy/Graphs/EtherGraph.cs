@@ -24,7 +24,7 @@ namespace MysteriousAlchemy.Content.Alchemy.Graphs
                 {
                     item.Value.HandlerEther(1);
                 });
-                o.Node.GetEntityInstance().Limit();
+                o?.Node?.GetEntityInstance()?.Limit();
             });
         }
         public new TagCompound SerializeData()

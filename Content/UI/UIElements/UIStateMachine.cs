@@ -24,26 +24,31 @@ namespace MysteriousAlchemy.Content.UI.UIElements
         public void RegisterState<T>(T state) where T : IState
         {
             States ??= new Dictionary<string, IState>();
+            if (state.ModifyName(out string name))
+            {
+                if (States.ContainsKey(name))
+                    throw new ArgumentException("已被注册");
+                States.Add(name, state);
+                return;
+            }
             if (States.ContainsKey(typeof(T).ToString()))
                 throw new ArgumentException("已被注册");
             States.Add(typeof(T).ToString(), state);
         }
 
-        public void SetState<T>() where T : IState
+        public void SetState(string Name)
         {
-            var name = typeof(T).ToString();
-            if (!States.ContainsKey(name)) throw new ArgumentException("该状态并不存在");
-            if (States.ContainsKey(name))
-                CurrectState = States[name];
+            if (!States.ContainsKey(Name)) throw new ArgumentException("该状态并不存在");
+            if (States.ContainsKey(Name))
+                CurrectState = States[Name];
         }
 
-        public void SwitchState<T>() where T : IState
+        public void SwitchState(string Name)
         {
-            var name = typeof(T).ToString();
             CurrectState.ExitState(this);
-            if (!States.ContainsKey(name)) throw new ArgumentException("该状态并不存在");
-            States[name].EntryState(this);
-            SetState<T>();
+            if (!States.ContainsKey(Name)) throw new ArgumentException("该状态并不存在");
+            States[Name].EntryState(this);
+            SetState(Name);
         }
     }
     public class UI_State<T> : IState where T : UIStateMachine
@@ -62,6 +67,12 @@ namespace MysteriousAlchemy.Content.UI.UIElements
         public virtual void ExitState(IStateMachine stateMachine)
         {
 
+        }
+
+        public virtual bool ModifyName(out string name)
+        {
+            name = null;
+            return false;
         }
 
         public virtual void OnState(IStateMachine stateMachine)

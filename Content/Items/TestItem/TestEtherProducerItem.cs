@@ -1,11 +1,16 @@
+using Basic.Reference.Assemblies;
+using Humanizer;
 using Microsoft.Xna.Framework;
 using MysteriousAlchemy.Content.Alchemy.AlchemyEntities;
+using MysteriousAlchemy.Content.Animators;
 using MysteriousAlchemy.Core.Systems;
 using MysteriousAlchemy.Utils;
+using System.Diagnostics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Humanizer.In;
 
 namespace MysteriousAlchemy.Content.Items.TestItem
 {
@@ -31,8 +36,23 @@ namespace MysteriousAlchemy.Content.Items.TestItem
         }
         public override bool? UseItem(Player player)
         {
+            for (int i = 0; i < 1; i++)
+            {
 
-            AlchemySystem.RegisterAlchemyEntity<TestEtherProducer>(Main.MouseWorld);
+                if (AlchemySystem.TryRegisterAlchemyEntity(typeof(TestEtherProducer), out var result))
+                {
+
+                    result.TopLeft = Main.MouseWorld + Main.rand.NextVector2Circular(200, 200);
+                    result.Animator.Position = result.TopLeft;
+                }
+                else
+                {
+                    DebugUtils.NewText("false");
+                }
+                //AnimatorManager.Instance.Register<BaseAEAnimator>().Position = 
+            }
+
+
             return base.UseItem(player);
         }
     }

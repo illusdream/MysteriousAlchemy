@@ -56,7 +56,7 @@ namespace MysteriousAlchemy.Content.Animators
             RegisterState<Compose>(new Compose(this));
 
 
-            SetState<Standby>();
+            SetState(typeof(Standby).ToString());
             etherCrystalList_Ready = new List<EtherCrystal>();
             etherCrystalList_Prepare = new List<EtherCrystal>();
         }
@@ -106,11 +106,11 @@ namespace MysteriousAlchemy.Content.Animators
         {
             if (CurrectState is Standby && magicRing_1 != null && magicRing_2 != null && magicRing_3 != null && etherCrystalList_Ready.Count > 0)
             {
-                SwitchState<EntryOpenUI>();
+                SwitchState(typeof(EntryOpenUI).ToString());
             }
             if (CurrectState is OpenUI)
             {
-                SwitchState<ExitOpenUI>();
+                SwitchState(typeof(ExitOpenUI).ToString());
             }
         }
 
@@ -233,9 +233,9 @@ namespace MysteriousAlchemy.Content.Animators
             }
             public override void EntryState(IStateMachine animator)
             {
-                MagicRing_1TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_1.Texture, Vector2.One * Animator.Raduim_3);
-                MagicRing_2TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_2.Texture, Vector2.One * Animator.Raduim_2);
-                MagicRing_3TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_3.Texture, Vector2.One * Animator.Raduim_1);
+                MagicRing_1TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_1.TextureInstance, Vector2.One * Animator.Raduim_3);
+                MagicRing_2TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_2.TextureInstance, Vector2.One * Animator.Raduim_2);
+                MagicRing_3TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_3.TextureInstance, Vector2.One * Animator.Raduim_1);
                 MagicRing_1TargetAngleH = 0;
                 base.EntryState(animator);
             }
@@ -260,7 +260,7 @@ namespace MysteriousAlchemy.Content.Animators
                 if (Timer > TotalTime)
                 {
                     Timer = 0;
-                    Animator.SwitchState<OpenUI>();
+                    Animator.SwitchState(typeof(OpenUI).ToString());
                 }
 
                 base.OnState(animator);
@@ -300,7 +300,7 @@ namespace MysteriousAlchemy.Content.Animators
             {
                 if (UI_AltarCompose.AltarAnimator != Animator)
                 {
-                    Animator.SwitchState<ExitOpenUI>();
+                    Animator.SwitchState(typeof(ExitOpenUI).ToString());
                 }
             }
         }
@@ -316,9 +316,9 @@ namespace MysteriousAlchemy.Content.Animators
             }
             public override void EntryState(IStateMachine animator)
             {
-                MagicRing_1TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_1.Texture, Vector2.One * Animator.Raduim_1);
-                MagicRing_2TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_2.Texture, Vector2.One * Animator.Raduim_2);
-                MagicRing_3TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_3.Texture, Vector2.One * Animator.Raduim_3);
+                MagicRing_1TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_1.TextureInstance, Vector2.One * Animator.Raduim_1);
+                MagicRing_2TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_2.TextureInstance, Vector2.One * Animator.Raduim_2);
+                MagicRing_3TargetScale = DrawUtils.GetCurrectScale(Animator.magicRing_3.TextureInstance, Vector2.One * Animator.Raduim_3);
                 MagicRing_1TargetAngleH = MathHelper.PiOver4;
                 base.EntryState(animator);
             }
@@ -345,12 +345,12 @@ namespace MysteriousAlchemy.Content.Animators
                     Timer = 0;
                     if (UI_AltarCompose.CheckCanCompose())
                     {
-                        Animator.SwitchState<EntryCompose>();
+                        Animator.SwitchState(typeof(EntryCompose).ToString());
 
                     }
                     else
                     {
-                        Animator.SwitchState<Standby>();
+                        Animator.SwitchState(typeof(Standby).ToString());
                     }
 
                 }
@@ -370,7 +370,7 @@ namespace MysteriousAlchemy.Content.Animators
                 float interget = 1 - (float)(Timer) / TotalTime;
                 if (Timer > TotalTime)
                 {
-                    Animator.SwitchState<Compose>();
+                    Animator.SwitchState(typeof(Compose).ToString());
 
                 }
                 Animator.CommonElementAI();
@@ -415,7 +415,7 @@ namespace MysteriousAlchemy.Content.Animators
                 if (ComposeProgress >= MaxComposeProgress)
                 {
                     Item.NewItem(new EntitySource_DropAsItem(Main.LocalPlayer), Animator.Position, 10, 10, UI_AltarCompose.ComposeItem());
-                    Animator.SwitchState<Standby>();
+                    Animator.SwitchState(typeof(Standby).ToString());
                 }
                 base.OnState(animator);
             }
@@ -434,13 +434,13 @@ namespace MysteriousAlchemy.Content.Animators
             int index;
             public override void SetDefaults()
             {
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Ether + "EtherCrystal");
+                texture = AssetUtils.Ether + "EtherCrystal";
                 DrawMode = DrawMode.Default;
                 ModifyBlendState = ModifyBlendState.NonPremultiplied;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Front;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
                 Scale = Vector2.One * 0.55f;
                 UpdateAction += Shake;
@@ -464,16 +464,15 @@ namespace MysteriousAlchemy.Content.Animators
             float Fliter = 0;
             public override void SetDefaults()
             {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Texture + "Projectile_490");
+                texture = AssetUtils.Texture + "Projectile_490";
                 DrawMode = DrawMode.Custom3D;
                 ModifyBlendState = ModifyBlendState.AlphaBlend;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 200 / Texture.Size();
+                Scale = Vector2.One * 200 / TextureInstance.Size();
                 ShaderAciton += shader;
                 UpdateAction += update;
                 AngleV = MathHelper.PiOver2;
@@ -529,16 +528,15 @@ namespace MysteriousAlchemy.Content.Animators
             int timer;
             public override void SetDefaults()
             {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_194");
+                texture = AssetUtils.Extra + "Extra_194";
                 DrawMode = DrawMode.Default;
                 ModifyBlendState = ModifyBlendState.Additive;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = Vector2.One * 40 / Texture.Size();
+                Scale = Vector2.One * 40 / TextureInstance.Size();
                 AngleV = MathHelper.PiOver2;
                 AngleH = MathHelper.PiOver4;
                 ModifySpriteEffect = ModifySpriteEffect.None;
@@ -623,16 +621,15 @@ namespace MysteriousAlchemy.Content.Animators
             int timer;
             public override void SetDefaults()
             {
-
-                Texture = AssetUtils.GetTexture2DImmediate(AssetUtils.Extra + "Extra_60");
+                texture = AssetUtils.Extra + "Extra_60";
                 DrawMode = DrawMode.Default;
                 ModifyBlendState = ModifyBlendState.Additive;
                 color = Color.White;
                 DrawSortWithUnits = DrawSortWithUnits.Middle;
-                SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-                Origin = Texture.Size() / 2f;
+                SourceRectangle = new Rectangle(0, 0, TextureInstance.Width, TextureInstance.Height);
+                Origin = TextureInstance.Size() / 2f;
                 SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
-                Scale = new Vector2(1, 10) * 20 / Texture.Size();
+                Scale = new Vector2(1, 10) * 20 / TextureInstance.Size();
                 AngleV = 0;
                 AngleH = MathHelper.PiOver4;
                 ModifySpriteEffect = ModifySpriteEffect.None;
